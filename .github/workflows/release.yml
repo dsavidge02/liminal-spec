@@ -1,0 +1,40 @@
+name: Release Artifacts
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install
+
+      - name: Build
+        run: bun run build
+
+      - name: Validate
+        run: bun run validate
+
+      - name: Package plugin
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          mkdir -p release
+          cd dist/plugin && zip -r ../../release/liminal-spec-plugin-v${VERSION}.zip . && cd ../..
+          cd dist/standalone && zip -r ../../release/liminal-spec-standalone-v${VERSION}.zip . && cd ../..
+
+      - name: Upload to Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${GITHUB_REF#refs/tags/} \
+            release/liminal-spec-plugin-*.zip \
+            release/liminal-spec-standalone-*.zip \
+            --clobber

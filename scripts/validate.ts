@@ -1,0 +1,289 @@
+/**
+ * Validate script for liminal-spec plugin.
+ *
+ * Checks dist/ output for structural correctness:
+ *   - Plugin metadata files exist with required fields
+ *   - Skill files have valid YAML frontmatter
+ *   - Agent files exist and have frontmatter with name
+ *   - Standalone files exist and lack frontmatter
+ *   - manifest.json conforms to Zod schema
+ */
+
+import { join, resolve } from "node:path";
+import matter from "gray-matter";
+import { z } from "zod";
+import { Glob } from "bun";
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const ROOT = resolve(import.meta.dir, "..");
+const DIST = join(ROOT, "dist");
+const DIST_PLUGIN = join(DIST, "plugin");
+const DIST_STANDALONE = join(DIST, "standalone");
+
+// ---------------------------------------------------------------------------
+// Zod schema for manifest.json
+// ---------------------------------------------------------------------------
+
+const SemverSchema = z.string().regex(
+  /^\d+\.\d+\.\d+(-[\w.]+)?$/,
+  "version must be valid semver (e.g. 1.0.0, 2.0.0-beta.1)"
+);
+
+const SkillSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  phases: z.array(z.string().min(1)).min(1),
+  shared: z.array(z.string().min(1)),
+  templates: z.array(z.string().min(1)).optional(),
+  examples: z.array(z.string().min(1)).optional(),
+});
+
+const ManifestSchema = z.object({
+  version: SemverSchema,
+  skills: z.record(z.string(), SkillSchema),
+  agents: z.array(z.string().min(1)),
+  command: z.string().min(1),
+});
+
+// ---------------------------------------------------------------------------
+// Validation state
+// ---------------------------------------------------------------------------
+
+interface ValidationResult {
+  skillsValid: number;
+  agentsValid: number;
+  standaloneValid: number;
+  errors: string[];
+}
+
+const result: ValidationResult = {
+  skillsValid: 0,
+  agentsValid: 0,
+  standaloneValid: 0,
+  errors: [],
+};
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+async function fileExists(path: string): Promise<boolean> {
+  return Bun.file(path).exists();
+}
+
+async function readFile(path: string): Promise<string> {
+  return Bun.file(path).text();
+}
+
+function hasFrontmatter(content: string): boolean {
+  return content.startsWith("---\n");
+}
+
+// ---------------------------------------------------------------------------
+// Validators
+// ---------------------------------------------------------------------------
+
+async function validatePluginJson(): Promise<void> {
+  const path = join(DIST_PLUGIN, ".claude-plugin", "plugin.json");
+  if (!(await fileExists(path))) {
+    result.errors.push("Missing: plugin.json");
+    return;
+  }
+  const data = await Bun.file(path).json();
+  if (!data.name || typeof data.name !== "string") {
+    result.errors.push("plugin.json: missing or invalid 'name' field");
+  }
+  if (!data.version || typeof data.version !== "string") {
+    result.errors.push("plugin.json: missing or invalid 'version' field");
+  }
+  console.log(`  plugin.json: valid (v${data.version})`);
+}
+
+async function validateMarketplaceJson(): Promise<void> {
+  const path = join(DIST_PLUGIN, ".claude-plugin", "marketplace.json");
+  if (!(await fileExists(path))) {
+    result.errors.push("Missing: marketplace.json");
+    return;
+  }
+  const data = await Bun.file(path).json();
+  if (!data.name || typeof data.name !== "string") {
+    result.errors.push("marketplace.json: missing or invalid 'name' field");
+  }
+  if (!data.owner || typeof data.owner.name !== "string") {
+    result.errors.push("marketplace.json: missing or invalid 'owner' field");
+  }
+  if (!Array.isArray(data.plugins) || data.plugins.length === 0) {
+    result.errors.push("marketplace.json: missing or empty 'plugins' array");
+  }
+  console.log("  marketplace.json: valid");
+}
+
+async function validateSkills(): Promise<void> {
+  const glob = new Glob("skills/*/SKILL.md");
+  const paths: string[] = [];
+
+  for await (const match of glob.scan({ cwd: DIST_PLUGIN, absolute: true })) {
+    paths.push(match);
+  }
+
+  if (paths.length === 0) {
+    result.errors.push("No skill files found in dist/plugin/skills/");
+    return;
+  }
+
+  for (const skillPath of paths.sort()) {
+    const content = await readFile(skillPath);
+    const skillName = skillPath.split("/").at(-2) ?? "unknown";
+
+    if (!hasFrontmatter(content)) {
+      result.errors.push(`Skill '${skillName}': missing YAML frontmatter`);
+      continue;
+    }
+
+    const parsed = matter(content);
+
+    if (!parsed.data.name || typeof parsed.data.name !== "string") {
+      result.errors.push(`Skill '${skillName}': frontmatter missing 'name'`);
+    }
+    if (
+      !parsed.data.description ||
+      typeof parsed.data.description !== "string"
+    ) {
+      result.errors.push(
+        `Skill '${skillName}': frontmatter missing 'description'`
+      );
+    }
+
+    const bodyContent = parsed.content.trim();
+    if (bodyContent.length === 0) {
+      result.errors.push(
+        `Skill '${skillName}': no content after frontmatter`
+      );
+    }
+
+    const lineCount = content.split("\n").length;
+    console.log(`  skill: ${skillName} (${lineCount} lines)`);
+    result.skillsValid++;
+  }
+}
+
+async function validateAgents(): Promise<void> {
+  const glob = new Glob("agents/*.md");
+
+  for await (const match of glob.scan({ cwd: DIST_PLUGIN, absolute: true })) {
+    const content = await readFile(match);
+    const agentName = match.split("/").pop()?.replace(".md", "") ?? "unknown";
+
+    if (content.trim().length === 0) {
+      result.errors.push(`Agent '${agentName}': file is empty`);
+      continue;
+    }
+
+    if (!hasFrontmatter(content)) {
+      result.errors.push(`Agent '${agentName}': missing YAML frontmatter`);
+      continue;
+    }
+
+    const parsed = matter(content);
+    if (!parsed.data.name || typeof parsed.data.name !== "string") {
+      result.errors.push(`Agent '${agentName}': frontmatter missing 'name'`);
+    }
+
+    console.log(`  agent: ${agentName}`);
+    result.agentsValid++;
+  }
+}
+
+async function validateStandalone(): Promise<void> {
+  const glob = new Glob("*.md");
+
+  for await (const match of glob.scan({
+    cwd: DIST_STANDALONE,
+    absolute: true,
+  })) {
+    const content = await readFile(match);
+    const fileName = match.split("/").pop() ?? "unknown";
+
+    if (content.trim().length === 0) {
+      result.errors.push(`Standalone '${fileName}': file is empty`);
+      continue;
+    }
+
+    if (hasFrontmatter(content)) {
+      result.errors.push(
+        `Standalone '${fileName}': should NOT have YAML frontmatter (build should strip it)`
+      );
+      continue;
+    }
+
+    console.log(`  standalone: ${fileName}`);
+    result.standaloneValid++;
+  }
+}
+
+async function validateManifest(): Promise<void> {
+  const manifestPath = join(ROOT, "manifest.json");
+  if (!(await fileExists(manifestPath))) {
+    result.errors.push("manifest.json not found at project root");
+    return;
+  }
+
+  const data = await Bun.file(manifestPath).json();
+  const parsed = ManifestSchema.safeParse(data);
+
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues) {
+      result.errors.push(
+        `manifest.json: ${issue.path.join(".")} - ${issue.message}`
+      );
+    }
+    return;
+  }
+  console.log(`  manifest.json: valid (v${parsed.data.version})`);
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+async function validate(): Promise<void> {
+  console.log("Validating dist/ output...\n");
+
+  console.log("Metadata:");
+  await validatePluginJson();
+  await validateMarketplaceJson();
+
+  console.log("\nSkills:");
+  await validateSkills();
+
+  console.log("\nAgents:");
+  await validateAgents();
+
+  console.log("\nStandalone:");
+  await validateStandalone();
+
+  console.log("\nManifest:");
+  await validateManifest();
+
+  // Summary
+  console.log("\n---");
+  if (result.errors.length > 0) {
+    console.error(`\nValidation FAILED with ${result.errors.length} error(s):`);
+    for (const err of result.errors) {
+      console.error(`  - ${err}`);
+    }
+    process.exit(1);
+  }
+
+  console.log(
+    `\nValidation passed: ${result.skillsValid} skills, ${result.agentsValid} agents, ${result.standaloneValid} standalone files`
+  );
+}
+
+validate().catch((err: unknown) => {
+  console.error("Validation failed:", err);
+  process.exit(1);
+});

@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "skills": {
+    "epic": {
+      "name": "epic",
+      "description": "Write complete, traceable Feature Specifications using Liminal Spec methodology. Covers User Profile, Flows, Acceptance Criteria, Test Conditions, Data Contracts, and Story Breakdown.",
+      "phases": ["epic"],
+      "shared": ["confidence-chain", "context-isolation", "writing-style"],
+      "examples": ["feature-verification-prompt"]
+    },
+    "tech-design": {
+      "name": "tech-design",
+      "description": "Transform a Feature Spec into implementable Tech Design with architecture, interfaces, and test mapping. Validates the spec as downstream consumer.",
+      "phases": ["tech-design"],
+      "shared": ["confidence-chain", "verification-model", "writing-style", "testing"],
+      "templates": ["tech-design.template"],
+      "examples": ["tech-design-verification-prompt"]
+    },
+    "story": {
+      "name": "story",
+      "description": "Break a feature into executable stories and generate self-contained prompt packs for implementation. Validates the Tech Design as downstream consumer.",
+      "phases": ["story"],
+      "shared": ["confidence-chain", "model-selection", "prompting-opus-4.6"]
+    },
+    "impl": {
+      "name": "impl",
+      "description": "Execute stories using TDD cycle (Skeleton, Red, Green, Gorilla, Verify) with multi-agent verification. Covers implementation, phase execution, and orchestration.",
+      "phases": ["impl"],
+      "shared": ["confidence-chain", "model-selection", "verification-model", "prompting-gpt-5x", "prompting-opus-4.6"]
+    }
+  },
+  "agents": ["senior-engineer"],
+  "command": "liminal-spec"
+}
