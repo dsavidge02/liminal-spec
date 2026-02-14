@@ -70,7 +70,15 @@ bun test            # Run integration tests
 
 The build also copies agents, commands, and generates plugin.json + marketplace.json in `dist/plugin/.claude-plugin/`.
 
-### Skills and What They Map To
+### What Gets Built
+
+**Command** (router — not a skill):
+
+| Command | Source | Purpose |
+|---------|--------|---------|
+| `/liminal-spec` | `src/commands/liminal-spec.md` | Presents phase menu, invokes the appropriate skill |
+
+**Skills** (4 self-contained phase skills):
 
 | Skill | Phase | Primary source | Shared dependencies |
 |-------|-------|----------------|---------------------|
@@ -79,7 +87,11 @@ The build also copies agents, commands, and generates plugin.json + marketplace.
 | `/liminal-spec:story` | 4 | `src/phases/story.md` | confidence-chain, model-selection, prompting-opus-4.6 |
 | `/liminal-spec:impl` | 5 | `src/phases/impl.md` | confidence-chain, model-selection, verification-model, prompting-gpt-5x, prompting-opus-4.6 |
 
-The `/liminal-spec` command (`src/commands/liminal-spec.md`) is the router — it presents the phase menu and invokes the appropriate skill.
+**Agent:**
+
+| Agent | Source | Purpose |
+|-------|--------|---------|
+| senior-engineer | `src/agents/senior-engineer.md` | TDD implementation with quality gates |
 
 ## How to Update Content
 
@@ -95,7 +107,8 @@ The `/liminal-spec` command (`src/commands/liminal-spec.md`) is the router — i
 Shared files affect multiple skills. Before editing, check which skills depend on it:
 
 ```bash
-grep "<shared-file-name>" manifest.json
+# Example: which skills use the writing-style shared file?
+grep "writing-style" manifest.json
 ```
 
 After editing, rebuild and review the affected skill outputs to make sure the inlined content reads correctly in each context. The same shared section may appear after different phase content in each skill — verify it flows naturally in all of them.
@@ -118,12 +131,29 @@ claude --plugin-dir ./dist/plugin
 
 This loads the plugin from the build output. Test the router (`/liminal-spec`) and individual skills (`/liminal-spec:epic`, etc.).
 
+### About `docs/`
+
+The `docs/` directory holds reference material not yet incorporated into the build pipeline. Currently contains `product-research.md` (Phase 1 content, deferred). When Phase 1 is added as a skill, this content would move to `src/phases/` and be added to the manifest. Do not add docs/ content to the build without explicit approval.
+
+### Adding a new skill
+
+1. Create the phase source file: `src/phases/<name>.md`
+2. Add the skill entry to `manifest.json` with name, description, phases, and shared dependencies
+3. Update the router command (`src/commands/liminal-spec.md`) to include the new phase in the table and routing logic
+4. Update the version assertion in `scripts/__tests__/build.test.ts` if needed
+5. `bun run check` to verify the build picks it up
+6. Test locally with `claude --plugin-dir ./dist/plugin`
+
 ## Release Process
 
 1. Push to main (directly or via PR merge) → CI runs build + validate + test
-2. When ready to release: `git tag vX.Y.Z && git push origin vX.Y.Z`
-3. Tag triggers release workflow → builds, validates, packages plugin + standalone zips, creates GitHub Release with artifacts
-4. Update version in `version.txt`, `manifest.json`, and `package.json` before tagging
+2. When ready to release, update version in all four places:
+   - `version.txt`
+   - `manifest.json`
+   - `package.json`
+   - `scripts/__tests__/build.test.ts` (version assertion in the plugin.json test)
+3. Commit the version bump, then tag and push: `git tag vX.Y.Z && git push origin vX.Y.Z`
+4. Tag triggers release workflow → builds, validates, packages plugin + standalone zips, creates GitHub Release with artifacts
 
 The tag is the explicit "ship it" signal. Code can accumulate on main across multiple pushes without releasing.
 

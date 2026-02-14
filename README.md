@@ -4,6 +4,14 @@ A spec-driven development methodology for AI-assisted coding. Designed for featu
 
 Liminal Spec runs a phased pipeline where each phase produces an artifact the next phase reads cold — no shared conversation history, no accumulated assumptions. The traceability chain (requirement → test condition → test → code) means when tests go green, you have high confidence the implementation matches the spec.
 
+## When to Use
+
+- New features with multiple components or integration points
+- Complex business logic where requirements need precision
+- Multi-agent builds where context isolation matters
+
+Not for: quick bug fixes, single-file changes, spikes, or emergency patches. Liminal Spec either runs full or not at all.
+
 ## Phases
 
 | Phase | In | Out |
@@ -13,7 +21,9 @@ Liminal Spec runs a phased pipeline where each phase produces an artifact the ne
 | 4. Story Sharding | Spec + Design | Stories + Prompt Packs |
 | 5. Execution | Prompts | Verified code |
 
-Most work starts at Phase 2. Within Phase 5, each story follows: **Skeleton → TDD Red → TDD Green → Gorilla Test → Verify**.
+Most work starts at Phase 2 — if you know what you're building, start there. Phase 1 (Product Research) is planned but not yet included.
+
+Within Phase 5, each story follows: **Skeleton → TDD Red → TDD Green → Gorilla Test → Verify**.
 
 ## Key Ideas
 
@@ -37,11 +47,52 @@ Most work starts at Phase 2. Within Phase 5, each story follows: **Skeleton → 
 /plugin install liminal-spec@liminal-plugins
 ```
 
-Then invoke with `/liminal-spec`.
+This gives you:
+
+| Command | What it does |
+|---------|-------------|
+| `/liminal-spec` | Router — presents the phase menu, routes to the right skill |
+| `/liminal-spec:epic` | Phase 2 — write a Feature Specification |
+| `/liminal-spec:tech-design` | Phase 3 — create a Tech Design from a Feature Spec |
+| `/liminal-spec:story` | Phase 4 — shard into stories and generate prompt packs |
+| `/liminal-spec:impl` | Phase 5 — execute stories with TDD and verification |
+
+The plugin also includes a **senior-engineer agent** for TDD implementation — rigorous TypeScript development with quality gates (format, lint, typecheck, test).
+
+Start with `/liminal-spec` and it will guide you to the right phase.
 
 ### For non-Claude-Code users (BA/PO)
 
-Download individual standalone files from [GitHub Releases](https://github.com/liminal-ai/liminal-spec/releases). Each file is self-contained and can be pasted directly into Claude Enterprise Chat or any AI assistant.
+Download standalone files from [GitHub Releases](https://github.com/liminal-ai/liminal-spec/releases). Each file is self-contained and can be pasted directly into Claude Enterprise Chat or any AI assistant.
+
+| File | For | Use when |
+|------|-----|----------|
+| `liminal-epic.md` | BA, PO | Writing feature specifications |
+| `liminal-tech-design.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
+| `liminal-story.md` | Tech Lead, Engineers | Breaking features into stories and prompts |
+| `liminal-impl.md` | Engineers | Executing stories with TDD |
+
+### From source (for development)
+
+```bash
+git clone https://github.com/liminal-ai/liminal-spec.git
+cd liminal-spec
+bun install
+bun run build
+claude --plugin-dir ./dist/plugin
+```
+
+## Development
+
+```bash
+bun install
+bun run build       # Compose source into dist/
+bun run validate    # Validate output
+bun test            # Run tests
+bun run check       # Build + validate
+```
+
+Edit content in `src/`, never in `dist/`. The build composes phase content with shared references per the manifest and outputs a Claude Code plugin (`dist/plugin/`) and standalone markdown files (`dist/standalone/`). See [CLAUDE.md](CLAUDE.md) for detailed development guidance.
 
 ## Project Structure
 
@@ -60,25 +111,11 @@ manifest.json      — Maps which shared files each phase skill needs
 docs/              — Reference material not yet in the build
 ```
 
-## Development
+## Links
 
-```bash
-bun install
-bun run build       # Compose source into dist/
-bun run validate    # Validate output
-bun test            # Run tests
-bun run check       # Build + validate
-```
-
-Edit content in `src/`, never in `dist/`. The build composes phase content with shared references per the manifest and outputs a Claude Code plugin (`dist/plugin/`) and standalone markdown files (`dist/standalone/`).
-
-## When to Use
-
-- New features with multiple components or integration points
-- Complex business logic where requirements need precision
-- Multi-agent builds where context isolation matters
-
-Not for: quick bug fixes, single-file changes, spikes, or emergency patches. Liminal Spec either runs full or not at all.
+- [Releases](https://github.com/liminal-ai/liminal-spec/releases)
+- [Changelog](CHANGELOG.md)
+- [Development Guide](CLAUDE.md)
 
 ## License
 
