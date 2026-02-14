@@ -30,11 +30,18 @@ jobs:
           cd dist/plugin && zip -r ../../release/liminal-spec-plugin-v${VERSION}.zip . && cd ../..
           cd dist/standalone && zip -r ../../release/liminal-spec-standalone-v${VERSION}.zip . && cd ../..
 
-      - name: Upload to Release
+      - name: Create or update Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${GITHUB_REF#refs/tags/} \
+          TAG=${GITHUB_REF#refs/tags/}
+          gh release create "$TAG" \
+            release/liminal-spec-plugin-*.zip \
+            release/liminal-spec-standalone-*.zip \
+            --title "$TAG" \
+            --generate-notes \
+            2>/dev/null \
+          || gh release upload "$TAG" \
             release/liminal-spec-plugin-*.zip \
             release/liminal-spec-standalone-*.zip \
             --clobber
