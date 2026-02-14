@@ -147,10 +147,12 @@ The `docs/` directory holds reference material not yet incorporated into the bui
 ## Release Process
 
 1. Push to main (directly or via PR merge) → CI runs build + validate + test
-2. When ready to release, update version in all four places:
+2. When ready to release, update version in all six places:
    - `version.txt`
    - `manifest.json`
    - `package.json`
+   - `.claude-plugin/plugin.json`
+   - `.claude-plugin/marketplace.json`
    - `scripts/__tests__/build.test.ts` (version assertion in the plugin.json test)
 3. Commit the version bump, then tag and push: `git tag vX.Y.Z && git push origin vX.Y.Z`
 4. Tag triggers release workflow → builds, validates, packages plugin + standalone zips, creates GitHub Release with artifacts

@@ -1,0 +1,10 @@
+{
+  "name": "liminal-spec",
+  "version": "0.2.0",
+  "description": "Spec-driven development methodology for agentic coding",
+  "author": {
+    "name": "liminal-ai"
+  },
+  "repository": "https://github.com/liminal-ai/liminal-spec",
+  "license": "MIT"
+}
