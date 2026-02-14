@@ -1,3 +1,52 @@
+# Changelog
+
+## v2.0.0 — Plugin Restructure (2026-02-14)
+
+Restructured from a single progressive-disclosure skill into a composable plugin with build pipeline.
+
+### Architecture
+
+- **Source-based composition:** Content now lives in `src/` as modular source files. A build script (`scripts/build.ts`) composes them into self-contained skills via `manifest.json`.
+- **Plugin packaging:** Output is a Claude Code plugin (`dist/plugin/`) with per-phase skills, a router command, senior-engineer agent, and marketplace metadata.
+- **Standalone distribution:** Parallel output (`dist/standalone/`) produces paste-ready markdown files for non-Claude-Code users (BA/PO using Enterprise Chat).
+- **No progressive disclosure:** Each composed skill contains all content needed for its phase — no separate reference file loading required.
+
+### Skills
+
+| Skill | Phase | Content |
+|-------|-------|---------|
+| `/liminal-spec` | Router | Presents phase menu, routes to appropriate skill |
+| `/liminal-spec:epic` | 2 | Feature Specification |
+| `/liminal-spec:tech-design` | 3 | Tech Design |
+| `/liminal-spec:story` | 4 | Story Sharding + Prompt Drafting |
+| `/liminal-spec:impl` | 5 | Execution + Phase Execution + Orchestration |
+
+### Build & CI
+
+- `bun run build` — compose source into dist/
+- `bun run validate` — validate output structure and frontmatter
+- `bun test` — 23 integration tests
+- GitHub Actions: PR validation, release-please, tag-triggered artifact publishing
+
+### Removed
+
+- Old monolithic SKILL.md (replaced by router command + per-phase skills)
+- Progressive disclosure reference files (content now inlined by build)
+- deploy.sh (replaced by CI/CD)
+- V2-ROADMAP.md (completed)
+
+### Deferred
+
+- Phase 1 (Product Research) — preserved in `docs/product-research.md` for future re-incorporation
+
+---
+
+## Prior History (v1 → v1.x)
+
+The following documents changes during the original single-skill development.
+
+---
+
 # Changelog: v8-reworked vs v2-full
 
 This document tracks what changed from v2-full to v8-reworked based on the brain dump from 2026-01-29.

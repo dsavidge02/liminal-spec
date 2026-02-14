@@ -8,7 +8,6 @@
 import { describe, test, expect, beforeAll, afterAll } from "bun:test";
 import { rm } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import matter from "gray-matter";
 
 const ROOT = resolve(import.meta.dir, "../..");
 const DIST = join(ROOT, "dist");
@@ -117,9 +116,8 @@ describe("skill content", () => {
     const content = await Bun.file(
       join(DIST_PLUGIN, "skills", "epic", "SKILL.md")
     ).text();
-    const parsed = matter(content);
-    expect(parsed.data.name).toBe("epic");
-    expect(parsed.data.description).toBeTruthy();
+    expect(content).toContain("name: epic");
+    expect(content).toContain("description:");
   });
 
   test("epic contains phase content from feature-specification", async () => {

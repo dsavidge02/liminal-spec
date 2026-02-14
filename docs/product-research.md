@@ -1,3 +1,8 @@
+> **NOTE:** This content is not yet incorporated into the plugin build. It will be
+> re-incorporated as a Phase 1 skill (`/liminal-spec:research`) when the product
+> research phase is brought back into the pipeline. Until then, this file is
+> preserved here as reference material.
+
 # Product Research (Optional)
 
 **Purpose:** Transform vision into a Product Requirements Document (PRD) that scopes multiple features.

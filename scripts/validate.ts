@@ -10,9 +10,64 @@
  */
 
 import { join, resolve } from "node:path";
-import matter from "gray-matter";
 import { z } from "zod";
 import { Glob } from "bun";
+
+// ---------------------------------------------------------------------------
+// Lightweight frontmatter parser (replaces gray-matter — no dependencies)
+// ---------------------------------------------------------------------------
+
+interface ParsedFrontmatter {
+  data: Record<string, unknown>;
+  content: string;
+}
+
+function parseFrontmatter(raw: string): ParsedFrontmatter {
+  if (!raw.startsWith("---\n")) {
+    return { data: {}, content: raw };
+  }
+  const endIndex = raw.indexOf("\n---", 3);
+  if (endIndex === -1) {
+    return { data: {}, content: raw };
+  }
+  const yamlBlock = raw.slice(4, endIndex);
+  const content = raw.slice(endIndex + 4).trimStart();
+  // Simple YAML key-value parsing (handles string and pipe multiline values)
+  const data: Record<string, unknown> = {};
+  const lines = yamlBlock.split("\n");
+  let currentKey = "";
+  let currentValue = "";
+  let inMultiline = false;
+
+  for (const line of lines) {
+    if (inMultiline) {
+      if (line.startsWith("  ") || line === "") {
+        currentValue += (currentValue ? "\n" : "") + line.replace(/^  /, "");
+      } else {
+        data[currentKey] = currentValue.trim();
+        inMultiline = false;
+        // fall through to process this line as a new key
+      }
+    }
+    if (!inMultiline) {
+      const match = line.match(/^(\w[\w-]*):\s*(.*)/);
+      if (match) {
+        currentKey = match[1];
+        const val = match[2];
+        if (val === "|" || val === ">") {
+          inMultiline = true;
+          currentValue = "";
+        } else {
+          data[currentKey] = val;
+        }
+      }
+    }
+  }
+  if (inMultiline && currentKey) {
+    data[currentKey] = currentValue.trim();
+  }
+  return { data, content };
+}
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -143,7 +198,7 @@ async function validateSkills(): Promise<void> {
       continue;
     }
 
-    const parsed = matter(content);
+    const parsed = parseFrontmatter(content);
 
     if (!parsed.data.name || typeof parsed.data.name !== "string") {
       result.errors.push(`Skill '${skillName}': frontmatter missing 'name'`);
@@ -187,7 +242,7 @@ async function validateAgents(): Promise<void> {
       continue;
     }
 
-    const parsed = matter(content);
+    const parsed = parseFrontmatter(content);
     if (!parsed.data.name || typeof parsed.data.name !== "string") {
       result.errors.push(`Agent '${agentName}': frontmatter missing 'name'`);
     }
