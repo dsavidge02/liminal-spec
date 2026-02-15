@@ -1,34 +1,34 @@
-# Feature Specification Verification Prompt
+# Epic Verification Prompt
 
-Use this prompt template to have an agent critically review a Feature Specification before handing off to Tech Design.
+Use this prompt template to have an agent critically review a Epic before handing off to Tech Design.
 
 ---
 
 ## Prompt Template
 
-**Critical Review: [Feature Name] Feature Specification**
+**Critical Review: [Feature Name] Epic**
 
-You are reviewing a Feature Specification for [brief description]. This is Phase 2 (Feature Specification) of a Liminal Spec pipeline.
+You are reviewing a Epic for [brief description]. This is Phase 2 (Epic) of a Liminal Spec pipeline.
 
 **Step 1: Load liminal-spec Skill Context**
 
 Read these files to understand the methodology and evaluation criteria:
 
 1. **Core methodology:** `~/.claude/skills/liminal-spec/SKILL.md`
-2. **Feature spec guidance:** `~/.claude/skills/liminal-spec/references/feature-specification.md`
+2. **Feature spec guidance:** `~/.claude/skills/liminal-spec/references/epic.md`
 3. **Writing style:** `~/.claude/skills/liminal-spec/references/writing-style.md`
 
 **Step 2: Review These Files**
 
-1. **Feature Spec (primary):** `[path to feature-spec.md]`
+1. **Epic (primary):** `[path to epic.md]`
 2. **Product Brief (for alignment):** `[path to product-brief.md]`
 3. **Reference Implementation (if applicable):** `[path to similar existing code]`
 
-**Important Boundary:** A detailed Tech Design phase follows Feature Specification. The spec defines *what* the system does, not *how* it's implemented. Technical implementation concerns (architecture, library choices, internal algorithms) are not spec issues. If you identify genuine technical questions that affect feasibility, add them to a "Tech Design Questions" section for the Tech Lead to address — don't flag them as spec blockers.
+**Important Boundary:** A detailed Tech Design phase follows Epic. The spec defines *what* the system does, not *how* it's implemented. Technical implementation concerns (architecture, library choices, internal algorithms) are not spec issues. If you identify genuine technical questions that affect feasibility, add them to a "Tech Design Questions" section for the Tech Lead to address — don't flag them as spec blockers.
 
 **Step 3: Evaluation Criteria**
 
-Assess the feature spec against these criteria:
+Assess the epic against these criteria:
 
 1. **Functional vs Technical Balance**
    - Is the spec appropriately functional (what) rather than technical (how)?
@@ -53,7 +53,7 @@ Assess the feature spec against these criteria:
    - Do TCs have clear structure? (Given/When/Then for behavioral checks, numbered steps for sequential flows, tables for input/output comparisons)
 
 5. **Alignment with Product Brief**
-   - Does the feature spec deliver on the product brief's vision?
+   - Does the epic deliver on the product brief's vision?
    - Is broader context reflected appropriately?
 
 6. **Reference Implementation Consistency** (if applicable)

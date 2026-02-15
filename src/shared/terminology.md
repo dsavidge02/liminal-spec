@@ -16,8 +16,8 @@
 |------|------------|
 | **Agent** | A fresh context session that receives artifacts and produces artifacts. Means context isolation, not roleplay personas. |
 | **Product Research** | Optional phase. Vision/idea → PRD. Often skipped. |
-| **Feature Specification** | Creates Feature Spec from requirements. The linchpin — most scrutiny here. |
-| **Tech Design** | Creates Tech Design from Feature Spec. Validates spec as downstream consumer. |
+| **Epic** | Creates Epic from requirements. The linchpin — most scrutiny here. |
+| **Tech Design** | Creates Tech Design from Epic. Validates spec as downstream consumer. |
 | **Story Sharding / Orchestration** | Creates Stories and Prompts from Spec + Tech Design. Orchestrates through Phase 4 (sharding) and Phase 5 (execution). |
 | **Implementation** | Executes implementation from prompt packs. Zero prior context. |
 | **Verification** | Validates artifacts and implementation. Different model for rigor — thoroughness is the point. |
@@ -27,12 +27,12 @@
 | Term | Definition |
 |------|------------|
 | **PRD** | Product Requirements Document. Multiple features sketched at high level. |
-| **Feature Spec** | Complete specification for one feature. ACs, TCs, data contracts, scope. |
-| **Tech Design** | Architecture, interfaces, test mapping, work plan. Expands significantly from the feature spec. |
+| **Epic** | Complete specification for one feature. ACs, TCs, data contracts, scope. |
+| **Tech Design** | Architecture, interfaces, test mapping, work plan. Expands significantly from the epic. |
 | **Story** | A discrete, independently executable vertical slice of functionality with its own prompt pack. Derived from tech design work breakdown. |
 | **Prompt Pack** | Self-contained instructions for executing one phase of a story. All context inlined. |
 
-## Feature Spec Hierarchy
+## Epic Hierarchy
 
 | Term | Definition |
 |------|------------|
@@ -61,7 +61,7 @@
 
 | Term | Definition |
 |------|------------|
-| **Downstream Consumer** | The agent who uses an artifact validates it (Tech Lead validates Feature Spec). |
+| **Downstream Consumer** | The agent who uses an artifact validates it (Tech Lead validates Epic). |
 | **Multi-Agent Validation** | Author self-review + downstream consumer review + different model review. |
 | **Dual-Validator Pattern** | Launching two validators in parallel with different cognitive profiles (builder + detail-oriented) for complementary coverage. |
 | **Running Total** | Cumulative test count across stories. Previous tests must keep passing. |

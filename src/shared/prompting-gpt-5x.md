@@ -163,7 +163,7 @@ GPT 5x supports `reasoning_effort` parameter:
 | `high` | Complex debugging, thorough verification |
 | `xhigh` | Deep analysis, catching subtle issues |
 
-For verification, use `medium` to `high`. Reserve `xhigh` for critical artifact review (Feature Spec, Tech Design).
+For verification, use `medium` to `high`. Reserve `xhigh` for critical artifact review (Epic, Tech Design).
 
 ## For Liminal Spec Verification
 

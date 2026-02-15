@@ -1,6 +1,6 @@
-## Feature Spec Template
+## Epic Template
 
-Use the following template when producing a feature spec.
+Use the following template when producing a epic.
 
 ---
 

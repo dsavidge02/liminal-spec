@@ -39,7 +39,7 @@ Every feature starts with Story 0. It establishes the shared foundation that all
 
 - **`NotImplementedError` class** — Custom error for stubs (if not already in the codebase)
 - **Type definitions** — All interfaces from the tech design's Low Altitude section
-- **Test fixtures** — Mock data matching the data contracts in the feature spec
+- **Test fixtures** — Mock data matching the data contracts in the epic
 - **Test utilities** — Shared helpers for test setup (factory functions, mock builders)
 - **Error classes** — Feature-specific errors defined in the tech design
 - **Project config** — Any test config, path aliases, or setup files needed
@@ -137,6 +137,40 @@ What this story delivers. What user can do after.
 
 ---
 
+## Integration Path Trace (Required)
+
+After defining all stories and before writing prompts, trace each critical end-to-end user path through the story breakdown. This catches cross-story integration gaps that per-story AC/TC coverage cannot detect.
+
+Per-story validation checks whether each story is internally complete — ACs covered, files listed, test counts correct. It does not check whether the *union* of all stories produces a connected system. A relay module, a bridge between subsystems, a glue handler that routes messages — these can fall through the cracks when each story takes one side of the boundary and no story owns the seam.
+
+### How to Trace
+
+1. List the 1-3 most important user paths (from the epic's flows)
+2. Break each path into segments (each arrow in the sequence diagram)
+3. For each segment, identify which story owns it
+4. Verify the owning story lists the relevant file in its Modified Files
+5. Verify at least one test in that story exercises the segment
+
+Any segment with no story owner is an integration gap. Fix before proceeding to prompts.
+
+### Format
+
+| Path Segment | Description | Owning Story | Modified File | Test |
+|---|---|---|---|---|
+| User → sidebar | Click "New Session" | Story 4 | sidebar.js | TC-2.2a |
+| sidebar → server | session:create WS message | Story 4 | websocket.ts | TC-2.2a |
+| server → ACP | AcpClient.sessionNew() | Story 2a | acp-client.ts | TC-2.2a |
+| WS → portlet | Shell relays to iframe | ??? | ??? | ??? |
+| portlet → WS | Shell receives postMessage | ??? | ??? | ??? |
+
+Empty cells ("???") are integration gaps. They block prompt writing.
+
+### Why Per-Story Checks Don't Catch This
+
+Story-level validation asks: "Are this story's ACs covered? Are its interfaces clear? Is its test mapping complete?" These are within-story completeness checks. The Integration Path Trace is a cross-story coverage check — does every segment of the critical user path have a story owner? A tech design can perfectly describe how components interact (sequence diagrams, data flows, message traces) while no story actually owns implementing the glue between them.
+
+---
+
 ## Prompt Pack Creation
 
 Each prompt must be **self-contained**. A fresh agent executes without conversation history.
@@ -157,7 +191,7 @@ You are implementing Story N of [Feature].
 
 ## Reference Documents
 - Tech Design: path/to/tech-design.md (section X)
-- Feature Spec: path/to/feature.md (ACs X-Y)
+- Epic: path/to/epic.md (ACs X-Y)
 
 ## Task
 
@@ -180,15 +214,15 @@ You are implementing Story N of [Feature].
 - Use exact data-testid values specified
 
 ## Verification
-```bash
-npm test -- --testPathPattern="Feature"
-```
-Expected: [X tests PASS, Y tests ERROR]
+1. Run: `bun run red-verify` (Red) or `bun run green-verify` (Green)
+   — or the project's equivalent verification command for this phase
+2. Expected: [phase-specific expectations]
+   — See TDD Prompt Rules below for phase-specific verification details
 
 ## Done When
 - [ ] All files created/modified
 - [ ] Test state matches expected
-- [ ] TypeScript compiles
+- [ ] Verification pipeline passes for this phase
 ```
 
 ### Key Point: Inline Content
@@ -330,7 +364,7 @@ story-N-{description}/
 ## Deriving Stories from Tech Design
 
 1. **Identify the chunk** in tech design
-2. **List the TCs** from feature spec — include TC IDs explicitly (e.g., TC-6a, TC-6b)
+2. **List the TCs** from epic — include TC IDs explicitly (e.g., TC-6a, TC-6b)
 3. **Pull test mapping** from tech design's TC-to-test table
 4. **Identify files** to create/modify
 
@@ -363,7 +397,7 @@ Product summary
 ## Reference Documents
 (For human traceability — key content inlined below)
 - Tech Design: path/to/tech-design.md (section X)
-- Feature Spec: path/to/feature.md (ACs X-Y)
+- Epic: path/to/epic.md (ACs X-Y)
 
 ## Task
 
@@ -384,22 +418,23 @@ Product summary
 - Use exact data-testid values specified
 
 ## If Blocked or Uncertain
-- If you encounter inconsistencies between the prompt, tech design, or feature spec — **stop and ask** before proceeding
+- If you encounter inconsistencies between the prompt, tech design, or epic — **stop and ask** before proceeding
 - If something doesn't line up (signatures don't match, test counts conflict, a dependency is missing) — surface it rather than silently resolving it
 - If you are blocked (missing file, failing prerequisite, unclear requirement) — document what you attempted, what's not working, and what you think the resolution is, then return to the orchestrator
 - Do NOT work around ambiguity or inconsistencies without approval
 
 ## Verification
 When complete:
-1. Run: `npm test -- --testPathPattern="FeaturePage"`
-2. Expected: [X tests pass | X tests error]
-3. Run: `npx tsc --noEmit`
-4. Expected: No errors
+1. Run the phase-appropriate verification command
+   — Red: `bun run red-verify` (format + lint + typecheck, no tests)
+   — Green: `bun run green-verify` (verify + test immutability)
+   — Or the project's equivalent commands
+2. Expected: [phase-specific pass/fail expectations]
 
 ## Done When
 - [ ] All files created/modified
 - [ ] Test state matches expected
-- [ ] TypeScript compiles
+- [ ] Verification pipeline passes for this phase
 ```
 
 ### Key Point: Content IN the Prompt
@@ -407,6 +442,55 @@ When complete:
 Tech design is referenced but content should be IN the prompt. Don't require model to go read another doc.
 
 Reference files are for human traceability. The model executes from what's inlined.
+
+---
+
+## TDD Prompt Rules
+
+Phase prompts must enforce TDD integrity. These rules apply when writing Red, Green, and Verify prompts.
+
+### Red Prompts
+
+Red prompts must include a verification step that runs the full quality pipeline *except* tests. Tests are expected to fail (stubs throw), but formatting, linting, and type checking must pass. If the project defines a `red-verify` script, the prompt should use it. Otherwise, specify the individual commands.
+
+Red prompts must end with a commit instruction: commit all work before proceeding to Green. This creates the audit trail and rollback point between the test contract and the implementation.
+
+```markdown
+## Verification
+1. Run: `bun run red-verify` (or: format check + lint + typecheck)
+2. Expected: All pass (tests are NOT run — they will ERROR at this stage)
+3. **Commit your work** before proceeding to Green
+```
+
+### Green Prompts
+
+Green prompts must explicitly state that Red tests are immutable:
+
+- **Do NOT modify test files.** Red tests are the behavioral contract. Implement to satisfy them, not to change them.
+- If a test seems wrong, stop and surface it to the orchestrator rather than editing the test.
+
+Green verification must include a test-immutability check. If the project defines a `green-verify` script, use it. Otherwise, specify the verification pipeline plus a manual check that no test files changed.
+
+```markdown
+## Verification
+1. Run: `bun run green-verify` (or: verify + confirm no test files changed)
+2. Expected: All tests PASS, no test files modified
+```
+
+### Verify Prompts
+
+If test files were modified during Green (override case — environment fixes, not assertion changes), the verify prompt must require the verifier to:
+
+1. Review git history on affected test files
+2. Compare changed assertions against AC/TC intent
+3. Confirm the changes preserved or strengthened coverage, not weakened it
+
+```markdown
+## Test Integrity Check (if any test files were modified in Green)
+- Review `git diff` on all modified test files
+- For each changed assertion: does it still verify the original TC intent?
+- Flag any assertion that was relaxed, removed, or made less specific
+```
 
 ---
 
@@ -435,7 +519,7 @@ Reference files are for human traceability. The model executes from what's inlin
 ## Story 2: Select and Return
 
 ### TCs Covered
-TC-17 to TC-27 (from feature spec)
+TC-17 to TC-27 (from epic)
 
 ### Files
 - New: `src/hooks/useLocationSelection.ts`

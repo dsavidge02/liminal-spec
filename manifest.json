@@ -1,11 +1,11 @@
 {
-  "version": "0.2.0",
+  "version": "0.2.1",
   "skills": {
     "epic": {
       "name": "epic",
-      "description": "Write complete, traceable Feature Specifications using Liminal Spec methodology. Covers User Profile, Flows, Acceptance Criteria, Test Conditions, Data Contracts, and Story Breakdown.",
+      "description": "Write complete, traceable Epics using Liminal Spec methodology. Covers User Profile, Flows, Acceptance Criteria, Test Conditions, Data Contracts, and Story Breakdown.",
       "phases": ["epic"],
-      "shared": ["confidence-chain", "context-isolation", "writing-style"],
+      "shared": ["confidence-chain", "context-isolation", "writing-style-epic"],
       "examples": ["feature-verification-prompt"]
     },
     "tech-design": {

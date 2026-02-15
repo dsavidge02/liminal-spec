@@ -1,20 +1,20 @@
-# Feature Specification
+# Epic
 
-**Purpose:** Transform requirements into a complete, traceable Feature Specification — the linchpin artifact of Liminal Spec.
+**Purpose:** Transform requirements into a complete, traceable Epic — the linchpin artifact of Liminal Spec.
 
-The feature spec gets the most scrutiny because errors here cascade through every downstream phase. A complete spec is one that a Tech Lead can design from without asking questions. It contains: User Profile, Feature Overview, Scope, Flows with Acceptance Criteria and Test Conditions, Data Contracts, and a recommended Story Breakdown.
+The epic gets the most scrutiny because errors here cascade through every downstream phase. A complete spec is one that a Tech Lead can design from without asking questions. It contains: User Profile, Feature Overview, Scope, Flows with Acceptance Criteria and Test Conditions, Data Contracts, and a recommended Story Breakdown.
 
 ---
 
 ## Functional, Not Technical
 
-Feature specs are **functional and detailed, but generally not technical**. They describe *what* the system does from the user's perspective, not *how* it's implemented internally. Technical implementation belongs in Tech Design.
+Epics are **functional and detailed, but generally not technical**. They describe *what* the system does from the user's perspective, not *how* it's implemented internally. Technical implementation belongs in Tech Design.
 
-**When in doubt, keep it functional.** If you're unsure whether something belongs in the feature spec or tech design, put it in tech design. The spec should give the Tech Lead a target to hit, not dictate how to hit it.
+**When in doubt, keep it functional.** If you're unsure whether something belongs in the epic or tech design, put it in tech design. The spec should give the Tech Lead a target to hit, not dictate how to hit it.
 
 ### When Technical Detail Is Appropriate
 
-Some situations warrant technical specificity in the feature spec:
+Some situations warrant technical specificity in the epic:
 
 - **Contract definitions** — REST endpoint paths, HTTP response codes, error codes. These are interface boundaries, not implementation.
 - **Data shapes** — TypeScript interfaces, Zod schemas, API payloads. Shapes describe *what* data looks like, not how it's processed.
@@ -34,12 +34,12 @@ If you find yourself specifying *how* something works internally, you've crossed
 
 ---
 
-## The Feature Spec Structure
+## The Epic Structure
 
-A feature spec is an **epic** — a related set of capabilities that let a user do something they couldn't do before. The structure nests naturally: each user flow or capability is a heading that groups its ACs, and each AC groups its TCs.
+An epic defines a related set of capabilities that let a user do something they couldn't do before. The structure nests naturally: each user flow or capability is a heading that groups its ACs, and each AC groups its TCs.
 
 ```
-Feature (epic)
+Epic
   └── User Profile + Feature Overview
   └── Scope
   └── Flow/Capability 1 (heading)
@@ -303,7 +303,7 @@ Use this section when the feature has performance, security, observability, or o
 - Track location selection events for analytics
 ```
 
-NFRs become constraints in the Tech Design rather than TCs in the spec. The Tech Lead uses them to make architecture decisions (caching strategy, indexing, error handling patterns). Include them in the feature spec so they're visible early — don't wait for Tech Design to discover them.
+NFRs become constraints in the Tech Design rather than TCs in the spec. The Tech Lead uses them to make architecture decisions (caching strategy, indexing, error handling patterns). Include them in the epic so they're visible early — don't wait for Tech Design to discover them.
 
 ---
 
@@ -327,7 +327,7 @@ These aren't spec blockers — they're legitimate questions that the spec can't 
 
 ## Recommended Story Breakdown
 
-After the spec is complete, draft a story breakdown. A good feature spec naturally suggests how to shard into implementable stories. This section bridges the spec and execution — it doesn't replace full story docs, but provides enough structure for planning and sequencing.
+After the spec is complete, draft a story breakdown. A good epic naturally suggests how to shard into implementable stories. This section bridges the spec and execution — it doesn't replace full story docs, but provides enough structure for planning and sequencing.
 
 ### Story 0: Infrastructure
 
@@ -403,18 +403,18 @@ The Tech Lead is the downstream consumer of this artifact. Their inability to us
 
 ---
 
-## Feature Spec Template
+## Epic Template
 
-Use the following template when producing a feature spec.
+Use the following template when producing an epic.
 
 ---
 
 ### Template Start
 
 ```markdown
-# Feature: [Feature Name]
+# Epic: [Epic Name]
 
-This specification defines the complete requirements for [feature name]. It serves as the
+This epic defines the complete requirements for [epic name]. It serves as the
 source of truth for the Tech Lead's design work.
 
 ---

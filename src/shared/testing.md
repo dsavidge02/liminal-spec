@@ -445,7 +445,7 @@ describe("withApiKeyAuth wrapper", () => {
 
 ## TC Traceability
 
-Every test must trace to a Test Condition from the Feature Spec. This is the Confidence Chain in action.
+Every test must trace to a Test Condition from the Epic. This is the Confidence Chain in action.
 
 ### In Test Code
 

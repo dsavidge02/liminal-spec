@@ -14,7 +14,7 @@ A spec-driven development system for features with detailed requirements and com
 
 | Phase | Skill | Start Here If... |
 |-------|-------|-------------------|
-| **2. Feature Specification** | `/liminal-spec:epic` | **Most common.** You know what you want to build |
+| **2. Epic** | `/liminal-spec:epic` | **Most common.** You know what you want to build |
 | **3. Tech Design** | `/liminal-spec:tech-design` | You have a complete spec ready for architecture |
 | **4. Story Sharding** | `/liminal-spec:story` | Design is done, ready to break into executable work |
 | **5. Execution** | `/liminal-spec:impl` | Stories are sharded, ready to implement |
@@ -32,13 +32,13 @@ Not for: quick bug fixes, single-file changes, spikes, or emergency patches.
 Tell me what you want to build and which phase you're starting from. I'll activate the appropriate skill.
 
 Based on the user's response, invoke the appropriate skill:
-- Phase 2 (Feature Specification) → use Skill tool: "liminal-spec:epic"
+- Phase 2 (Epic) → use Skill tool: "liminal-spec:epic"
 - Phase 3 (Tech Design) → use Skill tool: "liminal-spec:tech-design"
 - Phase 4 (Story Sharding) → use Skill tool: "liminal-spec:story"
 - Phase 5 (Execution) → use Skill tool: "liminal-spec:impl"
 
 If the user is unclear about which phase, ask clarifying questions:
 - Do they have requirements/a product brief? → Phase 2
-- Do they have a complete feature spec? → Phase 3
+- Do they have a complete epic? → Phase 3
 - Do they have a spec + tech design? → Phase 4
 - Do they have stories + prompt packs? → Phase 5

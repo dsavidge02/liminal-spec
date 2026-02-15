@@ -1,6 +1,6 @@
 # Writing Style Reference
 
-*Deep-dive guide for documentation that serves both humans and AI agents. Load when writing Feature Specs and Tech Designs.*
+*Deep-dive guide for documentation that serves both humans and AI agents. Load when writing Epics and Tech Designs.*
 
 ---
 
@@ -200,7 +200,7 @@ If a capability appears at one level but not another, something is missing. The 
 
 ### Extended Example: Tracing Through Altitudes
 
-**Feature Spec (25K feet):**
+**Epic (25K feet):**
 > Users can execute tools (read files, run commands) through the AI assistant. The assistant requests permission before executing.
 
 Reader understands: what capability exists, who controls it.
@@ -468,7 +468,7 @@ Opens with functional context. Shows mechanism. Grounds in benefit. Then enumera
 
 ## Writing for Agents
 
-This reference will be loaded by AI agents writing Feature Specs and Tech Designs. Understanding how agents read—and fail to read—makes the difference between documentation that works and documentation that wastes context.
+This reference will be loaded by AI agents writing Epics and Tech Designs. Understanding how agents read—and fail to read—makes the difference between documentation that works and documentation that wastes context.
 
 ### How Agents Read Differently
 

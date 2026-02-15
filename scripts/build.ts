@@ -55,7 +55,7 @@ const SKILL_STAGING = join(DIST_STANDALONE, ".skill-staging");
 
 /** Maps internal skill keys to descriptive filenames for standalone release artifacts. */
 const STANDALONE_NAMES: Record<string, string> = {
-  epic: "feature-specification",
+  epic: "epic",
   "tech-design": "technical-design",
   story: "story-sharding",
   impl: "implementation",

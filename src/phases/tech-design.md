@@ -1,8 +1,8 @@
 # Tech Design
 
-**Purpose:** Transform Feature Spec into Tech Design with architecture, interfaces, and test mapping.
+**Purpose:** Transform Epic into Tech Design with architecture, interfaces, and test mapping.
 
-**This phase is the downstream consumer of the Feature Spec.** If you can't design from it, the spec isn't ready. Validation is part of the quality gate.
+**This phase is the downstream consumer of the Epic.** If you can't design from it, the spec isn't ready. Validation is part of the quality gate.
 
 This phase may produce one document or split based on complexity:
 - **Tech Design** — Core architecture, interfaces, test mapping
@@ -13,12 +13,12 @@ This phase may produce one document or split based on complexity:
 
 ### As Validator
 
-Before designing, validate the Feature Spec:
+Before designing, validate the Epic:
 - Can you map every AC to implementation?
 - Are data contracts complete and realistic?
 - Are there technical constraints the BA missed?
 - Do the flows make sense from an implementation perspective?
-- **Answer every question in the Feature Spec's "Tech Design Questions" section.** These are legitimate technical questions raised during spec writing or validation that the spec intentionally deferred to this phase.
+- **Answer every question in the Epic's "Tech Design Questions" section.** These are legitimate technical questions raised during spec writing or validation that the spec intentionally deferred to this phase.
 
 If issues found → return to BA for revision. Don't design from a broken spec.
 
@@ -202,7 +202,7 @@ jest.mock('@/features/add-location/hooks/useLocations');
 
 ### TC to Test Mapping (Critical)
 
-The test plan must explicitly map every TC from the Feature Spec to a test. This is the Confidence Chain in action: AC → TC → Test → Implementation.
+The test plan must explicitly map every TC from the Epic to a test. This is the Confidence Chain in action: AC → TC → Test → Implementation.
 
 **Test plan table format:**
 
@@ -213,7 +213,7 @@ The test plan must explicitly map every TC from the Feature Spec to a test. This
 | TC-10a | LocationList.test.tsx | renders location rows | Planned |
 
 **Rules:**
-- Every TC from Feature Spec must appear in this table
+- Every TC from Epic must appear in this table
 - TC ID must be visible in table OR in the test name/comment (for traceability)
 - If you can't map a TC to a test, either the TC is untestable (return to spec) or you're missing a test boundary
 - Group by test file for clarity; the TC column is what matters for traceability
@@ -306,7 +306,7 @@ Chunk 0 → Chunk 1 → Chunk 2
 
 ## Output: Tech Design
 
-The tech design expands significantly from the feature spec — typically 6-7x. The design includes:
+The tech design expands significantly from the epic — typically 6-7x. The design includes:
 - System context (external systems, data flow)
 - Module architecture (files, responsibilities, AC mapping)
 - Sequence diagrams (per flow)

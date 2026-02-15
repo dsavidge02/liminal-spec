@@ -23,7 +23,7 @@ Read these files to understand the methodology and evaluation criteria:
 **Step 2: Review These Files**
 
 1. **Tech Design (primary):** `[path to tech-design.md]`
-2. **Feature Spec (for alignment):** `[path to feature-spec.md]`
+2. **Epic (for alignment):** `[path to epic.md]`
 3. **Codebase (for feasibility):** `[path to relevant source directories]`
 
 **Important Boundary:** Story Sharding (Phase 4) follows Tech Design. The design defines architecture and interfaces — it does not need to specify prompt structure, story execution order, or agent coordination. If you identify orchestration concerns, note them as recommendations for the Orchestrator, not as design blockers.
@@ -32,15 +32,15 @@ Read these files to understand the methodology and evaluation criteria:
 
 Assess the tech design against these criteria:
 
-1. **Feature Spec Alignment**
-   - Does every AC from the feature spec have a home in the module responsibility matrix?
+1. **Epic Alignment**
+   - Does every AC from the epic have a home in the module responsibility matrix?
    - Are data contracts from the spec reflected in interface definitions?
    - Do sequence diagrams cover all flows from the spec?
-   - Were Tech Design Questions from the feature spec answered?
+   - Were Tech Design Questions from the epic answered?
    - Any scope drift — things designed that weren't in the spec, or spec items missing from the design?
 
 2. **TC → Test Mapping Completeness**
-   - Does every TC from the feature spec map to a specific test file and test description?
+   - Does every TC from the epic map to a specific test file and test description?
    - Are test approaches appropriate for what's being verified (mock setup, assertion strategy)?
    - Are there TCs that can't be mapped? If so, is the TC untestable (spec issue) or is a test boundary missing (design issue)?
 
@@ -113,7 +113,7 @@ Provide your review in this structure:
 [Anything that should be present but isn't]
 
 ## Spec Alignment Gaps
-[ACs or TCs from the feature spec not reflected in the design]
+[ACs or TCs from the epic not reflected in the design]
 
 ## Recommendations
 [Specific fixes, in priority order]
@@ -126,7 +126,7 @@ Be thorough and critical. The goal is to catch issues before they compound into 
 
 **Step 5: TC → Test Traceability Table**
 
-As part of your review, produce a traceability table mapping every TC from the feature spec to its test in the design:
+As part of your review, produce a traceability table mapping every TC from the epic to its test in the design:
 
 ```
 | TC | Test File | Test Description | Coverage Notes |
@@ -144,6 +144,6 @@ This table makes gaps immediately visible. If a TC has no test mapped, or the te
 
 - Run this with a verification-oriented model (GPT 5x recommended for thoroughness and precision)
 - Can also run with multiple agents in parallel for diverse perspectives
-- Compare the TC → Test traceability table against the feature spec's AC → TC table for full chain coverage
+- Compare the TC → Test traceability table against the epic's AC → TC table for full chain coverage
 - Critical and Major issues should be addressed before Story Sharding handoff
 - The Orchestrator will also validate implicitly during Phase 4 — if they can't derive stories, the design goes back

@@ -10,15 +10,17 @@ This document translates feature requirements into implementable architecture. I
 | Developers | Clear blueprint for implementation |
 | Phase Prompts | Source of specific file paths, interfaces, and test mappings |
 
-**Prerequisite:** The feature spec must be complete (all ACs have TCs) before starting this document.
+**Prerequisite:** The epic must be complete (all ACs have TCs) before starting this document.
 
-**Expected Length:** A complete tech design expands significantly from the feature spec — typically 6-7×. The richness comes from redundant connections: the same concepts appearing at multiple altitudes, woven through functional and technical perspectives. Shorter usually means insufficient depth. Longer usually means scope creep.
+**Expected Length:** A complete tech design expands significantly from the epic — typically 6-7×. The richness comes from redundant connections: the same concepts appearing at multiple altitudes, woven through functional and technical perspectives. Shorter usually means insufficient depth. Longer usually means scope creep.
+
+**When to split:** If this document exceeds ~1500-2000 lines, or a domain section (auth, protocol, UI architecture, testing) grows dense enough to distract from core flow, split into focused companion docs. Keep one index document as the canonical map and decision log. Split by domain or altitude, not arbitrarily. Each companion doc preserves requirement traceability (AC/TC mappings) and includes cross-links back to the index. Make the split decision explicitly — "single doc" or "split with index" — and document the rationale.
 
 ---
 
 ## Spec Validation
 
-Before designing, validate the Feature Spec is implementation-ready. You are the downstream consumer—if you can't design from it, the spec isn't ready.
+Before designing, validate the Epic is implementation-ready. You are the downstream consumer—if you can't design from it, the spec isn't ready.
 
 **Validation Checklist:**
 - [ ] Every AC maps to clear implementation work
@@ -93,7 +95,7 @@ flowchart LR
 
 ### External Contracts
 
-What crosses the boundary? This section connects to the feature spec's Data Contracts and establishes what the implementation must honor. These contracts become the fixed points around which internal architecture flexes.
+What crosses the boundary? This section connects to the epic's Data Contracts and establishes what the implementation must honor. These contracts become the fixed points around which internal architecture flexes.
 
 **Incoming (from Guidewire):**
 
@@ -115,11 +117,23 @@ Describe what returns and the format constraints. Note any size limits, encoding
 
 Errors are part of the contract. Define shapes so tests can mock realistic failures and UI can handle them gracefully. These error shapes should appear again in the testing section—that redundancy is intentional, creating multiple paths to the same information.
 
-| Source | Status | Shape | UI Handling |
-|--------|--------|-------|-------------|
-| XAPI | 400 | `{ status: 'ERROR', messages: [{ code: string, message: string }] }` | Show validation message |
-| XAPI | 500 | `{ status: 'ERROR', messages: [{ message: string }] }` | Show generic error |
-| Network | — | `TypeError: Failed to fetch` | Show connection error |
+| Source | Status | Code | Shape | Client Handling |
+|--------|--------|------|-------|-----------------|
+| XAPI | 400 | `VALIDATION_FAILED` | `{ status: 'ERROR', code: string, messages: [...] }` | Show validation message |
+| XAPI | 500 | `INTERNAL_ERROR` | `{ status: 'ERROR', code: string, messages: [...] }` | Show generic error |
+| Network | — | `NETWORK_ERROR` | `TypeError: Failed to fetch` | Show connection error |
+
+Stable error codes are the machine-readable contract clients program against. Shapes may evolve; codes should not. Clients switch on codes, not on message strings or HTTP status alone.
+
+**Runtime Prerequisites:**
+
+What must be installed, running, or configured for this feature to work — locally and in CI. Documenting this here prevents Story 0 from discovering missing prerequisites mid-execution.
+
+| Prerequisite | Where Needed | How to Verify |
+|---|---|---|
+| [Runtime/tool] v[X.Y]+ | Local + CI | `[command] --version` |
+| [Service] running | Local dev | `curl [health endpoint]` |
+| [Env var] | All environments | Defined in `.env.example` |
 
 ---
 
@@ -229,7 +243,7 @@ flowchart TD
 
 **✏️ Connection Check:** The modules above should clearly map to:
 - External contracts (High Altitude) — Which module handles incoming params? Which prepares outgoing data?
-- ACs from the feature spec — Every AC should have a home in the responsibility matrix
+- ACs from the epic — Every AC should have a home in the responsibility matrix
 - Interface definitions (Low Altitude, coming next) — Each module will need types, props, or signatures
 
 If a module exists but you can't trace it to an AC, question whether it's needed. If an AC exists but no module owns it, you've found a gap.
@@ -281,7 +295,7 @@ This flow requires the following stubs. Each row becomes a file created in skele
 
 **TC Mapping for this Flow:**
 
-How do we verify this flow works? Each TC from the feature spec maps to a test. The test file, setup, and assertion approach are specified here—TDD Red phase will implement exactly these tests.
+How do we verify this flow works? Each TC from the epic maps to a test. The test file, setup, and assertion approach are specified here—TDD Red phase will implement exactly these tests.
 
 | TC | Tests | Module | Setup | Assert |
 |----|-------|--------|-------|--------|
@@ -443,7 +457,7 @@ This section synthesizes everything above. Each TC traces back through:
 - Low Altitude (interface being tested)
 - Flow-by-Flow (sequence it validates)
 - Module Responsibility (component under test)
-- Feature Spec (AC it verifies)
+- Epic (AC it verifies)
 
 ### By Module
 
@@ -559,6 +573,44 @@ After TDD Green, verify manually. Automated tests catch regressions; manual test
 
 ---
 
+## Verification Scripts
+
+Define the project's verification commands before story execution begins. These become the quality gates that prompts reference — getting them right here prevents ad-hoc discovery during implementation.
+
+### Required Definitions
+
+Every project must define at least these four verification tiers:
+
+| Script | Purpose | When Used | Composition |
+|--------|---------|-----------|-------------|
+| `red-verify` | Quality gate for TDD Red exit | After writing tests, before Green | Everything *except* tests (format + lint + typecheck) |
+| `verify` | Standard development verification | Continuous during implementation | Format + lint + typecheck + primary test suites |
+| `green-verify` | Quality gate for TDD Green exit | After implementation passes tests | `verify` + test-immutability guard |
+| `verify-all` | Deep verification for integration and release | Story completion, pre-release | `verify` + integration + e2e suites |
+
+`red-verify` exists because tests are expected to fail during Red (stubs throw). The full `verify` pipeline includes tests, so it can't be used at Red exit. `red-verify` runs everything else — catching lint, format, and type errors before they cascade into Green.
+
+`green-verify` exists because Red tests are the behavioral contract for Green. Test files should not be modified during Green implementation. `green-verify` runs the standard verification pipeline then checks that no test files were changed.
+
+If integration or e2e suites don't exist yet, `verify-all` should still exist and run placeholders that return success with clear output — the command must be wirable from day one.
+
+### Example (TypeScript / Bun)
+
+```json
+{
+  "scripts": {
+    "red-verify": "bun run format:check && bun run lint && bun run typecheck",
+    "verify": "bun run format:check && bun run lint && bun run typecheck && bun run test",
+    "green-verify": "bun run verify && bun run guard:no-test-changes",
+    "verify-all": "bun run verify && bun run test:integration && bun run test:e2e"
+  }
+}
+```
+
+The specific commands vary by stack. The principle is consistent: `red-verify` = everything except tests, `verify` = standard gate, `green-verify` = verify + test immutability, `verify-all` = verify + deep suites.
+
+---
+
 ## Work Breakdown: Chunks and Phases
 
 Work breaks along two axes:
@@ -609,7 +661,7 @@ Creates tests that assert real behavior. Tests ERROR because stubs throw.
 | `[Feature].test.tsx` | X | TC-XX through TC-YY |
 | `use[Feature].test.ts` | Y | TC-AA through TC-BB |
 
-**Exit Criteria:** `npm test` runs. New tests ERROR (NotImplementedError). Existing tests PASS.
+**Exit Criteria:** `red-verify` passes (format + lint + typecheck — no tests). New tests ERROR (NotImplementedError). Existing tests PASS. Commit checkpoint created before Green.
 
 #### TDD Green
 
@@ -620,7 +672,7 @@ Implements real logic. Tests PASS.
 | `use[Feature].ts` | [Key logic points, edge cases to handle] |
 | `[Feature].tsx` | [Key UI points, state management approach] |
 
-**Exit Criteria:** `npm test` all PASS. Typecheck passes. Manual verification for this chunk complete.
+**Exit Criteria:** `green-verify` passes (all tests PASS + no test files modified). Manual verification for this chunk complete.
 
 ### Chunk Dependencies
 
@@ -648,7 +700,7 @@ Before handoff, verify quality. Read your own design critically—the Orchestrat
 
 ### Completeness
 
-- [ ] Every TC from feature spec mapped to a test file
+- [ ] Every TC from epic mapped to a test file
 - [ ] All interfaces fully defined (types, props, hook returns, API signatures)
 - [ ] Module boundaries clear—no ambiguity about what lives where
 - [ ] Chunk breakdown includes test count estimates
@@ -678,6 +730,18 @@ Before handoff, verify quality. Read your own design critically—the Orchestrat
 - [ ] Test names describe user-visible outcomes
 - [ ] Each section standalone-readable (isolation test)
 
+### Architecture Gate (Before Handoff to Story Sharding)
+
+Cross-cutting architecture decisions must be explicit before execution begins. Flow design quality doesn't compensate for implicit architecture controls — these cause late churn when discovered during implementation.
+
+- [ ] Dependency decisions are informed by web research on current library versions and ecosystem status — not just "what I've used before"
+- [ ] Verification scripts defined (`red-verify`, `verify`, `green-verify`, `verify-all`) with specific command composition
+- [ ] Test segmentation strategy decided (unit / integration / e2e, runner architecture, where each suite lives)
+- [ ] Error contract defined (machine-readable codes/shapes that clients rely on)
+- [ ] Environment and runtime prerequisites documented (what's needed locally and in CI)
+
+If any of these are missing, the design isn't ready for story sharding. These decisions will be made one way or another — making them explicit here prevents ad-hoc discovery during execution.
+
 ---
 
 ## Open Questions
@@ -702,7 +766,7 @@ Items identified during design that are out of scope. Document them so they're n
 
 ## Related Documentation
 
-- Feature Spec: `[feature-spec filename]`
+- Epic: `[epic filename]`
 - Story Prompts: `stories/`
 - Testing Reference: `references/testing.md`
 - Methodology: `SKILL.md`

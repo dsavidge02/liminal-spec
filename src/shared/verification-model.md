@@ -2,19 +2,19 @@
 
 **Upstream = more scrutiny. Errors compound downward.**
 
-The feature spec gets the most attention because if it's on track, everything else follows. If it's off, everything downstream is off.
+The epic gets the most attention because if it's on track, everything else follows. If it's off, everything downstream is off.
 
 ## The Gradient
 
 ```
-Feature Spec:  ████████████████████ Every line
+Epic:  ████████████████████ Every line
 Tech Design:   █████████████░░░░░░░ Detailed review
 Stories:       ████████░░░░░░░░░░░░ Key things + shape
 Prompts:       ██████░░░░░░░░░░░░░░ Shape + intuition
 Implementation:████░░░░░░░░░░░░░░░░ Spot checks + tests
 ```
 
-## Feature Spec Verification (MOST SCRUTINY)
+## Epic Verification (MOST SCRUTINY)
 
 This is the linchpin. Read and verify EVERY LINE.
 
@@ -43,7 +43,7 @@ This is the linchpin. Read and verify EVERY LINE.
 
 ## Tech Design Verification
 
-Still detailed review, but less line-by-line than feature spec.
+Still detailed review, but less line-by-line than epic.
 
 ### What to Check
 
@@ -100,7 +100,7 @@ Liminal Spec uses this pattern throughout:
 
 | Artifact | Author Reviews | Consumer Reviews |
 |----------|---------------|------------------|
-| Feature Spec | BA self-review | Tech Lead (needs it for design) |
+| Epic | BA self-review | Tech Lead (needs it for design) |
 | Tech Design | Tech Lead self-review | Orchestrator (needs it for stories) |
 | Prompts | Orchestrator self-review | Senior Engineer + different model |
 
@@ -113,7 +113,7 @@ Liminal Spec uses this pattern throughout:
 
 ### The Key Pattern: Author + Downstream Consumer
 
-If the Tech Lead can't build a design from the feature spec → spec isn't ready.
+If the Tech Lead can't build a design from the epic → spec isn't ready.
 If the Orchestrator can't derive stories from tech design → design isn't ready.
 If the Senior Engineer can't execute from prompt → prompt isn't ready.
 
@@ -148,7 +148,7 @@ Leaves flexible:
 
 ### Before Tech Design
 
-- [ ] Feature Spec complete
+- [ ] Epic complete
 - [ ] BA self-review done
 - [ ] Model validation complete
 - [ ] All issues addressed (Critical, Major, and Minor)
@@ -163,7 +163,7 @@ Leaves flexible:
 - [ ] Model validation complete (different model for diverse perspective)
 - [ ] All issues addressed (Critical, Major, and Minor)
 - [ ] Validation rounds complete (no substantive changes remaining)
-- [ ] TC → Test mapping complete (every TC from feature spec maps to a test)
+- [ ] TC → Test mapping complete (every TC from epic maps to a test)
 - [ ] Orchestrator validated: can derive stories from this
 - [ ] Human reviewed structure and coverage
 

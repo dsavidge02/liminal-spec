@@ -48,7 +48,7 @@ BUILD_COMPLETE → VERIFIED
 Each long-context agent maintains session state:
 
 - `.sdd/product-research-state.md` — Product research (if used)
-- `.sdd/feature-spec-state.md` — Feature specification
+- `.sdd/epic-state.md` — Epic
 - `.sdd/tech-design-state.md` — Tech design
 - `.sdd/story-sharding-state.md` — Story sharding / orchestration
 
@@ -114,8 +114,8 @@ If work is interrupted:
 
 | From | To | Artifact |
 |------|-----|----------|
-| Product Research | Feature Specification | PRD (if used) |
-| Feature Specification | Tech Design | Feature Spec |
+| Product Research | Epic | PRD (if used) |
+| Epic | Tech Design | Epic |
 | Tech Design | Story Sharding | Tech Design doc |
 | Story Sharding | Implementation | Story + Prompt Pack |
 | Implementation | Verification | Implementation + Test Results |

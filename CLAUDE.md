@@ -19,7 +19,7 @@ Both outputs are composed from the same source files. The build handles the pack
   plugin.json              — Plugin metadata (name, version, author)
   marketplace.json         — Marketplace catalog for /plugin marketplace add
 skills/
-  epic/SKILL.md            — /liminal-spec:epic (Phase 2: Feature Specification)
+  epic/SKILL.md            — /liminal-spec:epic (Phase 2: Epic)
   tech-design/SKILL.md     — /liminal-spec:tech-design (Phase 3)
   story/SKILL.md           — /liminal-spec:story (Phase 4: Story Sharding)
   impl/SKILL.md            — /liminal-spec:impl (Phase 5: Execution)
@@ -41,7 +41,7 @@ Source-based skill with build composition. Edit in `src/`, never in `dist/`.
 src/
   phases/          — Phase-specific content (one per skill: epic, tech-design, story, impl)
   shared/          — Cross-cutting concepts inlined into multiple skills by the build
-  templates/       — Artifact templates (tech design, feature spec)
+  templates/       — Artifact templates (tech design, epic)
   examples/        — Verification prompt templates
   commands/        — Plugin command (/liminal-spec router)
   agents/          — Plugin agents (senior-engineer)
@@ -121,7 +121,7 @@ After editing, rebuild and review the affected skill outputs to make sure the in
 
 ### Adding content to a phase that's already inline in the source
 
-Some content (like the feature spec template) is already embedded in the phase file rather than composed from a separate source. The `templates` and `examples` entries in `manifest.json` are for content that lives in separate files and gets appended. If the content is already in the phase file, don't also add it to the manifest — that causes duplication.
+Some content (like the epic template) is already embedded in the phase file rather than composed from a separate source. The `templates` and `examples` entries in `manifest.json` are for content that lives in separate files and gets appended. If the content is already in the phase file, don't also add it to the manifest — that causes duplication.
 
 ### Testing locally
 

@@ -94,7 +94,7 @@ describe("plugin output", () => {
       join(DIST_PLUGIN, ".claude-plugin", "plugin.json")
     ).json();
     expect(data.name).toBe("liminal-spec");
-    expect(data.version).toBe("0.2.0");
+    expect(data.version).toBe("0.2.1");
   });
 
   test("creates marketplace.json with required fields", async () => {
@@ -120,12 +120,11 @@ describe("skill content", () => {
     expect(content).toContain("description:");
   });
 
-  test("epic contains phase content from feature-specification", async () => {
+  test("epic contains phase content", async () => {
     const content = await Bun.file(
       join(DIST_PLUGIN, "skills", "epic", "SKILL.md")
     ).text();
-    // This string is from the first line of references/feature-specification.md
-    expect(content).toContain("Feature Specification");
+    expect(content).toContain("# Epic");
     expect(content).toContain("Acceptance Criteria");
   });
 
@@ -135,7 +134,7 @@ describe("skill content", () => {
     ).text();
     expect(content).toContain("Confidence Chain");
     expect(content).toContain("Context Isolation");
-    expect(content).toContain("Writing Style");
+    expect(content).toContain("Plain Description");
   });
 
   test("tech-design contains testing reference", async () => {
@@ -161,14 +160,14 @@ describe("skill content", () => {
 
 describe("standalone output", () => {
   const expectedMdFiles = [
-    "feature-specification-skill.md",
+    "epic-skill.md",
     "technical-design-skill.md",
     "story-sharding-skill.md",
     "implementation-skill.md",
   ];
 
   const expectedSkillFiles = [
-    "feature-specification.skill",
+    "epic.skill",
     "technical-design.skill",
     "story-sharding.skill",
     "implementation.skill",

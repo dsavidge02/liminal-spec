@@ -87,7 +87,7 @@ After completing each phase, summarize:
 
 ## The Prompt Pack is Your World
 
-You may see references to tech design, feature spec, etc. These are for human traceability.
+You may see references to tech design, epic, etc. These are for human traceability.
 
 For your execution: **the prompt pack is self-contained**. The Orchestrator inlined everything you need. Trust the prompt.
 
@@ -230,7 +230,14 @@ mockLocationApi.getAll.mockRejectedValue(new Error('Network error'));
 - [ ] Tests assert behavior (not error throwing)
 - [ ] Tests ERROR when run (stubs throw)
 - [ ] Previous phase tests still PASS
-- [ ] TypeScript compiles
+- [ ] Full lint/format/typecheck pipeline passes (everything except tests)
+- [ ] **Commit checkpoint created** before proceeding to Green
+
+The Red exit gate must run the full quality pipeline minus tests. Tests are expected to fail (stubs throw), but all other quality checks — formatting, linting, type checking — must pass. If the project defines a `red-verify` script (or equivalent), use it. Otherwise run format check, lint, and typecheck individually.
+
+**Why this matters:** If Red produces lint-dirty code, Green implements against it. When lint failures surface later, fixing them risks destroying working Green implementation. Catch it at Red.
+
+**Commit boundary:** Create a commit at Red completion before entering Green. This preserves a clean audit trail (requirement → red tests → implementation) and provides a rollback point if Green goes sideways. The commit includes failing tests and any skeleton scaffolding.
 
 ---
 
@@ -247,12 +254,24 @@ Start with leaf dependencies, move up:
 
 This lets you test each layer as you build.
 
+### Red Test Immutability
+
+**Red tests are the behavioral contract for Green. Do not modify test files during Green.**
+
+Green implementation must satisfy the tests as written in Red. If a test file is modified during Green, that's a signal something is wrong — either the Red tests were incorrect (fix in a separate cycle, not silently during Green) or the implementation is gaming the tests rather than satisfying intent.
+
+If test files genuinely need editing during Green (e.g., environment setup fixes, not assertion changes), the change must be explicitly reviewed during verification. The verifier checks git history on affected test files to confirm the changes preserved AC/TC intent rather than weakening checks.
+
 ### Exit Criteria
 
 - [ ] All tests PASS
 - [ ] No NotImplementedError remaining in implemented code
 - [ ] Implementation matches tech design interfaces
 - [ ] No over-engineering beyond what tests require
+- [ ] No test files modified (or modifications explicitly justified and reviewed)
+- [ ] Full verification pipeline passes, including test immutability check
+
+If the project defines a `green-verify` script (or equivalent) that runs the standard verification pipeline plus a test-immutability guard, use it. Otherwise run verification and manually confirm no test files changed via `git diff --name-only`.
 
 ---
 
@@ -300,10 +319,13 @@ TDD ensures correctness against specified behavior. But:
 
 ### Commands
 
+Run the project's `verify` or `verify-all` script. If the project doesn't define these, run the components individually:
+
 ```bash
-npm test                    # All tests pass
-npm run typecheck          # No type errors
+npm run format:check       # Formatting correct
 npm run lint               # No lint errors
+npm run typecheck          # No type errors
+npm test                   # All tests pass
 ```
 
 ### Checklist Template
@@ -412,7 +434,7 @@ You are validating Story N for execution readiness.
 - docs/stories/story-N-{name}/prompt-N.2-green.md
 - docs/stories/story-N-{name}/prompt-N.R-verify.md
 - docs/tech-design.md (relevant sections)
-- docs/feature-spec.md (relevant ACs)
+- docs/epic.md (relevant ACs)
 
 **Validate:**
 1. Story structure (prerequisites, ACs, files, test counts)
@@ -501,24 +523,30 @@ Launch Senior Engineer with both prompts sequentially:
 
 1. **Skeleton + Red** — Creates stubs and tests
    - Expected: Tests ERROR (stubs throw NotImplementedError)
+   - Run `red-verify` (or equivalent) — format, lint, typecheck must pass
+   - Commit checkpoint before proceeding to Green
 
 2. **Green** — Implements to pass tests
-   - Expected: All tests PASS
-
-3. **Quality gates** — Run after green:
-   ```bash
-   npm run typecheck
-   npm run lint
-   npm test
-   ```
+   - Expected: All tests PASS, no test files modified
+   - Run `green-verify` (or equivalent) — full verify + test immutability check
 
 ### Self-Review
 
-Have the same SE session review their own implementation:
-- Check against prompt requirements
-- Verify all files created
-- Confirm quality gates pass
-- Note any deviations or discoveries
+After each major phase (Red complete, Green complete), the implementing agent reviews its own work in the same session. The self-review prompt should trust the model's project knowledge rather than enumerating specific checks:
+
+```
+You just completed the [phase name] phase. Now do a thorough critical
+review of your own implementation.
+
+If you find issues and the fix is not controversial or requiring a
+judgment call, fix them. Then report back: what issues you encountered,
+what you fixed, and any issues you encountered but didn't fix and why.
+
+Do a thorough assessment for readiness to move to the next phase.
+Final verdict: READY or NOT READY for [next phase].
+```
+
+High-reasoning models already know the project standards. The prompt tells them to go deep and be critical — it doesn't need to enumerate what "deep" means.
 
 ### Gorilla Testing (Human)
 
@@ -555,6 +583,13 @@ Report: PASS or FAIL with TC-by-TC status.
 - TC-by-TC verification against spec
 - Edge cases and invariants
 - Implementation correctness
+- Test integrity — if any test files were modified during Green, review git history on those files to confirm changes preserved AC/TC intent rather than weakening checks
+
+### Required Verifier Permissions
+
+Verifiers need git access to check test integrity:
+- `git log`, `git show`, `git diff` on test file paths
+- If git access is unavailable, the verifier must state this in the report and flag test-integrity checks as incomplete rather than silently skipping them
 
 ### Handling Verification Failures
 
@@ -718,9 +753,12 @@ Problems:
 ### Implementation
 - [ ] Skeleton + Red executed
 - [ ] Tests ERROR as expected
+- [ ] `red-verify` passes (format + lint + typecheck)
+- [ ] Red commit checkpoint created
 - [ ] Green executed
 - [ ] Tests PASS
-- [ ] Quality gates pass
+- [ ] No test files modified (or modifications justified)
+- [ ] `green-verify` passes
 - [ ] Self-review done
 
 ### Verification

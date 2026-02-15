@@ -21,7 +21,7 @@ AI agents have fundamental limitations:
 ```
 Agent 1 (planning context)
     │
-    └── Produces artifact (Feature Spec)
+    └── Produces artifact (Epic)
               │
               ▼
 Agent 2 (fresh context)
@@ -54,8 +54,8 @@ Each phase expands the prior artifact:
 
 | Input | Output | Ratio |
 |-------|--------|-------|
-| Requirements | Feature Spec | ~6x |
-| Feature Spec | Tech Design | ~6-7x |
+| Requirements | Epic | ~6x |
+| Epic | Tech Design | ~6-7x |
 | Tech Design chunk | Story + Prompts (500 lines) | varies |
 
 A single context trying to hold requirements + spec + design + implementation = bloat. Separate contexts give each phase room to breathe.
@@ -98,7 +98,7 @@ When an agent session ends (compaction, crash, human break), state files enable 
 
 ```
 .sdd/state.json        # Project state
-.sdd/feature-spec-state.md   # Feature spec session state
+.sdd/epic-state.md   # Feature spec session state
 .sdd/tech-design-state.md    # Tech design session state
 ```
 
@@ -108,7 +108,7 @@ The next agent (or resumed agent) reads state, loads relevant artifacts, continu
 
 ### Long Session with Checkpoints
 
-For planning phases (Feature Spec, Tech Design), use checkpoints:
+For planning phases (Epic, Tech Design), use checkpoints:
 
 ```
 Start Session
