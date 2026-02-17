@@ -2,11 +2,11 @@
 
 ## What This Is
 
-A spec-driven development methodology packaged as a **Claude Code plugin**. The plugin contains 4 self-contained skills (one per methodology phase), a router command, and a senior-engineer agent.
+A spec-driven development methodology packaged as a **Claude Code plugin**. The plugin contains 5 self-contained skills (one per methodology phase), a router command, and a senior-engineer agent.
 
 This is NOT a library or npm package. The build output is markdown files organized into a Claude Code plugin structure. There are three distribution channels:
 
-**Plugin** (`dist/plugin/`) — For Claude Code users (developers, senior engineers). They install via marketplace and get slash commands (`/liminal-spec`, `/liminal-spec:epic`, etc.). The plugin bundles skills + agents + commands + marketplace metadata per the [Claude Code plugin spec](https://code.claude.com/docs/en/plugins).
+**Plugin** (`dist/plugin/`) — For Claude Code users (developers, senior engineers). They install via marketplace and get slash commands (`/liminal-spec`, `/ls-epic`, etc.). The plugin bundles skills + agents + commands + marketplace metadata per the [Claude Code plugin spec](https://code.claude.com/docs/en/plugins).
 
 **Marketplace install source** (`plugins/liminal-spec/`) — Committed, installable plugin layout used by `/plugin install ...@liminal-plugins`. This directory is generated from `dist/plugin/` by the build.
 
@@ -21,10 +21,11 @@ Both outputs are composed from the same source files. The build handles the pack
   plugin.json              — Plugin metadata (name, version, author)
   marketplace.json         — Marketplace catalog for /plugin marketplace add
 skills/
-  epic/SKILL.md            — /liminal-spec:epic (Phase 2: Epic)
-  tech-design/SKILL.md     — /liminal-spec:tech-design (Phase 3)
-  story/SKILL.md           — /liminal-spec:story (Phase 4: Story Sharding)
-  impl/SKILL.md            — /liminal-spec:impl (Phase 5: Execution)
+  ls-research/SKILL.md     — /ls-research (Phase 1: Product Research, optional)
+  ls-epic/SKILL.md         — /ls-epic (Phase 2: Epic)
+  ls-tech-design/SKILL.md  — /ls-tech-design (Phase 3)
+  ls-story/SKILL.md        — /ls-story (Phase 4: Story Sharding)
+  ls-impl/SKILL.md         — /ls-impl (Phase 5: Execution)
 commands/
   liminal-spec.md          — /liminal-spec (router: presents phase menu, invokes skill)
 agents/
@@ -41,7 +42,7 @@ Source-based skill with build composition. Edit in `src/`, never in `dist/`.
 
 ```
 src/
-  phases/          — Phase-specific content (one per skill: epic, tech-design, story, impl)
+  phases/          — Phase-specific content (one per skill: research, epic, tech-design, story, impl)
   shared/          — Cross-cutting concepts inlined into multiple skills by the build
   templates/       — Artifact templates (tech design, epic)
   examples/        — Verification prompt templates
@@ -65,6 +66,7 @@ bun run build       # Compose source into dist/
 bun run validate    # Validate dist/ output
 bun run check       # Build + validate
 bun test            # Run integration tests
+bun run verify      # Build + validate + tests
 ```
 
 ### How the Build Works
@@ -81,14 +83,15 @@ The build also copies agents, commands, generates plugin.json + marketplace.json
 |---------|--------|---------|
 | `/liminal-spec` | `src/commands/liminal-spec.md` | Presents phase menu, invokes the appropriate skill |
 
-**Skills** (4 self-contained phase skills):
+**Skills** (5 self-contained phase skills):
 
 | Skill | Phase | Primary source | Shared dependencies |
 |-------|-------|----------------|---------------------|
-| `/liminal-spec:epic` | 2 | `src/phases/epic.md` | confidence-chain, context-isolation, writing-style |
-| `/liminal-spec:tech-design` | 3 | `src/phases/tech-design.md` | confidence-chain, verification-model, writing-style, testing |
-| `/liminal-spec:story` | 4 | `src/phases/story.md` | confidence-chain, model-selection, prompting-opus-4.6 |
-| `/liminal-spec:impl` | 5 | `src/phases/impl.md` | confidence-chain, model-selection, verification-model, prompting-gpt-5x, prompting-opus-4.6 |
+| `/ls-research` | 1 | `src/phases/research.md` | context-isolation, state-management, terminology |
+| `/ls-epic` | 2 | `src/phases/epic.md` | confidence-chain, context-isolation, writing-style |
+| `/ls-tech-design` | 3 | `src/phases/tech-design.md` | confidence-chain, verification-model, writing-style, testing |
+| `/ls-story` | 4 | `src/phases/story.md` | confidence-chain, model-selection, prompting-opus-4.6 |
+| `/ls-impl` | 5 | `src/phases/impl.md` | confidence-chain, model-selection, verification-model, prompting-gpt-5x, prompting-opus-4.6 |
 
 **Agent:**
 
@@ -132,11 +135,11 @@ Some content (like the epic template) is already embedded in the phase file rath
 claude --plugin-dir ./dist/plugin
 ```
 
-This loads the plugin from the build output. Test the router (`/liminal-spec`) and individual skills (`/liminal-spec:epic`, etc.).
+This loads the plugin from the build output. Test the router (`/liminal-spec`) and individual skills (`/ls-epic`, etc.).
 
 ### About `docs/`
 
-The `docs/` directory holds reference material not yet incorporated into the build pipeline. Currently contains `product-research.md` (Phase 1 content, deferred). When Phase 1 is added as a skill, this content would move to `src/phases/` and be added to the manifest. Do not add docs/ content to the build without explicit approval.
+The `docs/` directory holds long-form reference material that may or may not be composed into builds. `product-research.md` is reference context; active Phase 1 skill content lives in `src/phases/research.md`.
 
 ### Adding a new skill
 

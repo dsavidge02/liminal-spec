@@ -1,5 +1,5 @@
 ---
-name: epic
+name: ls-epic
 description: Write complete, traceable Epics using Liminal Spec methodology. Covers User Profile, Flows, Acceptance Criteria, Test Conditions, Data Contracts, and Story Breakdown.
 ---
 

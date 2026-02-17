@@ -16,10 +16,10 @@ Restructured from a single progressive-disclosure skill into a composable plugin
 | Skill | Phase | Content |
 |-------|-------|---------|
 | `/liminal-spec` | Router | Presents phase menu, routes to appropriate skill |
-| `/liminal-spec:epic` | 2 | Feature Specification |
-| `/liminal-spec:tech-design` | 3 | Tech Design |
-| `/liminal-spec:story` | 4 | Story Sharding + Prompt Drafting |
-| `/liminal-spec:impl` | 5 | Execution + Phase Execution + Orchestration |
+| `/ls-epic` | 2 | Feature Specification |
+| `/ls-tech-design` | 3 | Tech Design |
+| `/ls-story` | 4 | Story Sharding + Prompt Drafting |
+| `/ls-impl` | 5 | Execution + Phase Execution + Orchestration |
 
 ### Build & CI
 
@@ -35,9 +35,9 @@ Restructured from a single progressive-disclosure skill into a composable plugin
 - deploy.sh (replaced by CI/CD)
 - V2-ROADMAP.md (completed)
 
-### Deferred
+### Phase 1 Status
 
-- Phase 1 (Product Research) — preserved in `docs/product-research.md` for future re-incorporation
+- Phase 1 (Product Research) is available as `/ls-research`
 
 ---
 

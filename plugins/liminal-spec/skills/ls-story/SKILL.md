@@ -1,5 +1,5 @@
 ---
-name: story
+name: ls-story
 description: Break a feature into executable stories and generate self-contained prompt packs for implementation. Validates the Tech Design as downstream consumer.
 ---
 

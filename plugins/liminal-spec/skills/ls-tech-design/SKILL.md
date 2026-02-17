@@ -1,5 +1,5 @@
 ---
-name: tech-design
+name: ls-tech-design
 description: Transform a Feature Spec into implementable Tech Design with architecture, interfaces, and test mapping. Validates the spec as downstream consumer.
 ---
 

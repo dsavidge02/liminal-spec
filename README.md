@@ -16,12 +16,13 @@ Not for: quick bug fixes, single-file changes, spikes, or emergency patches. Lim
 
 | Phase | In | Out |
 |-------|-----|------|
-| 2. Feature Specification | Requirements | Feature Spec |
+| 1. Product Research (optional) | Vision/idea | PRD |
+| 2. Feature Specification | PRD or requirements | Feature Spec |
 | 3. Tech Design | Feature Spec | Tech Design |
 | 4. Story Sharding | Spec + Design | Stories + Prompt Packs |
 | 5. Execution | Prompts | Verified code |
 
-Most work starts at Phase 2 — if you know what you're building, start there. Phase 1 (Product Research) is planned but not yet included.
+Most work starts at Phase 2 - if you know what you're building, start there.
 
 Within Phase 5, each story follows: **Skeleton → TDD Red → TDD Green → Gorilla Test → Verify**.
 
@@ -52,10 +53,11 @@ This gives you:
 | Command | What it does |
 |---------|-------------|
 | `/liminal-spec` | Router — presents the phase menu, routes to the right skill |
-| `/liminal-spec:epic` | Phase 2 — write a Feature Specification |
-| `/liminal-spec:tech-design` | Phase 3 — create a Tech Design from a Feature Spec |
-| `/liminal-spec:story` | Phase 4 — shard into stories and generate prompt packs |
-| `/liminal-spec:impl` | Phase 5 — execute stories with TDD and verification |
+| `/ls-research` | Phase 1 (optional) — product research and PRD drafting |
+| `/ls-epic` | Phase 2 — write a Feature Specification |
+| `/ls-tech-design` | Phase 3 — create a Tech Design from a Feature Spec |
+| `/ls-story` | Phase 4 — shard into stories and generate prompt packs |
+| `/ls-impl` | Phase 5 — execute stories with TDD and verification |
 
 The plugin also includes a **senior-engineer agent** for TDD implementation — rigorous TypeScript development with quality gates (format, lint, typecheck, test).
 
@@ -67,6 +69,7 @@ Download standalone files from [GitHub Releases](https://github.com/liminal-ai/l
 
 | File | For | Use when |
 |------|-----|----------|
+| `product-research-skill.md` | PO, PM, BA | Exploring direction and drafting a PRD |
 | `epic-skill.md` | BA, PO | Writing feature specifications |
 | `technical-design-skill.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
 | `story-sharding-skill.md` | Tech Lead, Engineers | Breaking features into stories and prompts |
@@ -89,6 +92,7 @@ bun install
 bun run build       # Compose source into dist/
 bun run validate    # Validate output
 bun test            # Run tests
+bun run verify      # Build + validate + test
 bun run check       # Build + validate
 ```
 

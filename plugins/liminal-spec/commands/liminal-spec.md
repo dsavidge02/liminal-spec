@@ -6,39 +6,48 @@ description: |
   integrations, or multi-agent coordination.
 ---
 
+<!-- ON LOAD: Present the following to the user exactly when this command is invoked, then wait for their response. -->
+
 # Liminal Spec
 
-A spec-driven development system for features with detailed requirements and complex integrations. Each phase produces an artifact the next phase reads cold — no accumulated context, no negotiation baggage.
+A spec-driven development system for features with detailed requirements and complex integrations. Runs a rigorous, phased approach from product direction through implementation, where each phase produces an artifact the next phase reads cold.
 
-## Phases
+The traceability chain (requirement -> test condition -> test -> code) means that when tests go green, confidence is high that implementation actually matches intent.
 
-| Phase | Skill | Start Here If... |
-|-------|-------|-------------------|
-| **2. Epic** | `/liminal-spec:epic` | **Most common.** You know what you want to build |
-| **3. Tech Design** | `/liminal-spec:tech-design` | You have a complete spec ready for architecture |
-| **4. Story Sharding** | `/liminal-spec:story` | Design is done, ready to break into executable work |
-| **5. Execution** | `/liminal-spec:impl` | Stories are sharded, ready to implement |
+## The Phases
+
+| Phase | Skill | Entry | Exit | Start Here If... |
+|-------|-------|-------|------|------------------|
+| **1. Product Research** | `/ls-research` | Vision, idea | PRD | You need to explore direction before defining a feature |
+| **2. Epic** | `/ls-epic` | PRD or direct need | Epic | **Most common entry point.** You know what you want to build |
+| **3. Tech Design** | `/ls-tech-design` | Epic | Tech Design | You have a complete epic ready for architecture |
+| **4. Story Sharding** | `/ls-story` | Epic + Tech Design | Stories + Prompt Packs | Design is done, ready to break into executable work |
+| **5. Execution** | `/ls-impl` | Stories + Prompts | Verified code | Stories are sharded, ready to implement |
+
+Most work starts at **Phase 2**. Tell me what you are building and which phase you are starting from.
 
 ## When to Use
 
-- New features with multiple components or integration points
-- Complex business logic where requirements need precision
-- Multi-agent builds where context isolation matters
+- New features with multiple components or integration points.
+- Complex business logic where requirements need precision.
+- Multi-agent builds where context isolation matters.
 
-Not for: quick bug fixes, single-file changes, spikes, or emergency patches.
+Not for quick bug fixes, single-file tweaks, spikes, or emergency patches.
 
 ## How It Works
 
-Tell me what you want to build and which phase you're starting from. I'll activate the appropriate skill.
+Tell me what you want to build and where you are in the process. I will route to the correct phase skill.
 
 Based on the user's response, invoke the appropriate skill:
-- Phase 2 (Epic) → use Skill tool: "liminal-spec:epic"
-- Phase 3 (Tech Design) → use Skill tool: "liminal-spec:tech-design"
-- Phase 4 (Story Sharding) → use Skill tool: "liminal-spec:story"
-- Phase 5 (Execution) → use Skill tool: "liminal-spec:impl"
+- Phase 1 (Product Research) -> use Skill tool: "liminal-spec:ls-research"
+- Phase 2 (Epic) -> use Skill tool: "liminal-spec:ls-epic"
+- Phase 3 (Tech Design) -> use Skill tool: "liminal-spec:ls-tech-design"
+- Phase 4 (Story Sharding) -> use Skill tool: "liminal-spec:ls-story"
+- Phase 5 (Execution) -> use Skill tool: "liminal-spec:ls-impl"
 
-If the user is unclear about which phase, ask clarifying questions:
-- Do they have requirements/a product brief? → Phase 2
-- Do they have a complete epic? → Phase 3
-- Do they have a spec + tech design? → Phase 4
-- Do they have stories + prompt packs? → Phase 5
+If the user is unclear about phase:
+- Need product exploration or stakeholder alignment first? -> Phase 1
+- Have feature requirements but need a complete implementation-ready spec? -> Phase 2
+- Have a complete epic and need architecture/interfaces? -> Phase 3
+- Have epic + design and need executable stories/prompts? -> Phase 4
+- Have stories/prompts and need implementation + verification? -> Phase 5

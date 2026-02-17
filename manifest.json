@@ -1,8 +1,20 @@
 {
   "version": "0.2.2",
   "skills": {
-    "epic": {
-      "name": "epic",
+    "ls-research": {
+      "name": "ls-research",
+      "description": "Explore product direction and produce a PRD before feature scoping. Use when requirements are unclear, scope spans multiple features, or stakeholder alignment is needed.",
+      "phases": [
+        "research"
+      ],
+      "shared": [
+        "context-isolation",
+        "state-management",
+        "terminology"
+      ]
+    },
+    "ls-epic": {
+      "name": "ls-epic",
       "description": "Write complete, traceable Epics using Liminal Spec methodology. Covers User Profile, Flows, Acceptance Criteria, Test Conditions, Data Contracts, and Story Breakdown.",
       "phases": [
         "epic"
@@ -16,8 +28,8 @@
         "feature-verification-prompt"
       ]
     },
-    "tech-design": {
-      "name": "tech-design",
+    "ls-tech-design": {
+      "name": "ls-tech-design",
       "description": "Transform a Feature Spec into implementable Tech Design with architecture, interfaces, and test mapping. Validates the spec as downstream consumer.",
       "phases": [
         "tech-design"
@@ -35,8 +47,8 @@
         "tech-design-verification-prompt"
       ]
     },
-    "story": {
-      "name": "story",
+    "ls-story": {
+      "name": "ls-story",
       "description": "Break a feature into executable stories and generate self-contained prompt packs for implementation. Validates the Tech Design as downstream consumer.",
       "phases": [
         "story"
@@ -47,8 +59,8 @@
         "prompting-opus-4.6"
       ]
     },
-    "impl": {
-      "name": "impl",
+    "ls-impl": {
+      "name": "ls-impl",
       "description": "Execute stories using TDD cycle (Skeleton, Red, Green, Gorilla, Verify) with multi-agent verification. Covers implementation, phase execution, and orchestration.",
       "phases": [
         "impl"

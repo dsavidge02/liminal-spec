@@ -8,6 +8,7 @@
     "build": "bun run scripts/build.ts",
     "validate": "bun run scripts/validate.ts",
     "check": "bun run build && bun run validate",
+    "verify": "bun run build && bun run validate && bun test",
     "clean": "rm -rf dist",
     "prebuild": "bun run clean",
     "test": "bun test"

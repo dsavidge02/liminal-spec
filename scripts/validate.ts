@@ -7,10 +7,14 @@
  *   - Agent files exist and have frontmatter with name
  *   - Standalone files exist and lack frontmatter
  *   - manifest.json conforms to Zod schema
+ *
+ * Optional environment variables:
+ *   DIST_DIR                    -- output root directory to validate (default: dist)
+ *   VALIDATE_MARKETPLACE_SOURCE -- set to "0" to skip marketplace source checks
  */
 
 import { stat } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { isAbsolute, join, resolve } from "node:path";
 import { z } from "zod";
 import { Glob } from "bun";
 
@@ -75,11 +79,14 @@ function parseFrontmatter(raw: string): ParsedFrontmatter {
 // ---------------------------------------------------------------------------
 
 const ROOT = resolve(import.meta.dir, "..");
-const DIST = join(ROOT, "dist");
+const DIST_DIR = process.env.DIST_DIR?.trim() || "dist";
+const DIST = isAbsolute(DIST_DIR) ? DIST_DIR : join(ROOT, DIST_DIR);
 const DIST_PLUGIN = join(DIST, "plugin");
 const DIST_STANDALONE = join(DIST, "standalone");
 const MARKETPLACE_MANIFEST = join(ROOT, ".claude-plugin", "marketplace.json");
 const EXPECTED_MARKETPLACE_SOURCE = "./plugins/liminal-spec";
+const VALIDATE_MARKETPLACE_SOURCE =
+  process.env.VALIDATE_MARKETPLACE_SOURCE !== "0";
 
 // ---------------------------------------------------------------------------
 // Zod schema for manifest.json
@@ -442,7 +449,7 @@ async function validateMarketplaceSourceLayout(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function validate(): Promise<void> {
-  console.log("Validating dist/ output...\n");
+  console.log(`Validating output at: ${DIST}\n`);
 
   console.log("Metadata:");
   await validatePluginJson();
@@ -460,8 +467,13 @@ async function validate(): Promise<void> {
   console.log("\nManifest:");
   await validateManifest();
 
-  console.log("\nMarketplace Source:");
-  await validateMarketplaceSourceLayout();
+  if (VALIDATE_MARKETPLACE_SOURCE) {
+    console.log("\nMarketplace Source:");
+    await validateMarketplaceSourceLayout();
+  } else {
+    console.log("\nMarketplace Source:");
+    console.log("  skipped (VALIDATE_MARKETPLACE_SOURCE=0)");
+  }
 
   // Summary
   console.log("\n---");

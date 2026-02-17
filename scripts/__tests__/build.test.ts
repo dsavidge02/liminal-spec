@@ -10,22 +10,38 @@ import { rm } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dir, "../..");
-const DIST = join(ROOT, "dist");
+const TEST_ROOT_REL = ".test-tmp/build-script";
+const TEST_DIST_REL = `${TEST_ROOT_REL}/dist`;
+const TEST_MARKETPLACE_REL = `${TEST_ROOT_REL}/marketplace`;
+const TEST_ROOT = join(ROOT, TEST_ROOT_REL);
+const DIST = join(ROOT, TEST_DIST_REL);
 const DIST_PLUGIN = join(DIST, "plugin");
 const DIST_STANDALONE = join(DIST, "standalone");
-const MARKETPLACE_PLUGIN = join(ROOT, "plugins", "liminal-spec");
+const MARKETPLACE_PLUGIN = join(ROOT, TEST_MARKETPLACE_REL);
 
 // Run the build once before all tests
 let buildExitCode = -1;
 let buildOutput = "";
+let expectedVersion = "";
 
 beforeAll(async () => {
-  await rm(DIST, { recursive: true, force: true });
+  await rm(TEST_ROOT, { recursive: true, force: true });
+
+  const manifest = (await Bun.file(join(ROOT, "manifest.json")).json()) as {
+    version: string;
+  };
+  expectedVersion = manifest.version;
 
   const proc = Bun.spawn(["bun", "run", "scripts/build.ts"], {
     cwd: ROOT,
     stdout: "pipe",
     stderr: "pipe",
+    env: {
+      ...process.env,
+      DIST_DIR: TEST_DIST_REL,
+      MARKETPLACE_DIR: TEST_MARKETPLACE_REL,
+      SYNC_MARKETPLACE: "1",
+    },
   });
 
   const stdout = await new Response(proc.stdout).text();
@@ -35,7 +51,7 @@ beforeAll(async () => {
 }, 30_000);
 
 afterAll(async () => {
-  await rm(DIST, { recursive: true, force: true });
+  await rm(TEST_ROOT, { recursive: true, force: true });
 });
 
 // -------------------------------------------------------------------------
@@ -48,10 +64,11 @@ describe("build script", () => {
   });
 
   test("prints build summary with all skills", () => {
-    expect(buildOutput).toContain("skill: epic");
-    expect(buildOutput).toContain("skill: tech-design");
-    expect(buildOutput).toContain("skill: story");
-    expect(buildOutput).toContain("skill: impl");
+    expect(buildOutput).toContain("skill: ls-research");
+    expect(buildOutput).toContain("skill: ls-epic");
+    expect(buildOutput).toContain("skill: ls-tech-design");
+    expect(buildOutput).toContain("skill: ls-story");
+    expect(buildOutput).toContain("skill: ls-impl");
   });
 
   test("prints agent and command in summary", () => {
@@ -65,7 +82,13 @@ describe("build script", () => {
 // -------------------------------------------------------------------------
 
 describe("plugin output", () => {
-  const expectedSkills = ["epic", "tech-design", "story", "impl"];
+  const expectedSkills = [
+    "ls-research",
+    "ls-epic",
+    "ls-tech-design",
+    "ls-story",
+    "ls-impl",
+  ];
 
   for (const skill of expectedSkills) {
     test(`creates skills/${skill}/SKILL.md`, async () => {
@@ -95,7 +118,7 @@ describe("plugin output", () => {
       join(DIST_PLUGIN, ".claude-plugin", "plugin.json")
     ).json();
     expect(data.name).toBe("liminal-spec");
-    expect(data.version).toBe("0.2.2");
+    expect(data.version).toBe(expectedVersion);
   });
 
   test("creates marketplace.json with required fields", async () => {
@@ -113,7 +136,7 @@ describe("plugin output", () => {
 // -------------------------------------------------------------------------
 
 describe("marketplace install source", () => {
-  test("creates plugins/liminal-spec/.claude-plugin/plugin.json", async () => {
+  test("creates marketplace source plugin.json", async () => {
     const exists = await Bun.file(
       join(MARKETPLACE_PLUGIN, ".claude-plugin", "plugin.json")
     ).exists();
@@ -122,7 +145,8 @@ describe("marketplace install source", () => {
 
   test("includes skill + command + agent directories", async () => {
     const expectedPaths = [
-      join(MARKETPLACE_PLUGIN, "skills", "epic", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "skills", "ls-research", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "skills", "ls-epic", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "commands", "liminal-spec.md"),
       join(MARKETPLACE_PLUGIN, "agents", "senior-engineer.md"),
     ];
@@ -132,7 +156,7 @@ describe("marketplace install source", () => {
     }
   });
 
-  test("does not include marketplace.json in plugin install source", async () => {
+  test("does not include marketplace.json in marketplace plugin source", async () => {
     const exists = await Bun.file(
       join(MARKETPLACE_PLUGIN, ".claude-plugin", "marketplace.json")
     ).exists();
@@ -147,15 +171,15 @@ describe("marketplace install source", () => {
 describe("skill content", () => {
   test("epic has correct frontmatter", async () => {
     const content = await Bun.file(
-      join(DIST_PLUGIN, "skills", "epic", "SKILL.md")
+      join(DIST_PLUGIN, "skills", "ls-epic", "SKILL.md")
     ).text();
-    expect(content).toContain("name: epic");
+    expect(content).toContain("name: ls-epic");
     expect(content).toContain("description:");
   });
 
   test("epic contains phase content", async () => {
     const content = await Bun.file(
-      join(DIST_PLUGIN, "skills", "epic", "SKILL.md")
+      join(DIST_PLUGIN, "skills", "ls-epic", "SKILL.md")
     ).text();
     expect(content).toContain("# Epic");
     expect(content).toContain("Acceptance Criteria");
@@ -163,7 +187,7 @@ describe("skill content", () => {
 
   test("epic contains inlined shared content", async () => {
     const content = await Bun.file(
-      join(DIST_PLUGIN, "skills", "epic", "SKILL.md")
+      join(DIST_PLUGIN, "skills", "ls-epic", "SKILL.md")
     ).text();
     expect(content).toContain("Confidence Chain");
     expect(content).toContain("Context Isolation");
@@ -172,7 +196,7 @@ describe("skill content", () => {
 
   test("tech-design contains testing reference", async () => {
     const content = await Bun.file(
-      join(DIST_PLUGIN, "skills", "tech-design", "SKILL.md")
+      join(DIST_PLUGIN, "skills", "ls-tech-design", "SKILL.md")
     ).text();
     expect(content).toContain("Service Mocks");
     expect(content).toContain("Mock Strategy");
@@ -180,7 +204,7 @@ describe("skill content", () => {
 
   test("impl contains execution orchestration content", async () => {
     const content = await Bun.file(
-      join(DIST_PLUGIN, "skills", "impl", "SKILL.md")
+      join(DIST_PLUGIN, "skills", "ls-impl", "SKILL.md")
     ).text();
     expect(content).toContain("Dual-Validator Pattern");
     expect(content).toContain("The Execution Cycle");
@@ -193,6 +217,7 @@ describe("skill content", () => {
 
 describe("standalone output", () => {
   const expectedMdFiles = [
+    "product-research-skill.md",
     "epic-skill.md",
     "technical-design-skill.md",
     "story-sharding-skill.md",
@@ -200,6 +225,7 @@ describe("standalone output", () => {
   ];
 
   const expectedSkillFiles = [
+    "product-research.skill",
     "epic.skill",
     "technical-design.skill",
     "story-sharding.skill",
@@ -249,6 +275,7 @@ describe("standalone output", () => {
 describe("source file safety", () => {
   test("src/ files still exist after build", async () => {
     const criticalFiles = [
+      "src/phases/research.md",
       "src/phases/epic.md",
       "src/phases/tech-design.md",
       "src/phases/story.md",

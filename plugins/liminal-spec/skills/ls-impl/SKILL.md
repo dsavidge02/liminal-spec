@@ -1,5 +1,5 @@
 ---
-name: impl
+name: ls-impl
 description: Execute stories using TDD cycle (Skeleton, Red, Green, Gorilla, Verify) with multi-agent verification. Covers implementation, phase execution, and orchestration.
 ---
 

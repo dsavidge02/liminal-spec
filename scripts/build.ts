@@ -12,10 +12,15 @@
  *   dist/plugin/.claude-plugin/marketplace.json
  *   dist/standalone/liminal-{name}.md    -- Frontmatter-stripped skills
  *   plugins/liminal-spec/**               -- Marketplace-installable plugin layout
+ *
+ * Optional environment variables:
+ *   DIST_DIR           -- output root directory (default: dist)
+ *   MARKETPLACE_DIR    -- marketplace plugin output dir (default: plugins/liminal-spec)
+ *   SYNC_MARKETPLACE   -- set to "0" to skip marketplace sync
  */
 
 import { cp, mkdir, rm } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -49,18 +54,25 @@ interface BuildSummary {
 
 const ROOT = resolve(import.meta.dir, "..");
 const SRC = join(ROOT, "src");
-const DIST = join(ROOT, "dist");
+const DIST_DIR = process.env.DIST_DIR?.trim() || "dist";
+const DIST = isAbsolute(DIST_DIR) ? DIST_DIR : join(ROOT, DIST_DIR);
 const DIST_PLUGIN = join(DIST, "plugin");
 const DIST_STANDALONE = join(DIST, "standalone");
 const SKILL_STAGING = join(DIST_STANDALONE, ".skill-staging");
-const MARKETPLACE_PLUGIN_DIR = join(ROOT, "plugins", "liminal-spec");
+const MARKETPLACE_DIR =
+  process.env.MARKETPLACE_DIR?.trim() || "plugins/liminal-spec";
+const MARKETPLACE_PLUGIN_DIR = isAbsolute(MARKETPLACE_DIR)
+  ? MARKETPLACE_DIR
+  : join(ROOT, MARKETPLACE_DIR);
+const SYNC_MARKETPLACE = process.env.SYNC_MARKETPLACE !== "0";
 
 /** Maps internal skill keys to descriptive filenames for standalone release artifacts. */
 const STANDALONE_NAMES: Record<string, string> = {
-  epic: "epic",
-  "tech-design": "technical-design",
-  story: "story-sharding",
-  impl: "implementation",
+  "ls-research": "product-research",
+  "ls-epic": "epic",
+  "ls-tech-design": "technical-design",
+  "ls-story": "story-sharding",
+  "ls-impl": "implementation",
 };
 
 // ---------------------------------------------------------------------------
@@ -293,15 +305,19 @@ async function build(): Promise<void> {
 
   // ----- Marketplace install source -----
   // Keep a committed plugin directory so marketplace installs resolve to a
-  // ready-to-install plugin layout.
-  await rm(MARKETPLACE_PLUGIN_DIR, { recursive: true, force: true });
-  await mkdir(join(ROOT, "plugins"), { recursive: true });
-  await cp(DIST_PLUGIN, MARKETPLACE_PLUGIN_DIR, { recursive: true });
-  await rm(
-    join(MARKETPLACE_PLUGIN_DIR, ".claude-plugin", "marketplace.json"),
-    { force: true }
-  );
-  console.log("  marketplace source: plugins/liminal-spec");
+  // ready-to-install plugin layout. This can be disabled in isolated tests.
+  if (SYNC_MARKETPLACE) {
+    await rm(MARKETPLACE_PLUGIN_DIR, { recursive: true, force: true });
+    await mkdir(dirname(MARKETPLACE_PLUGIN_DIR), { recursive: true });
+    await cp(DIST_PLUGIN, MARKETPLACE_PLUGIN_DIR, { recursive: true });
+    await rm(
+      join(MARKETPLACE_PLUGIN_DIR, ".claude-plugin", "marketplace.json"),
+      { force: true }
+    );
+    console.log(`  marketplace source: ${MARKETPLACE_PLUGIN_DIR}`);
+  } else {
+    console.log("  marketplace source: skipped (SYNC_MARKETPLACE=0)");
+  }
 
   // ----- Summary -----
   console.log("\nBuild complete:");
@@ -310,7 +326,11 @@ async function build(): Promise<void> {
   );
   console.log(`  ${summary.agents.length} agents copied`);
   console.log(`  1 command copied (${summary.command})`);
-  console.log("  1 marketplace source synced (plugins/liminal-spec)");
+  if (SYNC_MARKETPLACE) {
+    console.log(`  1 marketplace source synced (${MARKETPLACE_PLUGIN_DIR})`);
+  } else {
+    console.log("  marketplace sync skipped");
+  }
 }
 
 build().catch((err: unknown) => {
