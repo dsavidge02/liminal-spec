@@ -9,6 +9,7 @@
  *   - manifest.json conforms to Zod schema
  */
 
+import { stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { z } from "zod";
 import { Glob } from "bun";
@@ -77,6 +78,8 @@ const ROOT = resolve(import.meta.dir, "..");
 const DIST = join(ROOT, "dist");
 const DIST_PLUGIN = join(DIST, "plugin");
 const DIST_STANDALONE = join(DIST, "standalone");
+const MARKETPLACE_MANIFEST = join(ROOT, ".claude-plugin", "marketplace.json");
+const EXPECTED_MARKETPLACE_SOURCE = "./plugins/liminal-spec";
 
 // ---------------------------------------------------------------------------
 // Zod schema for manifest.json
@@ -129,6 +132,23 @@ const result: ValidationResult = {
 
 async function fileExists(path: string): Promise<boolean> {
   return Bun.file(path).exists();
+}
+
+async function pathExists(path: string): Promise<boolean> {
+  try {
+    await stat(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function isDirectory(path: string): Promise<boolean> {
+  try {
+    return (await stat(path)).isDirectory();
+  } catch {
+    return false;
+  }
 }
 
 async function readFile(path: string): Promise<string> {
@@ -323,6 +343,100 @@ async function validateManifest(): Promise<void> {
   console.log(`  manifest.json: valid (v${parsed.data.version})`);
 }
 
+async function validateMarketplaceSourceLayout(): Promise<void> {
+  if (!(await fileExists(MARKETPLACE_MANIFEST))) {
+    result.errors.push("Marketplace manifest missing: .claude-plugin/marketplace.json");
+    return;
+  }
+
+  const data = await Bun.file(MARKETPLACE_MANIFEST).json();
+  if (!Array.isArray(data.plugins) || data.plugins.length === 0) {
+    result.errors.push(
+      "Marketplace manifest must include at least one plugin in '.plugins'"
+    );
+    return;
+  }
+
+  const entry = data.plugins.find(
+    (plugin: unknown) =>
+      typeof plugin === "object" &&
+      plugin !== null &&
+      "name" in plugin &&
+      (plugin as Record<string, unknown>).name === "liminal-spec"
+  ) as Record<string, unknown> | undefined;
+
+  if (!entry) {
+    result.errors.push(
+      "Marketplace manifest missing required plugin entry for 'liminal-spec'"
+    );
+    return;
+  }
+
+  if (entry.source !== EXPECTED_MARKETPLACE_SOURCE) {
+    result.errors.push(
+      `Marketplace source must be '${EXPECTED_MARKETPLACE_SOURCE}' (found '${String(entry.source)}')`
+    );
+    return;
+  }
+
+  const sourcePath = join(ROOT, EXPECTED_MARKETPLACE_SOURCE.replace(/^\.\//, ""));
+  if (!(await pathExists(sourcePath))) {
+    result.errors.push(
+      `Marketplace source path does not exist: ${EXPECTED_MARKETPLACE_SOURCE}`
+    );
+    return;
+  }
+
+  if (!(await isDirectory(sourcePath))) {
+    result.errors.push(
+      `Marketplace source path is not a directory: ${EXPECTED_MARKETPLACE_SOURCE}`
+    );
+    return;
+  }
+
+  const pluginJsonPath = join(sourcePath, ".claude-plugin", "plugin.json");
+  if (!(await fileExists(pluginJsonPath))) {
+    result.errors.push(
+      "Marketplace source missing required '.claude-plugin/plugin.json'"
+    );
+    return;
+  }
+
+  const pluginJson = await Bun.file(pluginJsonPath).json();
+  if (pluginJson.name !== "liminal-spec") {
+    result.errors.push(
+      `Marketplace source plugin name must be 'liminal-spec' (found '${String(pluginJson.name)}')`
+    );
+  }
+
+  if (
+    typeof entry.version === "string" &&
+    typeof pluginJson.version === "string" &&
+    entry.version !== pluginJson.version
+  ) {
+    result.errors.push(
+      `Marketplace version mismatch: marketplace.json=${entry.version} plugin.json=${pluginJson.version}`
+    );
+  }
+
+  const extensionDirs = ["skills", "commands", "agents", "hooks", "mcp-servers"];
+  let hasExtensionDir = false;
+  for (const dir of extensionDirs) {
+    if (await isDirectory(join(sourcePath, dir))) {
+      hasExtensionDir = true;
+      break;
+    }
+  }
+  if (!hasExtensionDir) {
+    result.errors.push(
+      "Marketplace source must include at least one plugin extension directory (skills/commands/agents/hooks/mcp-servers)"
+    );
+    return;
+  }
+
+  console.log(`  marketplace source: valid (${EXPECTED_MARKETPLACE_SOURCE})`);
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -345,6 +459,9 @@ async function validate(): Promise<void> {
 
   console.log("\nManifest:");
   await validateManifest();
+
+  console.log("\nMarketplace Source:");
+  await validateMarketplaceSourceLayout();
 
   // Summary
   console.log("\n---");

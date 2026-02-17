@@ -67,10 +67,10 @@ Download standalone files from [GitHub Releases](https://github.com/liminal-ai/l
 
 | File | For | Use when |
 |------|-----|----------|
-| `liminal-epic.md` | BA, PO | Writing feature specifications |
-| `liminal-tech-design.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
-| `liminal-story.md` | Tech Lead, Engineers | Breaking features into stories and prompts |
-| `liminal-impl.md` | Engineers | Executing stories with TDD |
+| `epic-skill.md` | BA, PO | Writing feature specifications |
+| `technical-design-skill.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
+| `story-sharding-skill.md` | Tech Lead, Engineers | Breaking features into stories and prompts |
+| `implementation-skill.md` | Engineers | Executing stories with TDD |
 
 ### From source (for development)
 
@@ -109,6 +109,7 @@ scripts/
   validate.ts      — Validate build output
 manifest.json      — Maps which shared files each phase skill needs
 docs/              — Reference material not yet in the build
+plugins/           — Committed marketplace-installable plugin directories
 ```
 
 ## Links

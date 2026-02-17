@@ -13,6 +13,7 @@ const ROOT = resolve(import.meta.dir, "../..");
 const DIST = join(ROOT, "dist");
 const DIST_PLUGIN = join(DIST, "plugin");
 const DIST_STANDALONE = join(DIST, "standalone");
+const MARKETPLACE_PLUGIN = join(ROOT, "plugins", "liminal-spec");
 
 // Run the build once before all tests
 let buildExitCode = -1;
@@ -94,7 +95,7 @@ describe("plugin output", () => {
       join(DIST_PLUGIN, ".claude-plugin", "plugin.json")
     ).json();
     expect(data.name).toBe("liminal-spec");
-    expect(data.version).toBe("0.2.1");
+    expect(data.version).toBe("0.2.2");
   });
 
   test("creates marketplace.json with required fields", async () => {
@@ -104,6 +105,38 @@ describe("plugin output", () => {
     expect(data.name).toBe("liminal-plugins");
     expect(data.owner.name).toBe("liminal-ai");
     expect(data.plugins.length).toBeGreaterThan(0);
+  });
+});
+
+// -------------------------------------------------------------------------
+// Marketplace install source
+// -------------------------------------------------------------------------
+
+describe("marketplace install source", () => {
+  test("creates plugins/liminal-spec/.claude-plugin/plugin.json", async () => {
+    const exists = await Bun.file(
+      join(MARKETPLACE_PLUGIN, ".claude-plugin", "plugin.json")
+    ).exists();
+    expect(exists).toBe(true);
+  });
+
+  test("includes skill + command + agent directories", async () => {
+    const expectedPaths = [
+      join(MARKETPLACE_PLUGIN, "skills", "epic", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "commands", "liminal-spec.md"),
+      join(MARKETPLACE_PLUGIN, "agents", "senior-engineer.md"),
+    ];
+
+    for (const path of expectedPaths) {
+      expect(await Bun.file(path).exists()).toBe(true);
+    }
+  });
+
+  test("does not include marketplace.json in plugin install source", async () => {
+    const exists = await Bun.file(
+      join(MARKETPLACE_PLUGIN, ".claude-plugin", "marketplace.json")
+    ).exists();
+    expect(exists).toBe(false);
   });
 });
 

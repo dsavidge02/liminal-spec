@@ -1,14 +1,18 @@
 {
   "name": "liminal-plugins",
+  "description": "Liminal AI plugin marketplace for spec-driven development workflows",
+  "metadata": {
+    "description": "Liminal AI plugin marketplace for spec-driven development workflows"
+  },
   "owner": {
     "name": "liminal-ai"
   },
   "plugins": [
     {
       "name": "liminal-spec",
-      "source": "./",
+      "source": "./plugins/liminal-spec",
       "description": "Spec-driven development methodology for agentic coding",
-      "version": "0.2.1"
+      "version": "0.2.2"
     }
   ]
 }

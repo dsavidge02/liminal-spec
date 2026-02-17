@@ -201,6 +201,7 @@ When Opus 4.6 drafts prompts for execution (implementation, verification):
 2. **Include model-specific guidance** — Reference the appropriate prompting guide
 3. **Be explicit about constraints** — Service mocks, contract-first, TDD expectations
 4. **Include verification criteria** — Clear pass/fail, test counts, type checks
+5. **For verify prompts, set scope** — Include: "These gates are the minimum; also look for unexpected regressions or mismatches with spec/contract beyond this list."
 
 Example prompt preamble for implementation execution:
 ```markdown

@@ -4,9 +4,11 @@
 
 A spec-driven development methodology packaged as a **Claude Code plugin**. The plugin contains 4 self-contained skills (one per methodology phase), a router command, and a senior-engineer agent.
 
-This is NOT a library or npm package. The build output is markdown files organized into a Claude Code plugin structure. There are two distribution channels:
+This is NOT a library or npm package. The build output is markdown files organized into a Claude Code plugin structure. There are three distribution channels:
 
 **Plugin** (`dist/plugin/`) — For Claude Code users (developers, senior engineers). They install via marketplace and get slash commands (`/liminal-spec`, `/liminal-spec:epic`, etc.). The plugin bundles skills + agents + commands + marketplace metadata per the [Claude Code plugin spec](https://code.claude.com/docs/en/plugins).
+
+**Marketplace install source** (`plugins/liminal-spec/`) — Committed, installable plugin layout used by `/plugin install ...@liminal-plugins`. This directory is generated from `dist/plugin/` by the build.
 
 **Standalone** (`dist/standalone/`) — For non-Claude-Code users (BA, PO) who paste a single markdown file into Claude Enterprise Chat or any AI assistant. Each file is fully self-contained — no plugin infrastructure, no frontmatter, just the methodology content for one phase.
 
@@ -53,6 +55,7 @@ docs/              — Reference material not yet in the build pipeline
 dist/              — Build output (gitignored)
   plugin/          — Claude Code plugin (skills/ + agents/ + commands/ + marketplace)
   standalone/      — Paste-ready MDs for non-Claude-Code users (BA/PO)
+plugins/           — Committed marketplace-installable plugin directories
 ```
 
 ### Commands
@@ -68,7 +71,7 @@ bun test            # Run integration tests
 
 `manifest.json` declares which shared files each phase skill needs. `scripts/build.ts` reads the manifest, concatenates phase content + shared content in declared order, wraps with SKILL.md YAML frontmatter, and outputs to `dist/plugin/skills/<name>/SKILL.md`. It also strips frontmatter and outputs to `dist/standalone/liminal-<name>.md` for paste-into-chat distribution.
 
-The build also copies agents, commands, and generates plugin.json + marketplace.json in `dist/plugin/.claude-plugin/`.
+The build also copies agents, commands, generates plugin.json + marketplace.json in `dist/plugin/.claude-plugin/`, then syncs a committed marketplace install source at `plugins/liminal-spec/`.
 
 ### What Gets Built
 
@@ -147,15 +150,15 @@ The `docs/` directory holds reference material not yet incorporated into the bui
 ## Release Process
 
 1. Push to main (directly or via PR merge) → CI runs build + validate + test
-2. When ready to release, update version in all six places:
+2. When ready to release, update version in all five places:
    - `version.txt`
    - `manifest.json`
    - `package.json`
-   - `.claude-plugin/plugin.json`
    - `.claude-plugin/marketplace.json`
    - `scripts/__tests__/build.test.ts` (version assertion in the plugin.json test)
-3. Commit the version bump, then tag and push: `git tag vX.Y.Z && git push origin vX.Y.Z`
-4. Tag triggers release workflow → builds, validates, packages plugin + standalone zips, creates GitHub Release with artifacts
+3. Run `bun run build` to sync `plugins/liminal-spec/` from source.
+4. Commit the version bump, then tag and push: `git tag vX.Y.Z && git push origin vX.Y.Z`
+5. Tag triggers release workflow → builds, validates, packages plugin + standalone zips, creates GitHub Release with artifacts
 
 The tag is the explicit "ship it" signal. Code can accumulate on main across multiple pushes without releasing.
 

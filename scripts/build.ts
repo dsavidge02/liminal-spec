@@ -11,9 +11,10 @@
  *   dist/plugin/.claude-plugin/plugin.json
  *   dist/plugin/.claude-plugin/marketplace.json
  *   dist/standalone/liminal-{name}.md    -- Frontmatter-stripped skills
+ *   plugins/liminal-spec/**               -- Marketplace-installable plugin layout
  */
 
-import { mkdir, rm } from "node:fs/promises";
+import { cp, mkdir, rm } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
 // ---------------------------------------------------------------------------
@@ -52,6 +53,7 @@ const DIST = join(ROOT, "dist");
 const DIST_PLUGIN = join(DIST, "plugin");
 const DIST_STANDALONE = join(DIST, "standalone");
 const SKILL_STAGING = join(DIST_STANDALONE, ".skill-staging");
+const MARKETPLACE_PLUGIN_DIR = join(ROOT, "plugins", "liminal-spec");
 
 /** Maps internal skill keys to descriptive filenames for standalone release artifacts. */
 const STANDALONE_NAMES: Record<string, string> = {
@@ -181,6 +183,10 @@ function generatePluginJson(version: string): string {
 function generateMarketplaceJson(version: string): string {
   const marketplace = {
     name: "liminal-plugins",
+    description: "Liminal AI plugin marketplace for spec-driven development workflows",
+    metadata: {
+      description: "Liminal AI plugin marketplace for spec-driven development workflows",
+    },
     owner: { name: "liminal-ai" },
     plugins: [
       {
@@ -285,6 +291,18 @@ async function build(): Promise<void> {
   );
   console.log("  metadata: plugin.json, marketplace.json");
 
+  // ----- Marketplace install source -----
+  // Keep a committed plugin directory so marketplace installs resolve to a
+  // ready-to-install plugin layout.
+  await rm(MARKETPLACE_PLUGIN_DIR, { recursive: true, force: true });
+  await mkdir(join(ROOT, "plugins"), { recursive: true });
+  await cp(DIST_PLUGIN, MARKETPLACE_PLUGIN_DIR, { recursive: true });
+  await rm(
+    join(MARKETPLACE_PLUGIN_DIR, ".claude-plugin", "marketplace.json"),
+    { force: true }
+  );
+  console.log("  marketplace source: plugins/liminal-spec");
+
   // ----- Summary -----
   console.log("\nBuild complete:");
   console.log(
@@ -292,6 +310,7 @@ async function build(): Promise<void> {
   );
   console.log(`  ${summary.agents.length} agents copied`);
   console.log(`  1 command copied (${summary.command})`);
+  console.log("  1 marketplace source synced (plugins/liminal-spec)");
 }
 
 build().catch((err: unknown) => {

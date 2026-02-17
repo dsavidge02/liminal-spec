@@ -175,6 +175,7 @@ You are verifying [artifact] against [specification]. Your job is to catch what 
 
 ## Task
 Review the artifact systematically against the spec.
+These gates are the minimum; also look for unexpected regressions or mismatches with spec/contract beyond this list.
 
 ## Verification Checklist
 1. Every AC in the spec has corresponding implementation
