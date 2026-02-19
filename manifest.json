@@ -1,5 +1,5 @@
 {
-  "version": "0.3.1",
+  "version": "0.4.0",
   "skills": {
     "ls-research": {
       "name": "ls-research",
@@ -49,7 +49,7 @@
     },
     "ls-story": {
       "name": "ls-story",
-      "description": "Break a feature into executable stories and generate self-contained prompt packs for implementation. Validates the Tech Design as downstream consumer.",
+      "description": "Break a feature into executable stories and generate context-rich prompt packs with explicit artifact references. Validates the Tech Design as downstream consumer.",
       "phases": [
         "story"
       ],

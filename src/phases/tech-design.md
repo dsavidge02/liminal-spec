@@ -218,7 +218,7 @@ The test plan must explicitly map every TC from the Epic to a test. This is the 
 - If you can't map a TC to a test, either the TC is untestable (return to spec) or you're missing a test boundary
 - Group by test file for clarity; the TC column is what matters for traceability
 
-→ See `references/testing.md` for test code organization patterns
+→ See the Testing reference section in this skill for test code organization patterns.
 
 ---
 

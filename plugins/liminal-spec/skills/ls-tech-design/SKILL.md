@@ -223,7 +223,7 @@ The test plan must explicitly map every TC from the Epic to a test. This is the 
 - If you can't map a TC to a test, either the TC is untestable (return to spec) or you're missing a test boundary
 - Group by test file for clarity; the TC column is what matters for traceability
 
-→ See `references/testing.md` for test code organization patterns
+→ See the Testing reference section in this skill for test code organization patterns.
 
 ---
 
@@ -2189,7 +2189,7 @@ Component tests. Tests rendering and user interaction. Mock only what's passed v
 
 ## Testing Strategy
 
-> **Reference:** See `references/testing.md` for full methodology, mock strategy, and test patterns.
+> **Reference:** See the Testing reference section in this skill for full methodology, mock strategy, and test patterns.
 
 ### Test Pyramid for This Feature
 
@@ -2466,7 +2466,7 @@ Items identified during design that are out of scope. Document them so they're n
 
 - Epic: `[epic filename]`
 - Story Prompts: `stories/`
-- Testing Reference: `references/testing.md`
+- Testing Reference: [Testing section in this skill]
 - Methodology: `SKILL.md`
 
 ---
@@ -2483,17 +2483,17 @@ Use this prompt template to have an agent critically review a Tech Design before
 
 **Critical Review: [Feature Name] Tech Design**
 
-You are reviewing a Tech Design document for [brief description]. This is Phase 3 (Tech Design) of a Liminal Spec pipeline. The downstream consumer of this document is an Orchestrator who needs to derive executable stories and self-contained prompt packs from it.
+You are reviewing a Tech Design document for [brief description]. This is Phase 3 (Tech Design) of a Liminal Spec pipeline. The downstream consumer of this document is an Orchestrator who needs to derive executable stories and context-rich prompt packs (with explicit artifact references) from it.
 
 **Step 1: Load liminal-spec Skill Context**
 
 Read these files to understand the methodology and evaluation criteria:
 
 1. **Core methodology:** `~/.claude/skills/liminal-spec/SKILL.md`
-2. **Tech design guidance:** `~/.claude/skills/liminal-spec/references/tech-design.md`
-3. **Tech design template:** `~/.claude/skills/liminal-spec/templates/tech-design.template.md`
-4. **Testing reference:** `~/.claude/skills/liminal-spec/references/testing.md`
-5. **Writing style:** `~/.claude/skills/liminal-spec/references/writing-style.md`
+2. **Tech design guidance:** the Tech Design section inside `~/.claude/skills/liminal-spec/SKILL.md`
+3. **Tech design template:** the Template section inside `~/.claude/skills/liminal-spec/SKILL.md`
+4. **Testing reference:** the Testing reference section inside `~/.claude/skills/liminal-spec/SKILL.md`
+5. **Writing style:** the writing-style guidance section inside `~/.claude/skills/liminal-spec/SKILL.md`
 
 **Step 2: Review These Files**
 

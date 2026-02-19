@@ -30,7 +30,7 @@
 | **Epic** | Complete specification for one feature. ACs, TCs, data contracts, scope. |
 | **Tech Design** | Architecture, interfaces, test mapping, work plan. Expands significantly from the epic. |
 | **Story** | A discrete, independently executable vertical slice of functionality with its own prompt pack. Derived from tech design work breakdown. |
-| **Prompt Pack** | Self-contained instructions for executing one phase of a story. All context inlined. |
+| **Prompt Pack** | Instructions for executing one phase of a story, including the phase task plus explicit references to required artifacts (story/epic/tech design). |
 
 ## Epic Hierarchy
 
@@ -48,7 +48,7 @@
 
 | Term | Definition |
 |------|------------|
-| **Story 0** | Infrastructure story. Types, fixtures, error classes, test utilities. No TDD cycle — pure setup. Always first. |
+| **Story 0** | Foundation (Infrastructure) story. Types, fixtures, error classes, test utilities, and project config. Minimal or no TDD cycle. Always first. |
 | **Feature 0** | Stack standup story for new stacks. Auth, connectivity, integrated skeleton with no product functionality. |
 | **Skeleton Phase** | Create stubs that throw NotImplementedError. Structure without logic. |
 | **TDD Red Phase** | Write tests asserting behavior. Tests ERROR because stubs throw. |

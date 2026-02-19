@@ -36,16 +36,18 @@ Within Phase 5, each story follows: **Skeleton → TDD Red → TDD Green → Gor
 
 **Multi-model validation.** Different models catch different things. Artifacts are validated by their downstream consumer and by a different model for diverse perspective.
 
+**Prompt contract.** In Phase 4/5, prompt packs are context-rich task packets with explicit references to required artifacts (story, epic, tech design). Execution assumes agents read both the prompt and the referenced artifacts.
+
 ## Installation
 
 ### As a Claude Code Plugin (recommended)
 
 ```bash
 # Add the marketplace
-/plugin marketplace add liminal-ai/liminal-spec
+claude plugin marketplace add liminal-ai/liminal-spec
 
 # Install the plugin
-/plugin install liminal-spec@liminal-plugins
+claude plugin install liminal-spec@liminal-plugins
 ```
 
 This gives you:
@@ -69,7 +71,7 @@ Start with `/liminal-spec` and it will guide you to the right phase.
 
 | Format | Audience | Install/use mode | Contents |
 |--------|----------|------------------|----------|
-| Claude Code Plugin | Engineers, Tech Leads | `/plugin install liminal-spec@liminal-plugins` | Router command, `ls-*` phase skills, senior-engineer agent |
+| Claude Code Plugin | Engineers, Tech Leads | `claude plugin install liminal-spec@liminal-plugins` | Router command, `ls-*` phase skills, senior-engineer agent |
 | Standalone `.md` files | BA, PO, PM, non-plugin users | Download release artifact, paste into chat | One self-contained skill per file |
 | `.skill` files | Users who want installable individual phase packs | Download release artifact and install selected skill | Packaged single-skill distributions |
 
@@ -84,6 +86,35 @@ Download standalone files from [GitHub Releases](https://github.com/liminal-ai/l
 | `technical-design-skill.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
 | `story-sharding-skill.md` | Tech Lead, Engineers | Breaking features into stories and prompts |
 | `implementation-skill.md` | Engineers | Executing stories with TDD |
+
+### Troubleshooting: Marketplace Config Corruption (`source.source: Invalid input`)
+
+If Claude Code fails at startup with an error like:
+
+```
+Marketplace configuration file is corrupted: liminal-plugins.source.source: Invalid input
+```
+
+you likely have an older marketplace source enum (`"dir"`) in your local Claude config. Newer Claude Code expects `"directory"`.
+
+Fix it by updating `~/.claude/plugins/known_marketplaces.json`, then restart Claude Code:
+
+```bash
+jq 'with_entries(
+  if .key == "liminal-plugins" and .value.source.source == "dir"
+  then .value.source.source = "directory"
+  else .
+  end
+)' ~/.claude/plugins/known_marketplaces.json > /tmp/known_marketplaces.fixed.json \
+  && mv /tmp/known_marketplaces.fixed.json ~/.claude/plugins/known_marketplaces.json
+```
+
+Then refresh/install again:
+
+```bash
+claude plugin marketplace update liminal-plugins
+claude plugin install liminal-spec@liminal-plugins
+```
 
 ## Execution SOP (Story Phases)
 

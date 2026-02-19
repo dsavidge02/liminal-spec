@@ -26,5 +26,4 @@ Different models excel at different tasks. Use the right model for the job.
 - **GPT 5x:** Codex CLI (`codex exec`), GitHub Copilot, API
 - **GPT 5x Codex:** Codex CLI with `-m gpt-5.2-codex`
 
-→ Reference: `references/prompting-opus-4.6.md`
-→ Reference: `references/prompting-gpt-5x.md`
+→ See the prompting guidance for Opus 4.6 and GPT 5x in your local liminal-spec documentation/skills.

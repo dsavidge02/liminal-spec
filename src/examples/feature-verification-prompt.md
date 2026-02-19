@@ -15,8 +15,8 @@ You are reviewing a Epic for [brief description]. This is Phase 2 (Epic) of a Li
 Read these files to understand the methodology and evaluation criteria:
 
 1. **Core methodology:** `~/.claude/skills/liminal-spec/SKILL.md`
-2. **Feature spec guidance:** `~/.claude/skills/liminal-spec/references/epic.md`
-3. **Writing style:** `~/.claude/skills/liminal-spec/references/writing-style.md`
+2. **Feature spec guidance:** the Epic section inside `~/.claude/skills/liminal-spec/SKILL.md`
+3. **Writing style:** the writing-style guidance section inside `~/.claude/skills/liminal-spec/SKILL.md`
 
 **Step 2: Review These Files**
 
@@ -62,7 +62,7 @@ Assess the epic against these criteria:
 
 7. **Story Breakdown**
    - Is there a Recommended Story Breakdown section?
-   - Does Story 0 (infrastructure) cover types, fixtures, and error classes?
+   - Does Story 0 (foundation/infrastructure) cover types, fixtures, error classes, and project config?
    - Do Feature Stories (1-N) cover all ACs?
    - Do stories sequence logically (read before write, happy path before edge cases)?
 

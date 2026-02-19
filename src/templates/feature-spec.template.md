@@ -172,8 +172,8 @@ Questions for the Tech Lead to address during design:
 
 ## Recommended Story Breakdown
 
-### Story 0: Infrastructure
-[Types, error classes, fixtures, test utilities needed by all stories]
+### Story 0: Foundation (Infrastructure)
+[Types, error classes, fixtures, test utilities, and project config needed by all stories]
 
 ### Story 1: [Title — first vertical slice]
 **Delivers:** [What the user can do after]

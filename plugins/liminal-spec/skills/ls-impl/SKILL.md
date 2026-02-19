@@ -5,9 +5,9 @@ description: Execute stories using TDD cycle (Skeleton, Red, Green, Gorilla, Ver
 
 # Implementation
 
-**Purpose:** Execute implementation from self-contained prompt packs. Zero prior context.
+**Purpose:** Execute implementation from context-rich prompt packs plus referenced artifacts. Zero prior conversation context.
 
-**The same Orchestrator from Phase 4 drives this phase.** The Orchestrator handles coordination, verification, and iteration. The Senior Engineer doesn't orchestrate or document — they receive a self-contained prompt and execute it.
+**The same Orchestrator from Phase 4 drives this phase.** The Orchestrator handles coordination, verification, and iteration. The Senior Engineer doesn't orchestrate or document — they receive a prompt pack with explicit references and execute it.
 
 ## The Execution Mindset
 
@@ -16,10 +16,11 @@ You receive a prompt pack. That's it. No conversation history, no "remember when
 The prompt pack contains everything you need:
 - Role and assignment
 - Stack context (product, project, feature, story)
-- Task details (inlined from tech design)
+- Task details for the phase
+- Required references (story, epic, tech design sections)
 - Expected output format
 
-**If it's not in the prompt, it doesn't exist for this execution.**
+**If it's not in the prompt or required references, it doesn't exist for this execution.**
 
 ---
 
@@ -27,7 +28,7 @@ The prompt pack contains everything you need:
 
 Each story follows: **Skeleton → TDD Red → TDD Green → Gorilla → Verify**. Each phase may be a separate session with fresh context.
 
-→ See `references/phase-execution.md` for detailed phase mechanics, stub patterns, mock setup examples, exit criteria, and common issues.
+→ See the "Phase Execution Deep Dive" section below for detailed phase mechanics, stub patterns, mock setup examples, exit criteria, and common issues.
 
 ---
 
@@ -72,7 +73,7 @@ Debug by checking mock return values against what implementation actually needs.
 
 ## Constraints
 
-- **Only implement what's in the prompt** — No "improvements" or extra features
+- **Only implement what's in scope** — Follow the prompt and referenced artifacts; no "improvements" or extra features
 - **Match existing patterns** — Look at how similar things are done in the codebase
 - **No hardcoding for tests** — Implement actual logic that works for all valid inputs
 - **Readable code** — Clear names, maintainable solutions, comments only where logic isn't self-evident
@@ -90,13 +91,13 @@ After completing each phase, summarize:
 
 ---
 
-## The Prompt Pack is Your World
+## Prompt Pack + References Are Your World
 
-You may see references to tech design, epic, etc. These are for human traceability.
+You may see references to story, epic, and tech design. These are not optional or "for humans only" — they are required context for execution.
 
-For your execution: **the prompt pack is self-contained**. The Orchestrator inlined everything you need. Trust the prompt.
+For your execution: use the prompt pack plus its required references as a single execution packet. Read them before coding.
 
-If something seems missing or doesn't line up, **stop and surface it** — don't silently work around gaps. Document what's missing and return to the orchestrator. The prompt pack should have everything; if it doesn't, that's a prompt quality issue to fix, not something to improvise past.
+If something seems missing or doesn't line up, **stop and surface it** — don't silently work around gaps. Document what's missing and return to the orchestrator. Missing or conflicting context is a prompt/orchestration issue to fix, not something to improvise past.
 
 ---
 
@@ -110,7 +111,7 @@ The execution cycle for each story.
 SKELETON → TDD RED → TDD GREEN → GORILLA → VERIFY
 ```
 
-Each phase may run in a fresh context. The prompt pack contains everything needed.
+Each phase may run in a fresh context. The prompt pack plus required references contain everything needed.
 
 ---
 
@@ -417,7 +418,7 @@ Launch two validators in parallel with the same instructions but different cogni
 1. **Builder validator** — Holistic, understands implementation intent, catches structural issues
 2. **Detail validator** — Literal spec reader with high reasoning, catches spec drift and edge cases
 
-Use different models for complementary coverage. See `references/prompting-opus-4.6.md` and `references/prompting-gpt-5x.md` for model-specific guidance.
+Use different models for complementary coverage. See the "Prompting Claude Opus 4.6" and "Prompting GPT 5x" reference sections in this skill for model-specific guidance.
 
 Both read:
 - The story (`story.md`)
@@ -443,7 +444,7 @@ You are validating Story N for execution readiness.
 
 **Validate:**
 1. Story structure (prerequisites, ACs, files, test counts)
-2. Prompt self-containment (can fresh agent execute?)
+2. Prompt packet completeness (can a fresh agent execute using prompt + required references?)
 3. Tech-design alignment (signatures, interfaces match)
 4. TDD flow (stubs throw, tests assert behavior)
 5. Verification completeness (all TCs covered)
@@ -585,7 +586,7 @@ After implementation, run the verify prompt.
 
 ### Verification Pattern
 
-Launch a verification model with write access (needs to run tests). See `references/prompting-gpt-5x.md` for specific model and CLI syntax.
+Launch a verification model with write access (needs to run tests). See the "Prompting GPT 5x" reference section in this skill for specific model and CLI syntax.
 
 ```
 Execute the verification prompt for Story N.
@@ -634,7 +635,7 @@ If verification fails:
 | Self-review | Builder review | Read-only | **Same session** | Senior Engineer reviews own work |
 | Verify | Formal verification | Write (runs tests) | Fresh | Formal TC-by-TC check |
 
-For specific model and CLI syntax for each task, see `references/prompting-opus-4.6.md` (orchestration, implementation) and `references/prompting-gpt-5x.md` (verification).
+For specific model and CLI syntax for each task, see the "Prompting Claude Opus 4.6" (orchestration, implementation) and "Prompting GPT 5x" (verification) reference sections in this skill.
 
 ### Session Management
 
@@ -842,8 +843,7 @@ Different models excel at different tasks. Use the right model for the job.
 - **GPT 5x:** Codex CLI (`codex exec`), GitHub Copilot, API
 - **GPT 5x Codex:** Codex CLI with `-m gpt-5.2-codex`
 
-→ Reference: `references/prompting-opus-4.6.md`
-→ Reference: `references/prompting-gpt-5x.md`
+→ See the prompting guidance for Opus 4.6 and GPT 5x in your local liminal-spec documentation/skills.
 
 ---
 

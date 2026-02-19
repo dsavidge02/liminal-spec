@@ -334,9 +334,9 @@ These aren't spec blockers — they're legitimate questions that the spec can't 
 
 After the spec is complete, draft a story breakdown. A good epic naturally suggests how to shard into implementable stories. This section bridges the spec and execution — it doesn't replace full story docs, but provides enough structure for planning and sequencing.
 
-### Story 0: Infrastructure
+### Story 0: Foundation (Infrastructure)
 
-Always first. Sets up shared plumbing before feature work begins: types, error classes, test fixtures, utility stubs. No TDD cycle — just setup. Everything downstream depends on this.
+Always first. Sets up shared plumbing before feature work begins: types, error classes, test fixtures, utility stubs, and project config. Minimal or no TDD cycle — just foundation setup. Everything downstream depends on this.
 
 ### Feature Stories (1-N)
 
@@ -360,7 +360,7 @@ Each story delivers a vertical slice of user-facing functionality. Derive storie
 
 ### Sequencing Principles
 
-1. **Infrastructure first** — Story 0 creates the foundation
+1. **Foundation first** — Story 0 creates the shared infrastructure
 2. **Read before write** — Display data before allowing mutations
 3. **Happy path before edge cases** — Core flow before error handling (though basic error states often belong with their happy path story)
 4. **Independent slices** — Each story should be demo-able on its own
@@ -582,7 +582,7 @@ Questions for the Tech Lead to address during design:
 
 ## Recommended Story Breakdown
 
-### Story 0: Infrastructure
+### Story 0: Foundation (Infrastructure)
 [Types, error classes, fixtures, test utilities needed by all stories]
 
 ### Story 1: [Title — first vertical slice]
@@ -719,7 +719,7 @@ The artifact IS the handoff. Not a summary of what we discussed. Not "see the co
 This is why artifacts must be complete and self-contained:
 - Feature spec includes all ACs and TCs
 - Tech design includes all interfaces and test mapping
-- Prompt pack includes all context needed for execution
+- Prompt pack defines the phase task and required references; together with those artifacts it provides complete execution context
 
 ---
 
@@ -747,8 +747,6 @@ When an agent session ends (compaction, crash, human break), state files enable 
 ```
 
 The next agent (or resumed agent) reads state, loads relevant artifacts, continues.
-
-→ Details: `references/state-management.md`
 
 ### Long Session with Checkpoints
 
@@ -981,8 +979,8 @@ You are reviewing a Epic for [brief description]. This is Phase 2 (Epic) of a Li
 Read these files to understand the methodology and evaluation criteria:
 
 1. **Core methodology:** `~/.claude/skills/liminal-spec/SKILL.md`
-2. **Feature spec guidance:** `~/.claude/skills/liminal-spec/references/epic.md`
-3. **Writing style:** `~/.claude/skills/liminal-spec/references/writing-style.md`
+2. **Feature spec guidance:** the Epic section inside `~/.claude/skills/liminal-spec/SKILL.md`
+3. **Writing style:** the writing-style guidance section inside `~/.claude/skills/liminal-spec/SKILL.md`
 
 **Step 2: Review These Files**
 
@@ -1028,7 +1026,7 @@ Assess the epic against these criteria:
 
 7. **Story Breakdown**
    - Is there a Recommended Story Breakdown section?
-   - Does Story 0 (infrastructure) cover types, fixtures, and error classes?
+   - Does Story 0 (foundation/infrastructure) cover types, fixtures, error classes, and project config?
    - Do Feature Stories (1-N) cover all ACs?
    - Do stories sequence logically (read before write, happy path before edge cases)?
 

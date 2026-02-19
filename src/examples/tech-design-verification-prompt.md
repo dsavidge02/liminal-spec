@@ -8,17 +8,17 @@ Use this prompt template to have an agent critically review a Tech Design before
 
 **Critical Review: [Feature Name] Tech Design**
 
-You are reviewing a Tech Design document for [brief description]. This is Phase 3 (Tech Design) of a Liminal Spec pipeline. The downstream consumer of this document is an Orchestrator who needs to derive executable stories and self-contained prompt packs from it.
+You are reviewing a Tech Design document for [brief description]. This is Phase 3 (Tech Design) of a Liminal Spec pipeline. The downstream consumer of this document is an Orchestrator who needs to derive executable stories and context-rich prompt packs (with explicit artifact references) from it.
 
 **Step 1: Load liminal-spec Skill Context**
 
 Read these files to understand the methodology and evaluation criteria:
 
 1. **Core methodology:** `~/.claude/skills/liminal-spec/SKILL.md`
-2. **Tech design guidance:** `~/.claude/skills/liminal-spec/references/tech-design.md`
-3. **Tech design template:** `~/.claude/skills/liminal-spec/templates/tech-design.template.md`
-4. **Testing reference:** `~/.claude/skills/liminal-spec/references/testing.md`
-5. **Writing style:** `~/.claude/skills/liminal-spec/references/writing-style.md`
+2. **Tech design guidance:** the Tech Design section inside `~/.claude/skills/liminal-spec/SKILL.md`
+3. **Tech design template:** the Template section inside `~/.claude/skills/liminal-spec/SKILL.md`
+4. **Testing reference:** the Testing reference section inside `~/.claude/skills/liminal-spec/SKILL.md`
+5. **Writing style:** the writing-style guidance section inside `~/.claude/skills/liminal-spec/SKILL.md`
 
 **Step 2: Review These Files**
 

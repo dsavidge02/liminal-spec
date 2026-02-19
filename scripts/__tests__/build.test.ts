@@ -169,6 +169,14 @@ describe("marketplace install source", () => {
 // -------------------------------------------------------------------------
 
 describe("skill content", () => {
+  const expectedSkills = [
+    "ls-research",
+    "ls-epic",
+    "ls-tech-design",
+    "ls-story",
+    "ls-impl",
+  ];
+
   test("epic has correct frontmatter", async () => {
     const content = await Bun.file(
       join(DIST_PLUGIN, "skills", "ls-epic", "SKILL.md")
@@ -208,6 +216,24 @@ describe("skill content", () => {
     ).text();
     expect(content).toContain("Dual-Validator Pattern");
     expect(content).toContain("The Execution Cycle");
+  });
+
+  test("generated skills do not include legacy inlining phrase", async () => {
+    for (const skill of expectedSkills) {
+      const content = await Bun.file(
+        join(DIST_PLUGIN, "skills", skill, "SKILL.md")
+      ).text();
+      expect(content).not.toContain("All context inlined.");
+    }
+  });
+
+  test("generated skills do not classify required references as human-only traceability", async () => {
+    for (const skill of expectedSkills) {
+      const content = await Bun.file(
+        join(DIST_PLUGIN, "skills", skill, "SKILL.md")
+      ).text();
+      expect(content).not.toContain("These are for human traceability.");
+    }
   });
 });
 

@@ -8,7 +8,7 @@ This is NOT a library or npm package. The build output is markdown files organiz
 
 **Plugin** (`dist/plugin/`) — For Claude Code users (developers, senior engineers). They install via marketplace and get slash commands (`/liminal-spec`, `/ls-epic`, etc.). The plugin bundles skills + agents + commands + marketplace metadata per the [Claude Code plugin spec](https://code.claude.com/docs/en/plugins).
 
-**Marketplace install source** (`plugins/liminal-spec/`) — Committed, installable plugin layout used by `/plugin install ...@liminal-plugins`. This directory is generated from `dist/plugin/` by the build.
+**Marketplace install source** (`plugins/liminal-spec/`) — Committed, installable plugin layout used by `claude plugin install ...@liminal-plugins`. This directory is generated from `dist/plugin/` by the build.
 
 **Standalone** (`dist/standalone/`) — For non-Claude-Code users (BA, PO) who paste a single markdown file into Claude Enterprise Chat or any AI assistant. Each file is fully self-contained — no plugin infrastructure, no frontmatter, just the methodology content for one phase.
 
@@ -19,7 +19,7 @@ Both outputs are composed from the same source files. The build handles the pack
 ```
 .claude-plugin/
   plugin.json              — Plugin metadata (name, version, author)
-  marketplace.json         — Marketplace catalog for /plugin marketplace add
+  marketplace.json         — Marketplace catalog for `claude plugin marketplace add`
 skills/
   ls-research/SKILL.md     — /ls-research (Phase 1: Product Research, optional)
   ls-epic/SKILL.md         — /ls-epic (Phase 2: Epic)
@@ -136,6 +136,20 @@ claude --plugin-dir ./dist/plugin
 ```
 
 This loads the plugin from the build output. Test the router (`/liminal-spec`) and individual skills (`/ls-epic`, etc.).
+
+## PR Checklist
+
+Before opening or updating a PR:
+
+1. Source-only edits: no manual changes in `dist/`.
+2. Local gate passes: `bun run verify`.
+3. Generated marketplace source is synced:
+   - run `bun run build`
+   - verify: `git diff --exit-code -- plugins/liminal-spec .claude-plugin/marketplace.json`
+4. For content/methodology edits:
+   - spot-check affected `dist/plugin/skills/*/SKILL.md` for composition coherence
+   - spot-check affected `dist/standalone/*-skill.md` for standalone usability
+5. If intended as release prep, keep version fields synchronized (see Release Process below).
 
 ### About `docs/`
 

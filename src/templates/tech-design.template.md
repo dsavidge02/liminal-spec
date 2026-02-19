@@ -491,7 +491,7 @@ Component tests. Tests rendering and user interaction. Mock only what's passed v
 
 ## Testing Strategy
 
-> **Reference:** See `references/testing.md` for full methodology, mock strategy, and test patterns.
+> **Reference:** See the Testing reference section in this skill for full methodology, mock strategy, and test patterns.
 
 ### Test Pyramid for This Feature
 
@@ -768,5 +768,5 @@ Items identified during design that are out of scope. Document them so they're n
 
 - Epic: `[epic filename]`
 - Story Prompts: `stories/`
-- Testing Reference: `references/testing.md`
+- Testing Reference: [Testing section in this skill]
 - Methodology: `SKILL.md`

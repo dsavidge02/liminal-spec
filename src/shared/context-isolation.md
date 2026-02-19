@@ -75,7 +75,7 @@ The artifact IS the handoff. Not a summary of what we discussed. Not "see the co
 This is why artifacts must be complete and self-contained:
 - Feature spec includes all ACs and TCs
 - Tech design includes all interfaces and test mapping
-- Prompt pack includes all context needed for execution
+- Prompt pack defines the phase task and required references; together with those artifacts it provides complete execution context
 
 ---
 
@@ -103,8 +103,6 @@ When an agent session ends (compaction, crash, human break), state files enable 
 ```
 
 The next agent (or resumed agent) reads state, loads relevant artifacts, continues.
-
-→ Details: `references/state-management.md`
 
 ### Long Session with Checkpoints
 

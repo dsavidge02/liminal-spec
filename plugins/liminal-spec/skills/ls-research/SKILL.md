@@ -235,7 +235,7 @@ The artifact IS the handoff. Not a summary of what we discussed. Not "see the co
 This is why artifacts must be complete and self-contained:
 - Feature spec includes all ACs and TCs
 - Tech design includes all interfaces and test mapping
-- Prompt pack includes all context needed for execution
+- Prompt pack defines the phase task and required references; together with those artifacts it provides complete execution context
 
 ---
 
@@ -263,8 +263,6 @@ When an agent session ends (compaction, crash, human break), state files enable 
 ```
 
 The next agent (or resumed agent) reads state, loads relevant artifacts, continues.
-
-→ Details: `references/state-management.md`
 
 ### Long Session with Checkpoints
 
@@ -498,7 +496,7 @@ This is the core principle of context isolation. The artifact IS the handoff.
 | **Epic** | Complete specification for one feature. ACs, TCs, data contracts, scope. |
 | **Tech Design** | Architecture, interfaces, test mapping, work plan. Expands significantly from the epic. |
 | **Story** | A discrete, independently executable vertical slice of functionality with its own prompt pack. Derived from tech design work breakdown. |
-| **Prompt Pack** | Self-contained instructions for executing one phase of a story. All context inlined. |
+| **Prompt Pack** | Instructions for executing one phase of a story, including the phase task plus explicit references to required artifacts (story/epic/tech design). |
 
 ## Epic Hierarchy
 
@@ -516,7 +514,7 @@ This is the core principle of context isolation. The artifact IS the handoff.
 
 | Term | Definition |
 |------|------------|
-| **Story 0** | Infrastructure story. Types, fixtures, error classes, test utilities. No TDD cycle — pure setup. Always first. |
+| **Story 0** | Foundation (Infrastructure) story. Types, fixtures, error classes, test utilities, and project config. Minimal or no TDD cycle. Always first. |
 | **Feature 0** | Stack standup story for new stacks. Auth, connectivity, integrated skeleton with no product functionality. |
 | **Skeleton Phase** | Create stubs that throw NotImplementedError. Structure without logic. |
 | **TDD Red Phase** | Write tests asserting behavior. Tests ERROR because stubs throw. |
