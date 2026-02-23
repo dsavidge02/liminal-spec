@@ -30,9 +30,15 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           mkdir -p release
+          cp dist/standalone/*-skill.md release/
           cd dist/plugin && zip -r ../../release/liminal-spec-plugin-v${VERSION}.zip . && cd ../..
           cp dist/standalone/liminal-spec-skill-pack.zip release/liminal-spec-skill-pack-v${VERSION}.zip
           cp dist/standalone/liminal-spec-markdown-pack.zip release/liminal-spec-markdown-pack-v${VERSION}.zip
+
+      - name: Extract changelog
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          awk "/^## v${VERSION}/{found=1; next} /^---$/{if(found) exit} found{print}" CHANGELOG.md > release/notes.md
 
       - name: Create or update Release
         env:
@@ -40,14 +46,16 @@ jobs:
         run: |
           TAG=${GITHUB_REF#refs/tags/}
           gh release create "$TAG" \
-            release/liminal-spec-plugin-*.zip \
-            release/liminal-spec-skill-pack-*.zip \
+            release/*-skill.md \
             release/liminal-spec-markdown-pack-*.zip \
+            release/liminal-spec-skill-pack-*.zip \
+            release/liminal-spec-plugin-*.zip \
             --title "$TAG" \
-            --generate-notes \
+            --notes-file release/notes.md \
             2>/dev/null \
           || gh release upload "$TAG" \
-            release/liminal-spec-plugin-*.zip \
-            release/liminal-spec-skill-pack-*.zip \
+            release/*-skill.md \
             release/liminal-spec-markdown-pack-*.zip \
+            release/liminal-spec-skill-pack-*.zip \
+            release/liminal-spec-plugin-*.zip \
             --clobber
