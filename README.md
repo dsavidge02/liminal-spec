@@ -77,7 +77,7 @@ Start with `/liminal-spec` and it will guide you to the right phase.
 
 ### Skill Pack
 
-Download `liminal-spec-skill-pack-vX.Y.Z.zip` from Releases. Contains one directory per phase (`product-research/`, `epic/`, `technical-design/`, `story-sharding/`, `implementation/`), each with a `SKILL.md`. Copy the phases you need into your project's `.claude/skills/` directory.
+Download `liminal-spec-skill-pack-vX.Y.Z.zip` from Releases. Contains one directory per phase (`01-product-research/`, `02-epic/`, `03-technical-design/`, `04-story-sharding/`, `05-implementation/`), each with a `SKILL.md`. Copy the phases you need into your project's `.claude/skills/` directory.
 
 The plugin includes the router command and senior-engineer agent that the skill pack doesn't. Use the plugin if your environment supports it.
 
@@ -87,11 +87,11 @@ Download `liminal-spec-markdown-pack-vX.Y.Z.zip` from [Releases](https://github.
 
 | File | For | Use when |
 |------|-----|----------|
-| `product-research-skill.md` | PO, PM, BA | Exploring direction and drafting a PRD |
-| `epic-skill.md` | BA, PO | Writing feature specifications |
-| `technical-design-skill.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
-| `story-sharding-skill.md` | Tech Lead, Engineers | Breaking features into stories and prompts |
-| `implementation-skill.md` | Engineers | Executing stories with TDD |
+| `01-product-research-skill.md` | PO, PM, BA | Exploring direction and drafting a PRD |
+| `02-epic-skill.md` | BA, PO | Writing feature specifications |
+| `03-technical-design-skill.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
+| `04-story-sharding-skill.md` | Tech Lead, Engineers | Breaking features into stories and prompts |
+| `05-implementation-skill.md` | Engineers | Executing stories with TDD |
 
 ## Execution SOP (Story Phases)
 

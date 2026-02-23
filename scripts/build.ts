@@ -78,11 +78,11 @@ const SYNC_MARKETPLACE = process.env.SYNC_MARKETPLACE !== "0";
 
 /** Maps internal skill keys to descriptive filenames for standalone release artifacts. */
 const STANDALONE_NAMES: Record<string, string> = {
-  "ls-research": "product-research",
-  "ls-epic": "epic",
-  "ls-tech-design": "technical-design",
-  "ls-story": "story-sharding",
-  "ls-impl": "implementation",
+  "ls-research": "01-product-research",
+  "ls-epic": "02-epic",
+  "ls-tech-design": "03-technical-design",
+  "ls-story": "04-story-sharding",
+  "ls-impl": "05-implementation",
 };
 
 // ---------------------------------------------------------------------------

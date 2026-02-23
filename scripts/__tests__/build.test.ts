@@ -243,11 +243,11 @@ describe("skill content", () => {
 
 describe("standalone output", () => {
   const expectedMdFiles = [
-    "product-research-skill.md",
-    "epic-skill.md",
-    "technical-design-skill.md",
-    "story-sharding-skill.md",
-    "implementation-skill.md",
+    "01-product-research-skill.md",
+    "02-epic-skill.md",
+    "03-technical-design-skill.md",
+    "04-story-sharding-skill.md",
+    "05-implementation-skill.md",
   ];
 
   const expectedStandalonePacks = [
