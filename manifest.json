@@ -1,5 +1,5 @@
 {
-  "version": "0.4.1",
+  "version": "0.5.0",
   "skills": {
     "ls-research": {
       "name": "ls-research",
@@ -49,28 +49,42 @@
     },
     "ls-story": {
       "name": "ls-story",
-      "description": "Break a feature into executable stories and generate context-rich prompt packs with explicit artifact references. Validates the Tech Design as downstream consumer.",
+      "description": "Break an epic into functional stories with full acceptance criteria and test conditions. Validates coverage completeness and cross-story integration path coherence.",
       "phases": [
         "story"
       ],
       "shared": [
         "confidence-chain",
-        "model-selection",
-        "prompting-opus-4.6"
+        "context-isolation",
+        "writing-style-epic"
+      ]
+    },
+    "ls-story-tech": {
+      "name": "ls-story-tech",
+      "description": "Add technical implementation sections to functional stories. Tech Lead maps ACs to implementation targets, test strategies, and verification criteria. Validates via consumer gate.",
+      "phases": [
+        "story-tech"
+      ],
+      "shared": [
+        "confidence-chain",
+        "verification-model",
+        "writing-style"
+      ],
+      "examples": [
+        "story-tech-verification-prompt"
       ]
     },
     "ls-impl": {
       "name": "ls-impl",
-      "description": "Execute stories using TDD cycle (Skeleton, Red, Green, Gorilla, Verify) with multi-agent verification. Covers implementation, phase execution, and orchestration.",
+      "description": "Implement stories using TDD discipline. Plan-mode compatible. Reads complete stories with functional and technical sections.",
       "phases": [
         "impl"
       ],
       "shared": [
         "confidence-chain",
-        "model-selection",
         "verification-model",
-        "prompting-gpt-5x",
-        "prompting-opus-4.6"
+        "testing",
+        "model-selection"
       ]
     }
   },

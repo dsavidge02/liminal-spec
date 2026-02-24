@@ -82,6 +82,7 @@ const STANDALONE_NAMES: Record<string, string> = {
   "ls-epic": "02-epic",
   "ls-tech-design": "03-technical-design",
   "ls-story": "04-story-sharding",
+  "ls-story-tech": "04b-story-technical-enrichment",
   "ls-impl": "05-implementation",
 };
 

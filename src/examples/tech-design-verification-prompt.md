@@ -8,7 +8,7 @@ Use this prompt template to have an agent critically review a Tech Design before
 
 **Critical Review: [Feature Name] Tech Design**
 
-You are reviewing a Tech Design document for [brief description]. This is Phase 3 (Tech Design) of a Liminal Spec pipeline. The downstream consumer of this document is an Orchestrator who needs to derive executable stories and context-rich prompt packs (with explicit artifact references) from it.
+You are reviewing a Tech Design document for [brief description]. This is Phase 3 (Tech Design) of a Liminal Spec pipeline. The downstream consumers are the BA/SM (who shard the epic into functional stories) and the Tech Lead (who adds technical implementation sections to stories).
 
 **Step 1: Load liminal-spec Skill Context**
 
@@ -26,7 +26,7 @@ Read these files to understand the methodology and evaluation criteria:
 2. **Epic (for alignment):** `[path to epic.md]`
 3. **Codebase (for feasibility):** `[path to relevant source directories]`
 
-**Important Boundary:** Story Sharding (Phase 4) follows Tech Design. The design defines architecture and interfaces — it does not need to specify prompt structure, story execution order, or agent coordination. If you identify orchestration concerns, note them as recommendations for the Orchestrator, not as design blockers.
+**Important Boundary:** Story Sharding (Phase 4) follows Tech Design. The design defines architecture and interfaces -- it does not need to specify story execution order or implementation sequence. If you identify story sharding or implementation concerns, note them as recommendations, not as design blockers.
 
 **Step 3: Evaluation Criteria**
 
@@ -68,17 +68,17 @@ Assess the tech design against these criteria:
    - Does each subsequent chunk map to a coherent vertical slice of functionality?
    - Are chunk dependencies clear (what must complete before what)?
    - Are test count estimates provided per chunk?
-   - Do running totals cascade correctly?
+   - Can a BA/SM shard stories from these chunks? Can a Tech Lead add technical sections?
 
 7. **Mock Boundary Correctness**
    - Are mocks at external boundaries (network, DB, filesystem), not internal module boundaries?
    - Does the testing strategy section explicitly state what gets mocked and what doesn't?
    - Are error response shapes defined for mock setup?
 
-8. **Agent Readiness (Skeleton Phase)**
+8. **Engineer Readiness**
    - Are file paths exact and complete (not placeholder patterns)?
    - Are stub signatures copy-paste ready with `NotImplementedError` throws?
-   - Could a fresh agent create the skeleton from this document alone, without asking questions?
+   - Could an engineer plan and implement from this document plus stories, without asking questions?
    - Are test file names and test descriptions specific enough for TDD Red phase?
 
 9. **Writing Quality**
@@ -101,7 +101,7 @@ Provide your review in this structure:
 ## Issues
 
 ### Critical (Must fix before Story Sharding)
-[Issues that would prevent an Orchestrator from deriving stories]
+[Issues that would prevent a BA/SM from deriving stories or a Tech Lead from adding technical sections]
 
 ### Major (Should fix)
 [Issues that would cause confusion or rework during execution]
@@ -122,7 +122,7 @@ Provide your review in this structure:
 [Clarifying questions that would improve the design]
 ```
 
-Be thorough and critical. The goal is to catch issues before they compound into bad stories and broken prompts.
+Be thorough and critical. The goal is to catch issues before they compound into bad stories and broken implementations.
 
 **Step 5: TC → Test Traceability Table**
 
@@ -146,4 +146,4 @@ This table makes gaps immediately visible. If a TC has no test mapped, or the te
 - Can also run with multiple agents in parallel for diverse perspectives
 - Compare the TC → Test traceability table against the epic's AC → TC table for full chain coverage
 - Critical and Major issues should be addressed before Story Sharding handoff
-- The Orchestrator will also validate implicitly during Phase 4 — if they can't derive stories, the design goes back
+- The BA/SM and Tech Lead will also validate implicitly during Phase 4 -- if they can't derive stories or add technical sections, the design goes back

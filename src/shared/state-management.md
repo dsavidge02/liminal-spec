@@ -117,7 +117,7 @@ If work is interrupted:
 | Product Research | Epic | PRD (if used) |
 | Epic | Tech Design | Epic |
 | Tech Design | Story Sharding | Tech Design doc |
-| Story Sharding | Implementation | Story + Prompt Pack |
+| Story Sharding + Story Tech | Implementation | Complete Story (functional + technical) |
 | Implementation | Verification | Implementation + Test Results |
 
 **Rule:** If it's not in an artifact, it doesn't exist for the next agent.

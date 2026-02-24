@@ -224,7 +224,7 @@ The test plan must explicitly map every TC from the Epic to a test. This is the 
 
 ## Work Plan: Chunking for Stories
 
-Break work into manageable pieces. Each chunk becomes a story or set of stories. The chunk is the Tech Lead's unit of decomposition; the Orchestrator maps chunks to stories during story sharding (usually 1:1, sometimes a chunk splits into multiple stories or merges with another).
+Break work into manageable pieces. Each chunk becomes a story or set of stories. The chunk is the Tech Lead's unit of decomposition; the BA/SM maps chunks to stories during story sharding (usually 1:1, sometimes a chunk splits into multiple stories or merges with another).
 
 ### Chunks vs. Phases
 
@@ -284,7 +284,7 @@ Chunk 0 → Chunk 1 → Chunk 2
 
 ## Validation Before Handoff
 
-**Before handing to Orchestrator:**
+**Before handing to Story Sharding:**
 
 - [ ] Every TC mapped to test file
 - [ ] All interfaces defined
@@ -298,7 +298,7 @@ Chunk 0 → Chunk 1 → Chunk 2
 - Is the spiral pattern present?
 - Are there redundant connections or just thin threads?
 
-**The Orchestrator validates by confirming they can derive stories from the design.** If they can't, the design isn't ready.
+**The BA/SM validates by confirming they can derive stories from the design. The Tech Lead validates by confirming they can add story-level technical sections from the design.** If either can't, the design isn't ready.
 
 → Verification prompt: `examples/tech-design-verification-prompt.md` — Ready-to-use prompt for external validation before handoff
 

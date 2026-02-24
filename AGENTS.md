@@ -20,7 +20,7 @@ Edit source files, not generated outputs.
 
 ## Repository Map
 
-- `src/phases/` - phase content (`research`, `epic`, `tech-design`, `story`, `impl`)
+- `src/phases/` - phase content (`research`, `epic`, `tech-design`, `story`, `story-tech`, `impl`)
 - `src/shared/` - shared sections inlined into skills via manifest
 - `src/templates/` - templates included in outputs
 - `src/examples/` - verification prompt examples

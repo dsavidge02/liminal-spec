@@ -1,29 +1,11 @@
 ## Model Selection
 
-Different models excel at different tasks. Use the right model for the job.
+Different models have different strengths. Choosing the right model for a task improves both quality and efficiency.
 
-| Task | Recommended Model | Why |
-|------|-------------------|-----|
-| **Orchestration** | Opus 4.6 | Gestalt thinking, manages complexity |
-| **Story sharding** | Opus 4.6 | Understands scope, breaks work coherently |
-| **Prompt drafting** | Opus 4.6 | Captures intent, writes for other models |
-| **Spec/design writing** | Opus 4.6 | Narrative flow, functional-technical weaving |
-| **Implementation** | Claude Code / Opus 4.6 | TDD discipline, service mocks |
-| **Finicky implementation** | GPT 5x / 5x Codex | Precise, disciplined, less drift |
-| **Difficult debugging** | GPT 5x / 5x Codex | Methodical, catches details |
-| **Verification** | GPT 5x / 5x Codex | Thorough, catches what builders miss |
-| **Code review** | GPT 5x / 5x Codex | Thorough, checks against spec |
+**General principles:**
 
-### Typical Flow
+- **Capable models** work well for implementation, orchestration, and writing. They handle context, synthesize across documents, and make pragmatic decisions.
+- **Detail-oriented models** work well for verification, code review, and spec auditing. They catch what builders miss -- signature mismatches, spec drift, edge cases.
+- **Using multiple models** for validation provides complementary coverage. Author + different model catches more issues than author alone.
 
-1. **Opus 4.6** orchestrates, shards stories, drafts prompts
-2. **Claude Code subagent** (or Opus with TDD context) executes implementation
-3. **GPT 5x** verifies artifacts and reviews code
-
-### Access Methods
-
-- **Opus 4.6:** Claude Code, API, Clawdbot subagents
-- **GPT 5x:** Codex CLI (`codex exec`), GitHub Copilot, API
-- **GPT 5x Codex:** Codex CLI with `-m gpt-5.2-codex`
-
-→ See the prompting guidance for Opus 4.6 and GPT 5x in your local liminal-spec documentation/skills.
+Leave specific model choice to the practitioner. The principle matters more than the specific tool: match model strengths to task requirements.

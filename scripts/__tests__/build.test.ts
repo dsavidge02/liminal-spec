@@ -68,6 +68,7 @@ describe("build script", () => {
     expect(buildOutput).toContain("skill: ls-epic");
     expect(buildOutput).toContain("skill: ls-tech-design");
     expect(buildOutput).toContain("skill: ls-story");
+    expect(buildOutput).toContain("skill: ls-story-tech");
     expect(buildOutput).toContain("skill: ls-impl");
   });
 
@@ -87,6 +88,7 @@ describe("plugin output", () => {
     "ls-epic",
     "ls-tech-design",
     "ls-story",
+    "ls-story-tech",
     "ls-impl",
   ];
 
@@ -147,6 +149,10 @@ describe("marketplace install source", () => {
     const expectedPaths = [
       join(MARKETPLACE_PLUGIN, "skills", "ls-research", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "skills", "ls-epic", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "skills", "ls-tech-design", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "skills", "ls-story", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "skills", "ls-story-tech", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "skills", "ls-impl", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "commands", "liminal-spec.md"),
       join(MARKETPLACE_PLUGIN, "agents", "senior-engineer.md"),
     ];
@@ -174,6 +180,7 @@ describe("skill content", () => {
     "ls-epic",
     "ls-tech-design",
     "ls-story",
+    "ls-story-tech",
     "ls-impl",
   ];
 
@@ -210,12 +217,30 @@ describe("skill content", () => {
     expect(content).toContain("Mock Strategy");
   });
 
-  test("impl contains execution orchestration content", async () => {
+  test("impl contains plan-before-you-build content", async () => {
     const content = await Bun.file(
       join(DIST_PLUGIN, "skills", "ls-impl", "SKILL.md")
     ).text();
-    expect(content).toContain("Dual-Validator Pattern");
-    expect(content).toContain("The Execution Cycle");
+    expect(content).toContain("Plan Before You Build");
+    expect(content).toContain("NotImplementedError");
+  });
+
+  test("story does not contain removed prompt-pack content", async () => {
+    const content = await Bun.file(
+      join(DIST_PLUGIN, "skills", "ls-story", "SKILL.md")
+    ).text();
+    expect(content).not.toContain("Prompt Pack");
+    expect(content).not.toContain("Orchestrator");
+  });
+
+  test("story-tech contains contract requirements", async () => {
+    const content = await Bun.file(
+      join(DIST_PLUGIN, "skills", "ls-story-tech", "SKILL.md")
+    ).text();
+    expect(content).toContain("Story Contract Requirements");
+    expect(content).toContain("Consumer Gate");
+    expect(content).toContain("TC to Test Mapping");
+    expect(content).toContain("Spec Deviation");
   });
 
   test("generated skills do not include legacy inlining phrase", async () => {
@@ -247,6 +272,7 @@ describe("standalone output", () => {
     "02-epic-skill.md",
     "03-technical-design-skill.md",
     "04-story-sharding-skill.md",
+    "04b-story-technical-enrichment-skill.md",
     "05-implementation-skill.md",
   ];
 
@@ -314,6 +340,7 @@ describe("source file safety", () => {
       "src/phases/epic.md",
       "src/phases/tech-design.md",
       "src/phases/story.md",
+      "src/phases/story-tech.md",
       "src/phases/impl.md",
       "src/shared/confidence-chain.md",
       "src/shared/writing-style.md",

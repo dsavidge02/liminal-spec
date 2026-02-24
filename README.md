@@ -2,7 +2,7 @@
 
 A spec-driven development methodology for AI-assisted coding. Designed for features with detailed requirements, complex integrations, or multi-agent coordination.
 
-Liminal Spec runs a phased pipeline where each phase produces an artifact the next phase reads cold — no shared conversation history, no accumulated assumptions. The traceability chain (requirement → test condition → test → code) means when tests go green, you have high confidence the implementation matches the spec.
+Liminal Spec runs a phased pipeline where each phase produces an artifact the next phase reads cold -- no shared conversation history, no accumulated assumptions. The traceability chain (requirement -> test condition -> test -> code) means when tests go green, you have high confidence the implementation matches the spec.
 
 ## When to Use
 
@@ -19,24 +19,25 @@ Not for: quick bug fixes, single-file changes, spikes, or emergency patches. Lim
 | 1. Product Research (optional) | Vision/idea | PRD |
 | 2. Feature Specification | PRD or requirements | Feature Spec |
 | 3. Tech Design | Feature Spec | Tech Design |
-| 4. Story Sharding | Spec + Design | Stories + Prompt Packs |
-| 5. Execution | Prompts | Verified code |
+| 4. Story Sharding | Spec + Design | Functional Stories |
+| 4b. Story Tech | Stories (functional) + Tech Design | Complete Stories |
+| 5. Implementation | Complete Stories | Verified code |
 
 Most work starts at Phase 2 - if you know what you're building, start there.
 
-Within Phase 5, each story follows: **Skeleton → TDD Red → TDD Green → Gorilla Test → Verify**.
+Within Phase 5, each story follows: **Skeleton -> TDD Red -> TDD Green -> Gorilla Test -> Verify**.
 
 ## Key Ideas
 
-**Context isolation.** "Agents" means fresh context with artifact handoff — not roleplay personas. Each phase gets a clean context window. The artifact (document) is the complete handoff.
+**Context isolation.** "Agents" means fresh context with artifact handoff -- not roleplay personas. Each phase gets a clean context window. The artifact (document) is the complete handoff.
 
-**Confidence chain.** Every line of code traces back: AC (requirement) → TC (test condition) → Test → Implementation.
+**Confidence chain.** Every line of code traces back: AC (requirement) -> TC (test condition) -> Test -> Implementation.
 
 **Upstream scrutiny.** The feature spec gets the most review because errors there cascade through every downstream phase.
 
 **Multi-model validation.** Different models catch different things. Artifacts are validated by their downstream consumer and by a different model for diverse perspective.
 
-**Prompt contract.** In Phase 4/5, prompt packs are context-rich task packets with explicit references to required artifacts (story, epic, tech design). Execution assumes agents read both the prompt and the referenced artifacts.
+**Story as implementation artifact.** Complete stories with functional sections (BA/SM) and technical sections (Tech Lead) are the sole handoff to engineers. No prompt packs, no orchestration scripts -- engineers implement from stories using TDD discipline and plan mode.
 
 ## Installation
 
@@ -54,16 +55,17 @@ This gives you:
 
 | Command | What it does |
 |---------|-------------|
-| `/liminal-spec` | Router — presents the phase menu, routes to the right skill |
-| `/ls-research` | Phase 1 (optional) — product research and PRD drafting |
-| `/ls-epic` | Phase 2 — write a Feature Specification |
-| `/ls-tech-design` | Phase 3 — create a Tech Design from a Feature Spec |
-| `/ls-story` | Phase 4 — shard into stories and generate prompt packs |
-| `/ls-impl` | Phase 5 — execute stories with TDD and verification |
+| `/liminal-spec` | Router -- presents the phase menu, routes to the right skill |
+| `/ls-research` | Phase 1 (optional) -- product research and PRD drafting |
+| `/ls-epic` | Phase 2 -- write a Feature Specification |
+| `/ls-tech-design` | Phase 3 -- create a Tech Design from a Feature Spec |
+| `/ls-story` | Phase 4 -- shard epic into functional stories |
+| `/ls-story-tech` | Phase 4b -- add technical sections to functional stories |
+| `/ls-impl` | Phase 5 -- implement from complete stories with TDD |
 
 `ls-` command prefixes are intentional: they make slash-command autocomplete clearer and avoid collisions with generic command names like `/epic` or `/story`.
 
-The plugin also includes a **senior-engineer agent** for TDD implementation — rigorous TypeScript development with quality gates (format, lint, typecheck, test).
+The plugin also includes a **senior-engineer agent** for TDD implementation -- rigorous TypeScript development with quality gates (format, lint, typecheck, test).
 
 Start with `/liminal-spec` and it will guide you to the right phase.
 
@@ -77,32 +79,33 @@ Start with `/liminal-spec` and it will guide you to the right phase.
 
 ### Skill Pack
 
-Download `liminal-spec-skill-pack-vX.Y.Z.zip` from Releases. Contains one directory per phase (`01-product-research/`, `02-epic/`, `03-technical-design/`, `04-story-sharding/`, `05-implementation/`), each with a `SKILL.md`. Copy the phases you need into your project's `.claude/skills/` directory.
+Download `liminal-spec-skill-pack-vX.Y.Z.zip` from Releases. Contains one directory per phase (`01-product-research/`, `02-epic/`, `03-technical-design/`, `04-story-sharding/`, `04b-story-technical-enrichment/`, `05-implementation/`), each with a `SKILL.md`. Copy the phases you need into your project's `.claude/skills/` directory.
 
 The plugin includes the router command and senior-engineer agent that the skill pack doesn't. Use the plugin if your environment supports it.
 
 ### Markdown Pack
 
-Download `liminal-spec-markdown-pack-vX.Y.Z.zip` from [Releases](https://github.com/liminal-ai/liminal-spec/releases). Each file is self-contained — paste directly into Claude Enterprise Chat or any AI assistant.
+Download `liminal-spec-markdown-pack-vX.Y.Z.zip` from [Releases](https://github.com/liminal-ai/liminal-spec/releases). Each file is self-contained -- paste directly into Claude Enterprise Chat or any AI assistant.
 
 | File | For | Use when |
 |------|-----|----------|
 | `01-product-research-skill.md` | PO, PM, BA | Exploring direction and drafting a PRD |
 | `02-epic-skill.md` | BA, PO | Writing feature specifications |
 | `03-technical-design-skill.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
-| `04-story-sharding-skill.md` | Tech Lead, Engineers | Breaking features into stories and prompts |
-| `05-implementation-skill.md` | Engineers | Executing stories with TDD |
+| `04-story-sharding-skill.md` | BA, SM | Breaking epics into functional stories |
+| `04b-story-technical-enrichment-skill.md` | Tech Lead | Adding technical sections to stories |
+| `05-implementation-skill.md` | Engineers | Implementing from complete stories with TDD |
 
-## Execution SOP (Story Phases)
+## Execution SOP
 
-For story execution (`/ls-story` + `/ls-impl`), the standard flow is:
-1. Run `skeleton-red` prompt.
-2. Run required post-Red self-review follow-up prompt (same implementation session).
-3. Run `tdd-green` prompt.
-4. Run required post-Green self-review follow-up prompt (same implementation session).
-5. Run Gorilla testing (human) and then dual verification.
+Stories contain functional requirements (ACs, TCs, error paths) and technical implementation sections (architecture context, test mapping, technical DoD). Engineers implement from complete stories using TDD discipline:
 
-Self-review checkpoints are part of standard orchestration, not optional extras.
+1. Read the story (functional + technical sections).
+2. Plan the implementation (use plan mode if available).
+3. Execute the TDD cycle: Skeleton -> Red -> Green -> Self-Review -> Gorilla -> Verify.
+4. Verify against the story's technical checklist and functional DoD.
+
+The story is the sole implementation artifact. Epic and tech design are reference material available in the project repo.
 
 ## Development
 
@@ -149,18 +152,18 @@ Release flow:
 
 ```
 src/
-  phases/          — Phase-specific content (one per skill)
-  shared/          — Cross-cutting concepts used by multiple phases
-  templates/       — Artifact templates
-  examples/        — Verification prompt templates
-  commands/        — /liminal-spec router command
-  agents/          — senior-engineer agent
+  phases/          -- Phase-specific content (one per skill)
+  shared/          -- Cross-cutting concepts used by multiple phases
+  templates/       -- Artifact templates
+  examples/        -- Verification prompt templates
+  commands/        -- /liminal-spec router command
+  agents/          -- senior-engineer agent
 scripts/
-  build.ts         — Compose src/ into dist/
-  validate.ts      — Validate build output
-manifest.json      — Maps which shared files each phase skill needs
-docs/              — Long-form reference material and supporting notes
-plugins/           — Committed marketplace-installable plugin directories
+  build.ts         -- Compose src/ into dist/
+  validate.ts      -- Validate build output
+manifest.json      -- Maps which shared files each phase skill needs
+docs/              -- Long-form reference material and supporting notes
+plugins/           -- Committed marketplace-installable plugin directories
 ```
 
 ## Links

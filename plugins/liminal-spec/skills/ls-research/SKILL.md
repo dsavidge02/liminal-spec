@@ -235,7 +235,7 @@ The artifact IS the handoff. Not a summary of what we discussed. Not "see the co
 This is why artifacts must be complete and self-contained:
 - Feature spec includes all ACs and TCs
 - Tech design includes all interfaces and test mapping
-- Prompt pack defines the phase task and required references; together with those artifacts it provides complete execution context
+- Complete story provides functional requirements and technical implementation context for execution
 
 ---
 
@@ -453,7 +453,7 @@ If work is interrupted:
 | Product Research | Epic | PRD (if used) |
 | Epic | Tech Design | Epic |
 | Tech Design | Story Sharding | Tech Design doc |
-| Story Sharding | Implementation | Story + Prompt Pack |
+| Story Sharding + Story Tech | Implementation | Complete Story (functional + technical) |
 | Implementation | Verification | Implementation + Test Results |
 
 **Rule:** If it's not in an artifact, it doesn't exist for the next agent.
@@ -470,8 +470,8 @@ This is the core principle of context isolation. The artifact IS the handoff.
 
 | Term | Definition |
 |------|------------|
-| **Liminal Spec** | Spec-driven development methodology. Full rigor or don't use it — no "lite" versions. |
-| **Confidence Chain** | AC → TC → Test → Code. Every line traces back to a requirement. |
+| **Liminal Spec** | Spec-driven development methodology. Full rigor or don't use it -- no "lite" versions. |
+| **Confidence Chain** | AC -> TC -> Test -> Code. Every line traces back to a requirement. |
 | **Context Isolation** | Using fresh agent contexts with artifact handoff instead of long conversations. NOT roleplay. |
 | **Artifact** | A document that captures decisions and serves as handoff between agents. |
 | **Verification Gradient** | Upstream artifacts get more scrutiny. Feature spec most, implementation least. |
@@ -481,12 +481,13 @@ This is the core principle of context isolation. The artifact IS the handoff.
 | Term | Definition |
 |------|------------|
 | **Agent** | A fresh context session that receives artifacts and produces artifacts. Means context isolation, not roleplay personas. |
-| **Product Research** | Optional phase. Vision/idea → PRD. Often skipped. |
-| **Epic** | Creates Epic from requirements. The linchpin — most scrutiny here. |
+| **Product Research** | Optional phase. Vision/idea -> PRD. Often skipped. |
+| **Epic** | Creates Epic from requirements. The linchpin -- most scrutiny here. |
 | **Tech Design** | Creates Tech Design from Epic. Validates spec as downstream consumer. |
-| **Story Sharding / Orchestration** | Creates Stories and Prompts from Spec + Tech Design. Orchestrates through Phase 4 (sharding) and Phase 5 (execution). |
-| **Implementation** | Executes implementation from prompt packs. Zero prior context. |
-| **Verification** | Validates artifacts and implementation. Different model for rigor — thoroughness is the point. |
+| **Story Sharding** | Phase 4. Creates functional stories from Epic + Tech Design. BA/SM authors functional sections (ACs, TCs, scope, DoD). |
+| **Story Technical Enrichment** | Phase 4b. Tech Lead adds implementation targets, test mapping, technical DoD, and spec deviation tracking to functional stories. |
+| **Implementation** | Executes implementation from complete stories. Engineer uses plan mode and TDD discipline. |
+| **Verification** | Validates artifacts and implementation. Different model for rigor -- thoroughness is the point. |
 
 ## Artifacts
 
@@ -495,8 +496,8 @@ This is the core principle of context isolation. The artifact IS the handoff.
 | **PRD** | Product Requirements Document. Multiple features sketched at high level. |
 | **Epic** | Complete specification for one feature. ACs, TCs, data contracts, scope. |
 | **Tech Design** | Architecture, interfaces, test mapping, work plan. Expands significantly from the epic. |
-| **Story** | A discrete, independently executable vertical slice of functionality with its own prompt pack. Derived from tech design work breakdown. |
-| **Prompt Pack** | Instructions for executing one phase of a story, including the phase task plus explicit references to required artifacts (story/epic/tech design). |
+| **Story** | A discrete, independently executable vertical slice with functional sections (BA/SM) and technical implementation sections (Tech Lead). The sole implementation artifact. |
+| **Story Contract** | Four non-negotiable requirements for technically enriched stories: TC-to-test mapping, technical DoD, spec deviation field, targets not steps. |
 
 ## Epic Hierarchy
 
@@ -522,6 +523,7 @@ This is the core principle of context isolation. The artifact IS the handoff.
 | **Gorilla Testing** | Human-in-loop ad hoc testing after Green. Catches "feels wrong." Legitimizes unstructured work. |
 | **Verify Phase** | Formal verification: full test suite, types, lint. |
 | **NotImplementedError** | Custom error thrown by stubs. Signals "not yet implemented." |
+| **Consumer Gate** | Can an engineer implement from this story without asking clarifying questions? The quality bar for technically enriched stories. |
 
 ## Quality Patterns
 
@@ -529,11 +531,11 @@ This is the core principle of context isolation. The artifact IS the handoff.
 |------|------------|
 | **Downstream Consumer** | The agent who uses an artifact validates it (Tech Lead validates Epic). |
 | **Multi-Agent Validation** | Author self-review + downstream consumer review + different model review. |
-| **Dual-Validator Pattern** | Launching two validators in parallel with different cognitive profiles (builder + detail-oriented) for complementary coverage. |
+| **Dual-Validator Pattern** | Launching two validators in parallel with different cognitive profiles (builder + detail-oriented) for complementary coverage. Optional pattern for high-stakes validation. |
 | **Running Total** | Cumulative test count across stories. Previous tests must keep passing. |
-| **Service Mocks** | In-process tests at public entry points that mock only at external boundaries. The primary test layer — where TDD lives. |
+| **Service Mocks** | In-process tests at public entry points that mock only at external boundaries. The primary test layer -- where TDD lives. |
 | **Wide Integration Tests** | Few, slower tests against deployed environment. Verify wiring and configuration. Run locally and post-CD, not on CI. |
-| **Progressive Depth** | Documentation style: revisit concepts from multiple angles with increasing depth. Creates redundant connections across functional↔technical perspectives so readers can enter at any point. |
+| **Progressive Depth** | Documentation style: revisit concepts from multiple angles with increasing depth. Creates redundant connections across functional/technical perspectives so readers can enter at any point. |
 
 ## Context Management
 
@@ -554,5 +556,4 @@ This is the core principle of context isolation. The artifact IS the handoff.
 | **Hook Mocking** | Mocking hooks instead of API boundary. Hides integration bugs. |
 | **Negotiation Baggage** | Accumulated assumptions from long conversations that a fresh agent wouldn't know. |
 | **Spec Drift** | When implementation diverges from spec without updating the spec. |
-| **Lite Mode** | Attempting partial Liminal Spec. Either do full methodology or use a different approach. |
 | **Agent as Roleplay** | Treating agents as personas instead of context isolation mechanism. |

@@ -8,7 +8,7 @@ This document translates feature requirements into implementable architecture. I
 |----------|-------|
 | Reviewers | Validate design before code is written |
 | Developers | Clear blueprint for implementation |
-| Phase Prompts | Source of specific file paths, interfaces, and test mappings |
+| Story Tech Sections | Source of implementation targets, interfaces, and test mappings |
 
 **Prerequisite:** The epic must be complete (all ACs have TCs) before starting this document.
 
@@ -575,7 +575,7 @@ After TDD Green, verify manually. Automated tests catch regressions; manual test
 
 ## Verification Scripts
 
-Define the project's verification commands before story execution begins. These become the quality gates that prompts reference — getting them right here prevents ad-hoc discovery during implementation.
+Define the project's verification commands before story execution begins. These become the quality gates that story technical sections reference — getting them right here prevents ad-hoc discovery during implementation.
 
 ### Required Definitions
 
@@ -696,7 +696,7 @@ Chunk 0 → Chunk 1 → Chunk 3
 
 ## Self-Review Checklist
 
-Before handoff, verify quality. Read your own design critically—the Orchestrator validates by confirming they can derive stories from this design. If they can't, the design isn't ready.
+Before handoff, verify quality. Read your own design critically—the BA/SM validates by confirming they can shard stories, and the Tech Lead validates by confirming they can create story technical sections. If they can't, the design isn't ready.
 
 ### Completeness
 
@@ -767,6 +767,6 @@ Items identified during design that are out of scope. Document them so they're n
 ## Related Documentation
 
 - Epic: `[epic filename]`
-- Story Prompts: `stories/`
+- Stories: `stories/`
 - Testing Reference: [Testing section in this skill]
 - Methodology: `SKILL.md`

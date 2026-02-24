@@ -16,21 +16,23 @@ The traceability chain (requirement -> test condition -> test -> code) means tha
 
 ## The Phases
 
-┌─────────────────────┬───────────────────────────┬───────────────────────────────────────────────────────┐
-│        Phase        │           Skill           │                   Start Here If...                    │
-├─────────────────────┼───────────────────────────┼───────────────────────────────────────────────────────┤
-│ 1. Product Research │ /ls-research              │ You need to explore direction before defining a       │
-│                     │                           │ feature                                               │
-├─────────────────────┼───────────────────────────┼───────────────────────────────────────────────────────┤
-│ 2. Epic             │ /ls-epic                  │ Most common entry point. You know what you want to   │
-│                     │                           │ build                                                 │
-├─────────────────────┼───────────────────────────┼───────────────────────────────────────────────────────┤
-│ 3. Tech Design      │ /ls-tech-design           │ You have a complete epic ready for architecture       │
-├─────────────────────┼───────────────────────────┼───────────────────────────────────────────────────────┤
-│ 4. Story Sharding   │ /ls-story                 │ Design is done, ready to break into executable work   │
-├─────────────────────┼───────────────────────────┼───────────────────────────────────────────────────────┤
-│ 5. Execution        │ /ls-impl                  │ Stories are sharded, ready to implement               │
-└─────────────────────┴───────────────────────────┴───────────────────────────────────────────────────────┘
++---------------------+---------------------------+-------------------------------------------------------+
+|        Phase        |           Skill           |                   Start Here If...                    |
++---------------------+---------------------------+-------------------------------------------------------+
+| 1. Product Research | /ls-research              | You need to explore direction before defining a       |
+|                     |                           | feature                                               |
++---------------------+---------------------------+-------------------------------------------------------+
+| 2. Epic             | /ls-epic                  | Most common entry point. You know what you want to   |
+|                     |                           | build                                                 |
++---------------------+---------------------------+-------------------------------------------------------+
+| 3. Tech Design      | /ls-tech-design           | You have a complete epic ready for architecture       |
++---------------------+---------------------------+-------------------------------------------------------+
+| 4. Story Sharding   | /ls-story                 | Epic + design done, ready for functional stories      |
++---------------------+---------------------------+-------------------------------------------------------+
+| 4b. Story Tech      | /ls-story-tech            | Functional stories ready for technical enrichment     |
++---------------------+---------------------------+-------------------------------------------------------+
+| 5. Implementation   | /ls-impl                  | Complete stories ready, time to implement             |
++---------------------+---------------------------+-------------------------------------------------------+
 
 Most work starts at **Phase 2**. Tell me what you are building and which phase you are starting from.
 
@@ -51,11 +53,13 @@ Based on the user's response, invoke the appropriate skill:
 - Phase 2 (Epic) -> use Skill tool: "liminal-spec:ls-epic"
 - Phase 3 (Tech Design) -> use Skill tool: "liminal-spec:ls-tech-design"
 - Phase 4 (Story Sharding) -> use Skill tool: "liminal-spec:ls-story"
-- Phase 5 (Execution) -> use Skill tool: "liminal-spec:ls-impl"
+- Phase 4b (Story Tech) -> use Skill tool: "liminal-spec:ls-story-tech"
+- Phase 5 (Implementation) -> use Skill tool: "liminal-spec:ls-impl"
 
 If the user is unclear about phase:
 - Need product exploration or stakeholder alignment first? -> Phase 1
 - Have feature requirements but need a complete implementation-ready spec? -> Phase 2
 - Have a complete epic and need architecture/interfaces? -> Phase 3
-- Have epic + design and need executable stories/prompts? -> Phase 4
-- Have stories/prompts and need implementation + verification? -> Phase 5
+- Have epic + design and need functional stories? -> Phase 4
+- Have functional stories and need technical enrichment? -> Phase 4b
+- Have complete stories and need implementation? -> Phase 5

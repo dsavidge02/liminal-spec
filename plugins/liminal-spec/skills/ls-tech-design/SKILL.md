@@ -229,7 +229,7 @@ The test plan must explicitly map every TC from the Epic to a test. This is the 
 
 ## Work Plan: Chunking for Stories
 
-Break work into manageable pieces. Each chunk becomes a story or set of stories. The chunk is the Tech Lead's unit of decomposition; the Orchestrator maps chunks to stories during story sharding (usually 1:1, sometimes a chunk splits into multiple stories or merges with another).
+Break work into manageable pieces. Each chunk becomes a story or set of stories. The chunk is the Tech Lead's unit of decomposition; the BA/SM maps chunks to stories during story sharding (usually 1:1, sometimes a chunk splits into multiple stories or merges with another).
 
 ### Chunks vs. Phases
 
@@ -289,7 +289,7 @@ Chunk 0 → Chunk 1 → Chunk 2
 
 ## Validation Before Handoff
 
-**Before handing to Orchestrator:**
+**Before handing to Story Sharding:**
 
 - [ ] Every TC mapped to test file
 - [ ] All interfaces defined
@@ -303,7 +303,7 @@ Chunk 0 → Chunk 1 → Chunk 2
 - Is the spiral pattern present?
 - Are there redundant connections or just thin threads?
 
-**The Orchestrator validates by confirming they can derive stories from the design.** If they can't, the design isn't ready.
+**The BA/SM validates by confirming they can derive stories from the design. The Tech Lead validates by confirming they can add story-level technical sections from the design.** If either can't, the design isn't ready.
 
 → Verification prompt: `examples/tech-design-verification-prompt.md` — Ready-to-use prompt for external validation before handoff
 
@@ -350,11 +350,10 @@ The epic gets the most attention because if it's on track, everything else follo
 ## The Gradient
 
 ```
-Epic:  ████████████████████ Every line
-Tech Design:   █████████████░░░░░░░ Detailed review
-Stories:       ████████░░░░░░░░░░░░ Key things + shape
-Prompts:       ██████░░░░░░░░░░░░░░ Shape + intuition
-Implementation:████░░░░░░░░░░░░░░░░ Spot checks + tests
+Epic:  #################### Every line
+Tech Design:   #############....... Detailed review
+Stories:       ########............ Key things + shape
+Implementation:####................ Spot checks + tests
 ```
 
 ## Epic Verification (MOST SCRUTINY)
@@ -363,23 +362,23 @@ This is the linchpin. Read and verify EVERY LINE.
 
 ### Verification Steps
 
-1. **BA self-review** — Critical review of own work. Fresh eyes on what was just written.
+1. **BA self-review** -- Critical review of own work. Fresh eyes on what was just written.
 
-2. **Tech Lead validation** — Fresh context. The Tech Lead validates the spec is properly laid out for tech design work:
+2. **Tech Lead validation** -- Fresh context. The Tech Lead validates the spec is properly laid out for tech design work:
    - Can I map every AC to implementation?
    - Are data contracts complete and realistic?
    - Are there technical constraints the BA missed?
    - Do flows make sense from implementation perspective?
 
-3. **Additional model validation** — Another perspective (different model, different strengths):
+3. **Additional model validation** -- Another perspective (different model, different strengths):
    - Different model, different strengths
    - Adversarial/diverse perspectives catch different issues
 
-4. **Fix all issues, not just blockers** — Severity tiers (Critical/Major/Minor) set fix priority order, not skip criteria. Address all issues before handoff. Minors at the spec level compound downstream — zero debt before code exists.
+4. **Fix all issues, not just blockers** -- Severity tiers (Critical/Major/Minor) set fix priority order, not skip criteria. Address all issues before handoff. Minors at the spec level compound downstream -- zero debt before code exists.
 
-5. **Validation rounds** — Run validation until no substantive changes are introduced, typically 1-3 rounds. The Tech Lead also validates before designing — a built-in final gate. Number of rounds is at the user's discretion.
+5. **Validation rounds** -- Run validation until no substantive changes are introduced, typically 1-3 rounds. The Tech Lead also validates before designing -- a built-in final gate. Number of rounds is at the user's discretion.
 
-6. **Human review (CRITICAL)** — Read and parse EVERY LINE:
+6. **Human review (CRITICAL)** -- Read and parse EVERY LINE:
    - Can you explain why each AC matters?
    - No "AI wrote this and I didn't read it" items
    - This is the document that matters most
@@ -398,30 +397,33 @@ Still detailed review, but less line-by-line than epic.
 
 ### Who Validates
 
-- **Tech Lead self-review** — Critical review of own work
-- **Orchestrator validation** — Can I derive stories from this? Can I generate proper prompts?
+- **Tech Lead self-review** -- Critical review of own work
+- **BA/SM validation** -- Can I shard stories from this? Can I identify coherent AC groupings?
+- **Tech Lead re-validation** -- Can I add story-level technical sections from this?
 
-## Story and Prompt Verification
+## Story Verification
 
-Less line-by-line, more shape and intuition.
+Stories go through a two-phase validation reflecting their two-phase authoring.
 
-### What to Check
+### Functional Stories (after BA/SM sharding)
 
-- Pick out key things to look for
-- Intuitively judge the shape
-- "Looks about right or not"
-- Running test totals are accurate
+Less line-by-line, more shape and completeness:
 
-### Prompt Validation (Multi-Agent)
+- Coverage gate: every AC/TC assigned to a story
+- Integration path trace: no cross-story seam gaps
+- Each story coherent and independently acceptable
+- Tech Lead confirms they can add technical sections
 
-Before giving prompts to the Senior Engineer:
+### Technically Enriched Stories (after Tech Lead enrichment)
 
-1. **Orchestrator self-review** — Does the prompt have everything needed?
-2. **Senior Engineer preview** — Can a fresh agent understand and execute?
-3. **Different model review** — Different model reviews prompts against summary
-4. **Cross-check with tech design** — Do prompts cover all chunks?
+Story contract compliance check:
 
-The Senior Engineer validates prompts by executing them. If they can't execute cleanly, the prompt isn't ready.
+1. **TC-to-test mapping present** -- every TC mapped to a test approach
+2. **Technical DoD present** -- specific verification commands
+3. **Spec deviation field present** -- even when empty
+4. **Targets, not steps** -- technical sections describe what, not how
+
+Consumer gate: could an engineer implement from this story without clarifying questions?
 
 ## Implementation Verification
 
@@ -444,21 +446,23 @@ Liminal Spec uses this pattern throughout:
 | Artifact | Author Reviews | Consumer Reviews |
 |----------|---------------|------------------|
 | Epic | BA self-review | Tech Lead (needs it for design) |
-| Tech Design | Tech Lead self-review | Orchestrator (needs it for stories) |
-| Prompts | Orchestrator self-review | Senior Engineer + different model |
+| Tech Design | Tech Lead self-review | BA/SM (needs it for story sharding) + Tech Lead (needs it for technical sections) |
+| Functional Stories | BA/SM self-review | Tech Lead (needs them for technical enrichment) |
+| Complete Stories | Tech Lead self-review | Engineer (needs them for implementation) |
 
 ### Why This Works
 
-1. **Author review** — Catches obvious issues, forces author to re-read
-2. **Consumer review** — Downstream consumer knows what they need from the artifact
-3. **Different model** — Different strengths catch different issues. Use adversarial/diverse perspectives: Opus for gestalt, GPT 5x for detail and precision. When validators disagree on data contract completeness, defer to GPT 5x — it has consistently been more accurate on contract specifics.
-4. **Fresh context** — No negotiation baggage, reads artifact cold
+1. **Author review** -- Catches obvious issues, forces author to re-read
+2. **Consumer review** -- Downstream consumer knows what they need from the artifact
+3. **Different model** -- Different strengths catch different issues. Use adversarial/diverse perspectives for complementary coverage.
+4. **Fresh context** -- No negotiation baggage, reads artifact cold
 
 ### The Key Pattern: Author + Downstream Consumer
 
-If the Tech Lead can't build a design from the epic → spec isn't ready.
-If the Orchestrator can't derive stories from tech design → design isn't ready.
-If the Senior Engineer can't execute from prompt → prompt isn't ready.
+If the Tech Lead can't build a design from the epic -> spec isn't ready.
+If the BA/SM can't shard stories from tech design -> design isn't ready.
+If the Tech Lead can't add technical sections to stories -> stories aren't ready.
+If the Engineer can't implement from complete stories -> stories aren't ready.
 
 **The downstream consumer is the ultimate validator.**
 
@@ -466,24 +470,13 @@ If the Senior Engineer can't execute from prompt → prompt isn't ready.
 
 ## Orchestration
 
-**Opus orchestrates validation passes.** Launches subagents for:
-- Self-reviews
-- Downstream consumer validation
-- Different model passes
-
-### Challenge
-
-Hard to prescribe exact orchestration in a skill.
-
-### Solution
-
-This skill describes:
-- **WHAT to validate** — Which artifacts, which aspects
-- **WHEN to validate** — Checkpoints in the flow
+**How to run validation passes is left to the practitioner.** This skill describes:
+- **WHAT to validate** -- Which artifacts, which aspects
+- **WHEN to validate** -- Checkpoints in the flow
 
 Leaves flexible:
-- **HOW to validate** — Which models, how many passes
-- **Specific orchestration** — Based on your setup and preferences
+- **HOW to validate** -- Which models, how many passes
+- **Specific orchestration** -- Based on your setup and preferences
 
 ---
 
@@ -499,23 +492,23 @@ Leaves flexible:
 - [ ] Tech Lead validated: can design from this
 - [ ] Human reviewed every line
 
-### Before Stories
+### Before Story Sharding
 
 - [ ] Tech Design complete (all altitudes: system context, modules, interfaces)
-- [ ] Tech Lead self-review done (completeness, richness, writing quality, agent readiness)
+- [ ] Tech Lead self-review done (completeness, richness, writing quality, readiness)
 - [ ] Model validation complete (different model for diverse perspective)
 - [ ] All issues addressed (Critical, Major, and Minor)
 - [ ] Validation rounds complete (no substantive changes remaining)
-- [ ] TC → Test mapping complete (every TC from epic maps to a test)
-- [ ] Orchestrator validated: can derive stories from this
+- [ ] TC -> Test mapping complete (every TC from epic maps to a test)
+- [ ] BA/SM validated: can shard stories from this
 - [ ] Human reviewed structure and coverage
 
-### Before Execution
+### Before Implementation
 
-- [ ] Stories and prompts complete
-- [ ] Orchestrator self-review done
-- [ ] Senior Engineer validated: can execute from prompts
-- [ ] Different model reviewed prompts
+- [ ] Functional stories complete (all ACs/TCs assigned, integration path traced)
+- [ ] Technical enrichment complete (all four story contract requirements met)
+- [ ] Consumer gate passed: engineer can implement from stories
+- [ ] Different model reviewed stories (if high-stakes)
 
 ### Before Ship
 
@@ -1706,7 +1699,7 @@ This document translates feature requirements into implementable architecture. I
 |----------|-------|
 | Reviewers | Validate design before code is written |
 | Developers | Clear blueprint for implementation |
-| Phase Prompts | Source of specific file paths, interfaces, and test mappings |
+| Story Tech Sections | Source of implementation targets, interfaces, and test mappings |
 
 **Prerequisite:** The epic must be complete (all ACs have TCs) before starting this document.
 
@@ -2273,7 +2266,7 @@ After TDD Green, verify manually. Automated tests catch regressions; manual test
 
 ## Verification Scripts
 
-Define the project's verification commands before story execution begins. These become the quality gates that prompts reference — getting them right here prevents ad-hoc discovery during implementation.
+Define the project's verification commands before story execution begins. These become the quality gates that story technical sections reference — getting them right here prevents ad-hoc discovery during implementation.
 
 ### Required Definitions
 
@@ -2394,7 +2387,7 @@ Chunk 0 → Chunk 1 → Chunk 3
 
 ## Self-Review Checklist
 
-Before handoff, verify quality. Read your own design critically—the Orchestrator validates by confirming they can derive stories from this design. If they can't, the design isn't ready.
+Before handoff, verify quality. Read your own design critically—the BA/SM validates by confirming they can shard stories, and the Tech Lead validates by confirming they can create story technical sections. If they can't, the design isn't ready.
 
 ### Completeness
 
@@ -2465,7 +2458,7 @@ Items identified during design that are out of scope. Document them so they're n
 ## Related Documentation
 
 - Epic: `[epic filename]`
-- Story Prompts: `stories/`
+- Stories: `stories/`
 - Testing Reference: [Testing section in this skill]
 - Methodology: `SKILL.md`
 
@@ -2483,7 +2476,7 @@ Use this prompt template to have an agent critically review a Tech Design before
 
 **Critical Review: [Feature Name] Tech Design**
 
-You are reviewing a Tech Design document for [brief description]. This is Phase 3 (Tech Design) of a Liminal Spec pipeline. The downstream consumer of this document is an Orchestrator who needs to derive executable stories and context-rich prompt packs (with explicit artifact references) from it.
+You are reviewing a Tech Design document for [brief description]. This is Phase 3 (Tech Design) of a Liminal Spec pipeline. The downstream consumers are the BA/SM (who shard the epic into functional stories) and the Tech Lead (who adds technical implementation sections to stories).
 
 **Step 1: Load liminal-spec Skill Context**
 
@@ -2501,7 +2494,7 @@ Read these files to understand the methodology and evaluation criteria:
 2. **Epic (for alignment):** `[path to epic.md]`
 3. **Codebase (for feasibility):** `[path to relevant source directories]`
 
-**Important Boundary:** Story Sharding (Phase 4) follows Tech Design. The design defines architecture and interfaces — it does not need to specify prompt structure, story execution order, or agent coordination. If you identify orchestration concerns, note them as recommendations for the Orchestrator, not as design blockers.
+**Important Boundary:** Story Sharding (Phase 4) follows Tech Design. The design defines architecture and interfaces -- it does not need to specify story execution order or implementation sequence. If you identify story sharding or implementation concerns, note them as recommendations, not as design blockers.
 
 **Step 3: Evaluation Criteria**
 
@@ -2543,17 +2536,17 @@ Assess the tech design against these criteria:
    - Does each subsequent chunk map to a coherent vertical slice of functionality?
    - Are chunk dependencies clear (what must complete before what)?
    - Are test count estimates provided per chunk?
-   - Do running totals cascade correctly?
+   - Can a BA/SM shard stories from these chunks? Can a Tech Lead add technical sections?
 
 7. **Mock Boundary Correctness**
    - Are mocks at external boundaries (network, DB, filesystem), not internal module boundaries?
    - Does the testing strategy section explicitly state what gets mocked and what doesn't?
    - Are error response shapes defined for mock setup?
 
-8. **Agent Readiness (Skeleton Phase)**
+8. **Engineer Readiness**
    - Are file paths exact and complete (not placeholder patterns)?
    - Are stub signatures copy-paste ready with `NotImplementedError` throws?
-   - Could a fresh agent create the skeleton from this document alone, without asking questions?
+   - Could an engineer plan and implement from this document plus stories, without asking questions?
    - Are test file names and test descriptions specific enough for TDD Red phase?
 
 9. **Writing Quality**
@@ -2576,7 +2569,7 @@ Provide your review in this structure:
 ## Issues
 
 ### Critical (Must fix before Story Sharding)
-[Issues that would prevent an Orchestrator from deriving stories]
+[Issues that would prevent a BA/SM from deriving stories or a Tech Lead from adding technical sections]
 
 ### Major (Should fix)
 [Issues that would cause confusion or rework during execution]
@@ -2597,7 +2590,7 @@ Provide your review in this structure:
 [Clarifying questions that would improve the design]
 ```
 
-Be thorough and critical. The goal is to catch issues before they compound into bad stories and broken prompts.
+Be thorough and critical. The goal is to catch issues before they compound into bad stories and broken implementations.
 
 **Step 5: TC → Test Traceability Table**
 
@@ -2621,4 +2614,4 @@ This table makes gaps immediately visible. If a TC has no test mapped, or the te
 - Can also run with multiple agents in parallel for diverse perspectives
 - Compare the TC → Test traceability table against the epic's AC → TC table for full chain coverage
 - Critical and Major issues should be addressed before Story Sharding handoff
-- The Orchestrator will also validate implicitly during Phase 4 — if they can't derive stories, the design goes back
+- The BA/SM and Tech Lead will also validate implicitly during Phase 4 -- if they can't derive stories or add technical sections, the design goes back

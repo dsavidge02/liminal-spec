@@ -1,5 +1,48 @@
 # Changelog
 
+## v0.5.0 (2026-02-24)
+
+Stories become the sole implementation artifact. Prompt packs and execution orchestration are removed. A new skill (ls-story-tech) splits technical enrichment from functional sharding. The pipeline is now: functional stories (BA/SM) -> technical enrichment (Tech Lead) -> implementation (Engineer).
+
+### Added
+
+- **`/ls-story-tech` skill (Phase 4b):** Tech Lead adds technical sections to functional stories -- architecture context, interfaces & contracts, TC-to-test mapping, risks & constraints, spec deviation field, and technical DoD.
+- **Story contract requirements:** Four non-negotiable requirements for technically enriched stories: TC-to-test mapping, technical DoD, spec deviation field, targets not steps.
+- **Consumer gate:** "Could an engineer implement from this story without clarifying questions?" -- the quality bar for complete stories.
+- **Coverage gate:** Table mapping every AC/TC to a story number. Unmapped items block handoff.
+- **Story technical enrichment verification prompt:** `src/examples/story-tech-verification-prompt.md` for external validation of technically enriched stories.
+
+### Changed
+
+- **`/ls-story` rewritten:** Now produces functional stories only (ACs, TCs, scope, error paths, functional DoD). Prompt pack creation, orchestration, and TDD principles in prompts removed. ~660 lines -> ~280 lines.
+- **`/ls-impl` rewritten:** Now story-driven and plan-mode compatible. Engineers implement from complete stories with TDD discipline. Execution orchestration (~400 lines) removed. "Plan Before You Build" section added. Self-review framed as recommended practice, not orchestrated mandate. ~792 lines -> ~340 lines.
+- **`/ls-tech-design` updated:** Orchestrator references replaced with BA/SM and Tech Lead as downstream consumers.
+- **Tech design template updated:** Prompt-era assumptions replaced with story-driven terminology.
+- **Tech design verification prompt updated:** Downstream consumer description, chunk breakdown, and agent readiness sections reframed for the two-phase story process.
+- **Verification model updated:** Orchestrator/prompt references removed. Checkpoints updated for functional stories -> technically enriched stories -> implementation flow.
+- **Terminology updated:** Story definition expanded to include functional + technical sections. Story Contract and Consumer Gate terms added. Prompt Pack definition removed. Lite Mode anti-pattern removed. Dual-Validator Pattern noted as optional.
+- **Model selection simplified:** Prescriptive model-to-task table removed. General principle retained: match model strengths to task requirements.
+- **Senior engineer agent:** Model reference updated from Opus 4.5 to Opus 4.6.
+- **Router command:** Phase 4b added to phase table and routing logic. Phase descriptions updated.
+- **README rewritten:** Pipeline table, key ideas, commands, skill pack listing, markdown pack table, and execution SOP updated for story-driven model.
+- **CLAUDE.md updated:** Plugin structure, skills table, and descriptions updated for 6 skills.
+
+### Removed
+
+- **Prompt pack creation** from `/ls-story` (~350 lines of prompt philosophy, shared context blocks, phase-specific task sections, prompt validation, and file structure).
+- **Execution orchestration** from `/ls-impl` (~400 lines of pipeline, dual-validator pattern, fix cycle, agent selection, session management, human decision points, parallel pipeline, anti-patterns, and execution checklist).
+- **Prompting reference files from build:** `prompting-opus-4.6.md` and `prompting-gpt-5x.md` removed from manifest shared arrays. Files kept in `src/shared/` as reference material.
+- **Prompt Pack** artifact definition from terminology.
+- **Lite Mode** anti-pattern from terminology.
+
+### Migration
+
+- `/ls-story` no longer produces prompt packs. Use `/ls-story-tech` to add technical sections to functional stories.
+- `/ls-impl` no longer includes execution orchestration. Engineers implement from complete stories using plan mode and TDD discipline.
+- Prompt-era references in project docs should be updated to story-driven terminology.
+
+---
+
 ## v0.4.1 (2026-02-23)
 
 Story Sharding adds a dual-model verification gate and shim/fudge audit. Release artifacts consolidated from individual files to two versioned packs. README and changelog rewritten for clarity.
@@ -12,8 +55,8 @@ Story Sharding adds a dual-model verification gate and shim/fudge audit. Release
 ### Changed
 
 - **Standalone packaging:** Build emits two packs instead of per-skill `.skill` zips:
-  - `liminal-spec-skill-pack.zip` — installable skill directories
-  - `liminal-spec-markdown-pack.zip` — paste-into-chat markdown files
+  - `liminal-spec-skill-pack.zip` -- installable skill directories
+  - `liminal-spec-markdown-pack.zip` -- paste-into-chat markdown files
   - Per-phase `*-skill.md` files still emitted alongside the packs
 - **Release workflow:** Publishes versioned pack artifacts instead of individual `.skill` and markdown files.
 - **Validation:** Enforces pack existence and rejects legacy `.skill` artifacts. Integration tests assert the same.
@@ -52,7 +95,7 @@ Story and implementation phase guidance aligned. Product Research restored as a 
 
 ---
 
-## v0.3.1 — Router Layout Readability (2026-02-17)
+## v0.3.1 -- Router Layout Readability (2026-02-17)
 
 ### Changed
 
@@ -62,7 +105,7 @@ Story and implementation phase guidance aligned. Product Research restored as a 
 
 ---
 
-## v0.2.0 — Plugin Restructure (2026-02-14)
+## v0.2.0 -- Plugin Restructure (2026-02-14)
 
 Restructured from a single progressive-disclosure skill into a composable plugin with build pipeline.
 
@@ -71,7 +114,7 @@ Restructured from a single progressive-disclosure skill into a composable plugin
 - **Source-based composition:** Content now lives in `src/` as modular source files. A build script (`scripts/build.ts`) composes them into self-contained skills via `manifest.json`.
 - **Plugin packaging:** Output is a Claude Code plugin (`dist/plugin/`) with per-phase skills, a router command, senior-engineer agent, and marketplace metadata.
 - **Standalone distribution:** Parallel output (`dist/standalone/`) produces paste-ready markdown files for non-Claude-Code users (BA/PO using Enterprise Chat).
-- **No progressive disclosure:** Each composed skill contains all content needed for its phase — no separate reference file loading required.
+- **No progressive disclosure:** Each composed skill contains all content needed for its phase -- no separate reference file loading required.
 
 ### Skills
 
@@ -86,9 +129,9 @@ Restructured from a single progressive-disclosure skill into a composable plugin
 
 ### Build & CI
 
-- `bun run build` — compose source into dist/
-- `bun run validate` — validate output structure and frontmatter
-- `bun test` — integration test suite
+- `bun run build` -- compose source into dist/
+- `bun run validate` -- validate output structure and frontmatter
+- `bun test` -- integration test suite
 - GitHub Actions: PR validation and tag-triggered artifact publishing
 
 ### Removed
@@ -104,30 +147,30 @@ Restructured from a single progressive-disclosure skill into a composable plugin
 
 ---
 
-## Prior History (v1 → v1.x)
+## Prior History (v1 -> v1.x)
 
-Liminal Spec started as a single SKILL.md file — one document covering all phases, loaded whole into context. The methodology evolved through several rounds of refinement as real usage exposed what worked and what didn't.
+Liminal Spec started as a single SKILL.md file -- one document covering all phases, loaded whole into context. The methodology evolved through several rounds of refinement as real usage exposed what worked and what didn't.
 
 ### Early structure
 
-The initial versions established the core pipeline (BA → Tech Lead → Scrum Master → Senior Engineer → Verifier) and the confidence chain (AC → TC → Test → Code). Phase execution, mock-at-API-boundary testing, and state management were solid from early on. The Product Owner phase existed but was marked "often skipped" — most work entered at the BA phase with requirements already in hand.
+The initial versions established the core pipeline (BA -> Tech Lead -> Scrum Master -> Senior Engineer -> Verifier) and the confidence chain (AC -> TC -> Test -> Code). Phase execution, mock-at-API-boundary testing, and state management were solid from early on. The Product Owner phase existed but was marked "often skipped" -- most work entered at the BA phase with requirements already in hand.
 
 ### Conceptual clarifications
 
 Several rounds of real-world use surfaced concepts that the early versions either missed or left implicit:
 
-- **Agents = context isolation, not roleplay.** The original framing suggested "personas" — be the BA, be the Tech Lead. In practice, what mattered was fresh context windows with artifact handoff. The role labels were convenient shorthand, but the mechanism was context isolation. This distinction was made explicit throughout.
+- **Agents = context isolation, not roleplay.** The original framing suggested "personas" -- be the BA, be the Tech Lead. In practice, what mattered was fresh context windows with artifact handoff. The role labels were convenient shorthand, but the mechanism was context isolation. This distinction was made explicit throughout.
 
 - **Verification gradient.** Upstream phases deserve more scrutiny because errors cascade. The feature spec gets the most review because if it's wrong, everything downstream is wrong. This was implicit in the pipeline design but never stated as a principle.
 
-- **Feature spec hierarchy.** User Profile → Flows → ACs → TCs isn't just a template — it's a cascade where each level depends on the one above. You can't write a good TC without a clear AC. You can't write a good AC without understanding the flow. Making this dependency chain explicit changed how specs were written.
+- **Feature spec hierarchy.** User Profile -> Flows -> ACs -> TCs isn't just a template -- it's a cascade where each level depends on the one above. You can't write a good TC without a clear AC. You can't write a good AC without understanding the flow. Making this dependency chain explicit changed how specs were written.
 
-- **Spiral writing style for tech designs.** Tech designs that descended linearly (system → module → interface) produced thin context that agents struggled with. The spiral pattern — functional ↔ technical, high ↔ low, revisiting topics from multiple angles — created redundant connections that both humans and models could navigate. This became a core writing principle.
+- **Spiral writing style for tech designs.** Tech designs that descended linearly (system -> module -> interface) produced thin context that agents struggled with. The spiral pattern -- functional / technical, high / low, revisiting topics from multiple angles -- created redundant connections that both humans and models could navigate. This became a core writing principle.
 
 - **Multi-agent validation.** Using a single model to both write and validate an artifact missed things. The author + downstream consumer + different model pattern caught more issues. This became the dual-validator pattern used throughout.
 
-- **Gorilla testing.** Ad-hoc manual testing between TDD Green and formal verification was happening informally. Making it a named phase legitimized unstructured exploration within the structured process — a recognition that humans catch things automation doesn't.
+- **Gorilla testing.** Ad-hoc manual testing between TDD Green and formal verification was happening informally. Making it a named phase legitimized unstructured exploration within the structured process -- a recognition that humans catch things automation doesn't.
 
-### Structural shift (v1.x → v0.2.0)
+### Structural shift (v1.x -> v0.2.0)
 
-The single-file approach hit practical limits. Skills exceeded reasonable context sizes, shared concepts were duplicated across sections, and updating one concept meant finding every place it appeared. The v0.2.0 restructure moved to source-based composition: modular source files in `src/`, a build that composes them per `manifest.json`, and self-contained output per phase. The conceptual work from v1.x carried forward intact — the restructure changed packaging, not methodology.
+The single-file approach hit practical limits. Skills exceeded reasonable context sizes, shared concepts were duplicated across sections, and updating one concept meant finding every place it appeared. The v0.2.0 restructure moved to source-based composition: modular source files in `src/`, a build that composes them per `manifest.json`, and self-contained output per phase. The conceptual work from v1.x carried forward intact -- the restructure changed packaging, not methodology.
