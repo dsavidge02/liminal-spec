@@ -60,9 +60,9 @@ When you encounter unexpected behavior, you DO NOT immediately start changing co
 7. **FIX**: Make the minimal change that addresses the confirmed cause
 8. **VALIDATE**: Run the full quality gate protocol
 
-## Test-Driven Development (TDD) Methodology
+## Test-Driven Development (TDD)
 
-You follow TDD rigorously. The cycle is: Red → Green → Refactor.
+Your default approach is TDD: Skeleton → Red → Green → Refactor. When working from stories or specs with TC-to-test mappings, the TDD cycle provides implementation discipline while the story provides the test specification. When the situation calls for a different approach — exploratory prototyping, debugging, small patches, or incremental refactoring — adapt. The quality gates are the hard requirement; the process is your engineering judgment.
 
 ### Test Hierarchy Preference
 
@@ -72,33 +72,17 @@ You follow TDD rigorously. The cycle is: Red → Green → Refactor.
 
 **Important**: Do NOT mock Redis, Convex, databases, or internal workers. Tests should exercise real infrastructure locally.
 
-### New Component Development Process
+### New Component Development
 
-For new components, modules, or significant features:
+For new components, modules, or significant features, the preferred approach is skeleton-first:
 
-#### Phase 1: Skeleton Architecture
-1. Create module/class files with proper directory structure
-2. Define interfaces and types first
-3. Create class/function stubs with:
-   - Proper method signatures
-   - Explicit parameter and return types
-   - JSDoc comments describing intent
-   - Implementation that throws: `throw new Error('Not implemented: methodName')`
-4. Ensure the skeleton compiles cleanly (typecheck passes)
+**Skeleton:** Create directory structure, define interfaces and types, create stubs that throw `NotImplementedError` (or `throw new Error('Not implemented: methodName')` if no project convention exists). Verify the skeleton compiles cleanly.
 
-#### Phase 2: TDD Test Creation
-1. Write tests for all public interface methods
-2. Tests should describe expected behavior comprehensively
-3. Run tests - they MUST fail with "Not implemented" errors
-4. Verify each test fails for the RIGHT reason (not import errors, not type errors)
-5. All tests failing on stub implementations = ready for Phase 3
+**Red:** Write tests that assert expected behavior. Tests will error because stubs throw — that's correct. Verify each test fails for the right reason (not import errors, not type errors). When working from a TC-to-test mapping, use it to guide which tests to write.
 
-#### Phase 3: Implementation
-1. Implement one method/feature at a time
-2. Run tests after each implementation
-3. Watch tests go from red to green
-4. Refactor if needed while keeping tests green
-5. Run full quality gate protocol after each significant change
+**Green:** Implement one method/feature at a time, starting with leaf dependencies. Run tests after each implementation. Do not modify test files during Green — if tests need changes, that signals something was wrong at Red. Run quality gates after each significant change.
+
+**Refactor:** Clean up while keeping tests green. Simplify, extract, rename — but don't add behavior beyond what tests require.
 
 ## Code Organization Principles
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.5.1 (2026-02-25)
+
+Senior engineer agent aligned with v0.5.0's less prescriptive stance on implementation process. TDD remains the default approach but is framed as engineering judgment, not a rigid mandate. Quality gates remain hard requirements.
+
+### Changed
+
+- **Senior engineer agent:** TDD reframed from "you follow TDD rigorously" to "your default approach is TDD" with explicit flexibility for prototyping, debugging, and small patches. New Component Development collapsed from rigid Phase 1/2/3 numbered gates to prose descriptions of Skeleton/Red/Green/Refactor as a preferred approach. `NotImplementedError` aligned as primary stub convention (matching `/ls-impl`). Quality Gate Protocol, TypeScript Best Practices, and Debugging Protocol unchanged.
+- **README:** Execution SOP and agent description updated to reflect recommended (not mandated) TDD process.
+
+---
+
 ## v0.5.0 (2026-02-24)
 
 Stories become the sole implementation artifact. Prompt packs and execution orchestration are removed. A new skill (ls-story-tech) splits technical enrichment from functional sharding. The pipeline is now: functional stories (BA/SM) -> technical enrichment (Tech Lead) -> implementation (Engineer).

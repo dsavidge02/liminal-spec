@@ -25,7 +25,7 @@ Not for: quick bug fixes, single-file changes, spikes, or emergency patches. Lim
 
 Most work starts at Phase 2 - if you know what you're building, start there.
 
-Within Phase 5, each story follows: **Skeleton -> TDD Red -> TDD Green -> Gorilla Test -> Verify**.
+Within Phase 5, the recommended cycle is: **Skeleton -> TDD Red -> TDD Green -> Gorilla Test -> Verify**. The verification gate is the hard requirement; the TDD process is the engineer's judgment.
 
 ## Key Ideas
 
@@ -65,7 +65,7 @@ This gives you:
 
 `ls-` command prefixes are intentional: they make slash-command autocomplete clearer and avoid collisions with generic command names like `/epic` or `/story`.
 
-The plugin also includes a **senior-engineer agent** for TDD implementation -- rigorous TypeScript development with quality gates (format, lint, typecheck, test).
+The plugin also includes a **senior-engineer agent** -- rigorous TypeScript development with quality gates (format, lint, typecheck, test) and TDD as the default implementation approach.
 
 Start with `/liminal-spec` and it will guide you to the right phase.
 
@@ -102,7 +102,7 @@ Stories contain functional requirements (ACs, TCs, error paths) and technical im
 
 1. Read the story (functional + technical sections).
 2. Plan the implementation (use plan mode if available).
-3. Execute the TDD cycle: Skeleton -> Red -> Green -> Self-Review -> Gorilla -> Verify.
+3. Execute the TDD cycle (recommended): Skeleton -> Red -> Green -> Self-Review -> Gorilla -> Verify.
 4. Verify against the story's technical checklist and functional DoD.
 
 The story is the sole implementation artifact. Epic and tech design are reference material available in the project repo.
