@@ -49,13 +49,32 @@ All plugins (full suite and individual) are distributed through a single marketp
 claude plugin marketplace add liminal-ai/liminal-spec
 ```
 
-### Full Suite (recommended for most users)
+### Install
 
 ```bash
+# Full suite -- all 6 skills, router, senior-engineer agent
 claude plugin install liminal-spec@liminal-plugins
+
+# Or install individual phases à la carte
+claude plugin install ls-epic@liminal-plugins          # Phase 2: Feature specifications
+claude plugin install ls-tech-design@liminal-plugins   # Phase 3: Technical designs
+claude plugin install ls-story@liminal-plugins         # Phase 4: Story sharding
+claude plugin install ls-story-tech@liminal-plugins    # Phase 4b: Story technical enrichment
 ```
 
-This gives you everything:
+### Update
+
+When a new version is released, update all installed plugins from the marketplace:
+
+```bash
+claude plugin marketplace update liminal-plugins
+```
+
+Or enable auto-update via the `/plugin` manager (Marketplaces tab) to pull new versions automatically at startup.
+
+### What You Get
+
+**Full suite** (`liminal-spec`) includes:
 
 | Command | What it does |
 |---------|-------------|
@@ -69,32 +88,7 @@ This gives you everything:
 
 Plus a **senior-engineer agent** (rigorous TypeScript development with quality gates and TDD as the default approach) and the `/liminal-spec` router that guides you to the right phase.
 
-### Individual Plugins (à la carte)
-
-Install only the phases you need. Each individual plugin contains a single self-contained skill -- the same composed content as the full suite, just packaged separately.
-
-```bash
-# Install one phase
-claude plugin install ls-epic@liminal-plugins
-
-# Install multiple phases
-claude plugin install ls-epic@liminal-plugins
-claude plugin install ls-tech-design@liminal-plugins
-
-# Or install a role-appropriate set
-claude plugin install ls-story@liminal-plugins ls-story-tech@liminal-plugins
-```
-
-Available individual plugins:
-
-| Plugin | Phase | Skill command | For |
-|--------|-------|---------------|-----|
-| `ls-epic` | 2 | `/ls-epic:ls-epic` | BA, PO -- feature specifications |
-| `ls-tech-design` | 3 | `/ls-tech-design:ls-tech-design` | Tech Lead -- technical designs |
-| `ls-story` | 4 | `/ls-story:ls-story` | BA, SM -- story sharding |
-| `ls-story-tech` | 4b | `/ls-story-tech:ls-story-tech` | Tech Lead -- story technical enrichment |
-
-Individual plugins do not include the router command, the senior-engineer agent, or the `/ls-research` and `/ls-impl` skills. Those are available in the full suite.
+**Individual plugins** each contain a single self-contained skill -- the same composed content as the full suite, just packaged separately. They do not include the router, the senior-engineer agent, or the research and implementation skills.
 
 ### Team Role Setup
 
@@ -115,12 +109,10 @@ claude plugin install ls-story@liminal-plugins
 claude plugin install liminal-spec@liminal-plugins
 ```
 
-### Distribution Formats
+### Other Distribution Formats
 
 | Format | Audience | How to get it | Contents |
 |--------|----------|---------------|----------|
-| Full suite plugin | Engineers, full team | `claude plugin install liminal-spec@liminal-plugins` | All 6 skills, router, senior-engineer agent |
-| Individual plugins | Role-specific | `claude plugin install ls-epic@liminal-plugins` | Single skill per plugin |
 | Skill Pack | Manual skill installation | Download from [Releases](https://github.com/liminal-ai/liminal-spec/releases) | One skill directory per phase |
 | Markdown Pack | BA, PO, PM, Claude Enterprise | Download from [Releases](https://github.com/liminal-ai/liminal-spec/releases) | One self-contained markdown per phase |
 
