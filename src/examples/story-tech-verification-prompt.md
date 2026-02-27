@@ -29,39 +29,51 @@ Read these files to understand the methodology and evaluation criteria:
 Assess each technically enriched story against these criteria:
 
 1. **Story Contract Compliance**
-   - Does every story have all four required elements? (TC-to-test mapping, technical DoD, spec deviation field, targets-not-steps)
+   - Does every story have all six required elements? (Tech design shard, TC-to-test mapping, non-TC decided tests, technical DoD, spec deviation with citations, targets-not-steps)
    - Is Story 0 appropriately simplified (no TC mapping, types/config focus)?
    - Are technical sections below the functional DoD boundary?
 
-2. **TC to Test Mapping Completeness**
+2. **Tech Design Shard Completeness**
+   - Is the Architecture Context a substantial shard of the tech design, or a thin summary?
+   - Does the Interfaces & Contracts section carry full type definitions and function signatures, not just names?
+   - Could the engineer understand the architecture, flows, and contracts for this story without opening the tech design?
+   - Is the shard at a scale proportional to the relevant tech design content (not 10 lines summarizing 300)?
+
+3. **TC to Test Mapping Completeness**
    - Does every TC in the story's functional section have a corresponding entry in the TC-to-test mapping table?
-   - Are test approaches appropriate for what's being verified (service mock vs integration, assertion strategy)?
+   - Are test approaches carried forward from the tech design (not re-derived or guessed)?
    - Are test file names specific and consistent with the tech design?
 
-3. **Interface Coverage**
+4. **Non-TC Test Coverage**
+   - Are tech-design-decided tests beyond TC mappings (edge cases, collision tests, integration tests) listed in the Non-TC Decided Tests section?
+   - If none exist, does the section explicitly state this with checked tech design section references?
+   - Cross-check: does the union of all stories' non-TC tests cover all non-TC tests from the tech design?
+
+5. **Interface Coverage**
    - Are all interfaces from the tech design's Low Altitude section assigned to at least one story's Interfaces & Contracts section?
    - Are all modules from the tech design's Module Responsibility Matrix represented across story Architecture Context sections?
    - Any tech design interfaces with no story assignment?
 
-4. **Targets vs Steps**
+6. **Targets vs Steps**
    - Do technical sections describe what to build (modules, interfaces, contracts) rather than how to build it (step-by-step instructions)?
-   - Does the Architecture Context name modules and flows without prescribing implementation sequence?
+   - Does the Architecture Context include substantial detail without prescribing implementation sequence?
    - Could an engineer reasonably choose a different implementation order and still satisfy the story?
 
-5. **DoD Specificity**
+7. **DoD Specificity**
    - Are verification commands concrete (`bun run verify`, not "run tests")?
    - Does the technical checklist include regression expectations?
    - Is spec deviation documentation included as a checklist item?
 
-6. **Spec Deviation Accuracy**
-   - Does the spec deviation field reference specific tech design sections that were checked?
+8. **Spec Deviation Accuracy**
+   - Does the spec deviation field cite specific tech design sections that were checked (by heading name, not line number)?
    - When deviations exist, is the rationale clear and the scope bounded?
-   - Are "None." entries credible (do they appear to reflect actual checking, not rubber-stamping)?
+   - Are "None." entries credible (do they include section citations, not just a bare "None.")?
 
-7. **Consumer Gate**
-   - Could an engineer implement from this story without asking clarifying questions?
-   - Is the Architecture Context sufficient to orient an engineer in the codebase?
+9. **Consumer Gate**
+   - Could an engineer implement from this story alone, without reading the full tech design?
+   - Is the tech design shard sufficient to understand architecture and flows for this story?
    - Is the TC-to-test mapping sufficient to write tests without deriving approaches from scratch?
+   - Are non-TC decided tests present so the engineer doesn't miss tech-design-planned tests?
 
 **Step 4: Report Format**
 

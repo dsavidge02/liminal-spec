@@ -268,9 +268,20 @@ Some teams prefer completing all skeletons first (all Chunk Skeletons, then all 
 - src/features/add-location/hooks/useLocations.ts
 - src/features/add-location/api/locationApi.ts
 
-**Test Count:** 12 tests
-**Running Total:** 12 tests
+**Relevant Tech Design Sections:** §System Context — Data Flow,
+§Module Architecture — AddLocation Page, §Low Altitude — useLocations Hook,
+§Flow 1: Initial Load Sequence, §Testing Strategy — Initial Load Tests
+
+**Non-TC Decided Tests:** Empty state render (no locations), loading
+skeleton timing assertion (Tech Design §Testing Strategy)
+
+**Test Count:** 12 tests + 2 non-TC
+**Running Total:** 14 tests
 ```
+
+The "Relevant Tech Design Sections" field lists which headings from this tech design are relevant to the chunk. This directly supports the Story Technical Enrichment phase: the Tech Lead uses these references to select which tech design content to shard into each story, rather than reading the entire tech design per story.
+
+The "Non-TC Decided Tests" field lists tests this chunk needs that aren't 1:1 with a TC -- edge cases, collision tests, defensive tests. These must be carried forward into stories during technical enrichment so they aren't lost.
 
 ### Chunk Dependencies
 
@@ -289,8 +300,9 @@ Chunk 0 → Chunk 1 → Chunk 2
 - [ ] Every TC mapped to test file
 - [ ] All interfaces defined
 - [ ] Module boundaries clear
-- [ ] Chunk breakdown complete
-- [ ] Test counts estimated
+- [ ] Chunk breakdown complete with relevant tech design section references per chunk
+- [ ] Non-TC decided tests identified and assigned to chunks
+- [ ] Test counts estimated (TC tests + non-TC tests)
 - [ ] No circular dependencies
 
 **Self-review (CRITICAL):**

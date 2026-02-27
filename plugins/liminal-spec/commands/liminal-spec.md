@@ -36,17 +36,41 @@ The traceability chain (requirement -> test condition -> test -> code) means tha
 
 Most work starts at **Phase 2**. Tell me what you are building and which phase you are starting from.
 
+## Simple Pipeline (Story-Sized Work)
+
+For focused changes that don't warrant the full pipeline -- a single capability, a contained feature addition, a focused change. Same rigor, fewer phases.
+
++---------------------+---------------------------+-------------------------------------------------------+
+|        Phase        |           Skill           |                   Start Here If...                    |
++---------------------+---------------------------+-------------------------------------------------------+
+| S1. Simple Story    | /lss-story                | You have story-sized work and want epic-quality ACs   |
++---------------------+---------------------------+-------------------------------------------------------+
+| S2. Simple Tech     | /lss-tech                 | You have a functional story ready for inline tech     |
+|                     |                           | design + enrichment                                   |
++---------------------+---------------------------+-------------------------------------------------------+
+| 5. Implementation   | /ls-impl                  | Complete story ready, time to implement               |
++---------------------+---------------------------+-------------------------------------------------------+
+
+Use the simple pipeline when scope is 1-2 flows and ~5-15 ACs. If scope grows beyond that, escalate to the full pipeline.
+
 ## When to Use
 
+**Full pipeline** (ls-*):
 - New features with multiple components or integration points.
 - Complex business logic where requirements need precision.
 - Multi-agent builds where context isolation matters.
 
+**Simple pipeline** (lss-*):
+- Focused changes with clear scope (one capability, one story).
+- Feature additions that don't require multi-story sequencing.
+- Work where full epic/tech-design/sharding overhead isn't justified.
+
+**Neither pipeline:**
 Not for quick bug fixes, single-file tweaks, spikes, or emergency patches.
 
 ## How It Works
 
-Tell me what you want to build and where you are in the process. I will route to the correct phase skill.
+Tell me what you want to build and where you are in the process. I will route to the correct skill.
 
 Based on the user's response, invoke the appropriate skill:
 - Phase 1 (Product Research) -> use Skill tool: "liminal-spec:ls-research"
@@ -55,6 +79,8 @@ Based on the user's response, invoke the appropriate skill:
 - Phase 4 (Story Sharding) -> use Skill tool: "liminal-spec:ls-story"
 - Phase 4b (Story Tech) -> use Skill tool: "liminal-spec:ls-story-tech"
 - Phase 5 (Implementation) -> use Skill tool: "liminal-spec:ls-impl"
+- Simple Story (focused change) -> use Skill tool: "liminal-spec:lss-story"
+- Simple Tech (enrich simple story) -> use Skill tool: "liminal-spec:lss-tech"
 
 If the user is unclear about phase:
 - Need product exploration or stakeholder alignment first? -> Phase 1
@@ -63,3 +89,5 @@ If the user is unclear about phase:
 - Have epic + design and need functional stories? -> Phase 4
 - Have functional stories and need technical enrichment? -> Phase 4b
 - Have complete stories and need implementation? -> Phase 5
+- Have a focused change (one story, not a full epic)? -> Simple Story
+- Have a functional story from lss-story ready for tech enrichment? -> Simple Tech

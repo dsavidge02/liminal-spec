@@ -20,7 +20,7 @@ Edit source files, not generated outputs.
 
 ## Repository Map
 
-- `src/phases/` - phase content (`research`, `epic`, `tech-design`, `story`, `story-tech`, `impl`)
+- `src/phases/` - phase content (`research`, `epic`, `tech-design`, `story`, `story-tech`, `impl`, `story-simple`, `story-simple-tech`)
 - `src/shared/` - shared sections inlined into skills via manifest
 - `src/templates/` - templates included in outputs
 - `src/examples/` - verification prompt examples
@@ -30,7 +30,7 @@ Edit source files, not generated outputs.
 - `scripts/validate.ts` - structural validation of outputs
 - `scripts/__tests__/build.test.ts` - integration tests for build outputs
 - `manifest.json` - composition map (what each skill includes)
-- `plugins/liminal-spec/` - committed marketplace install source (generated)
+- `plugins/` - committed marketplace install sources (generated): `liminal-spec/` (full suite) + individual skill plugins (`ls-epic/`, `ls-tech-design/`, `ls-story/`, `ls-story-tech/`, `lss-story/`, `lss-tech/`)
 
 ## Required Workflow For Content Changes
 
@@ -41,8 +41,8 @@ Edit source files, not generated outputs.
    - `bun test`
    - or `bun run verify` (preferred all-in-one gate)
 3. Confirm generated plugin sync:
-   - `plugins/liminal-spec/` updated by build
-   - CI parity check equivalent: `git diff --exit-code -- plugins/liminal-spec .claude-plugin/marketplace.json` (expect no diff after build if committed state is clean)
+   - `plugins/` directories updated by build (full suite + individual plugins)
+   - CI parity check equivalent: `git diff --exit-code -- plugins/ .claude-plugin/marketplace.json` (expect no diff after build if committed state is clean)
 
 ## PR Checklist
 

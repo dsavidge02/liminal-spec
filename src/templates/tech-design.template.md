@@ -647,6 +647,8 @@ Creates shared foundation that all subsequent chunks build on. No user-facing fu
 **Scope:** [What this chunk delivers]
 **ACs:** AC-X through AC-Y
 **TCs:** TC-Xa through TC-Yb
+**Relevant Tech Design Sections:** [List the headings from this tech design that are relevant to this chunk -- used by Tech Lead during Story Technical Enrichment to select content for story shards]
+**Non-TC Decided Tests:** [Tests this chunk needs beyond TC mappings -- edge cases, collision tests, defensive tests. "None" if all tests are TC-mapped.]
 
 #### Skeleton (if not covered in Chunk 0)
 
@@ -703,7 +705,8 @@ Before handoff, verify quality. Read your own design critically—the BA/SM vali
 - [ ] Every TC from epic mapped to a test file
 - [ ] All interfaces fully defined (types, props, hook returns, API signatures)
 - [ ] Module boundaries clear—no ambiguity about what lives where
-- [ ] Chunk breakdown includes test count estimates
+- [ ] Chunk breakdown includes test count estimates and relevant tech design section references
+- [ ] Non-TC decided tests identified and assigned to chunks
 - [ ] Skeleton stubs are copy-paste ready
 
 ### Richness (The Spiral Test)

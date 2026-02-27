@@ -1,43 +1,91 @@
 # Liminal Spec
 
-A spec-driven development methodology for AI-assisted coding. Designed for features with detailed requirements, complex integrations, or multi-agent coordination.
+A spec-driven development methodology for agentic coding. Designed for AI coding assistants (Claude Code, Codex, Cursor, Copilot) building features with detailed requirements, complex integrations, or focused changes that need precision.
 
 Liminal Spec runs a phased pipeline where each phase produces an artifact the next phase reads cold -- no shared conversation history, no accumulated assumptions. The traceability chain (requirement -> test condition -> test -> code) means when tests go green, you have high confidence the implementation matches the spec.
 
+## Compatibility
+
+**Claude Code plugin** (recommended): Full integration with slash commands, router, and agent. Requires Claude Code.
+
+**Standalone markdown**: Paste into any AI assistant -- Claude Enterprise Chat, ChatGPT, Cursor, Codex, or any tool that accepts system-level instructions. Each skill is self-contained with no external dependencies.
+
 ## When to Use
 
+**Full pipeline** -- multi-story features, complex integrations, team coordination:
 - New features with multiple components or integration points
 - Complex business logic where requirements need precision
 - Multi-agent builds where context isolation matters
 
-Not for: quick bug fixes, single-file changes, spikes, or emergency patches. Liminal Spec either runs full or not at all.
+**Simple pipeline** -- story-sized work, focused changes, same rigor:
+- Single capability additions or contained feature changes
+- Work scoped to 1-2 flows and ~5-15 acceptance criteria
+- Changes where full epic/tech-design/sharding overhead isn't justified
 
-## Phases
+Not for: quick bug fixes, single-file changes, spikes, or emergency patches.
 
-| Phase | In | Out |
-|-------|-----|------|
-| 1. Product Research (optional) | Vision/idea | PRD |
-| 2. Feature Specification | PRD or requirements | Feature Spec |
-| 3. Tech Design | Feature Spec | Tech Design |
-| 4. Story Sharding | Spec + Design | Functional Stories |
-| 4b. Story Tech | Stories (functional) + Tech Design | Complete Stories |
-| 5. Implementation | Complete Stories | Verified code |
+## Quick Start
 
-Most work starts at Phase 2 - if you know what you're building, start there.
+```
+# Full pipeline (multi-story feature)
+/ls-epic        → describe what you're building     → get a feature spec
+/ls-tech-design → design from the spec              → get a tech design
+/ls-story       → shard into functional stories      → get stories
+/ls-story-tech  → enrich with technical detail       → get complete stories
+/ls-impl        → implement from a complete story    → verified code
+
+# Simple pipeline (story-sized change)
+/lss-story      → describe a focused change          → get a functional story
+/lss-tech       → design + enrich inline             → get a complete story
+/ls-impl        → implement from the story           → verified code
+```
+
+Or use `/liminal-spec` to open the router -- describe what you're building and it routes you to the right skill.
+
+## Pipelines
+
+### Full Pipeline
+
+For multi-story features. Each phase is a separate agent with a separate context window.
+
+| Phase | Skill | In | Out |
+|-------|-------|-----|------|
+| 1. Product Research (optional) | `/ls-research` | Vision/idea | PRD |
+| 2. Epic | `/ls-epic` | PRD or requirements | Feature Spec |
+| 3. Tech Design | `/ls-tech-design` | Feature Spec | Tech Design |
+| 4. Story Sharding | `/ls-story` | Spec + Design | Functional Stories |
+| 4b. Story Tech | `/ls-story-tech` | Stories + Tech Design | Complete Stories |
+| 5. Implementation | `/ls-impl` | Complete Story | Verified code |
+
+Most work starts at Phase 2 -- if you know what you're building, start there.
+
+### Simple Pipeline
+
+For story-sized work. Two phases instead of five, same quality bar.
+
+| Phase | Skill | In | Out |
+|-------|-------|-----|------|
+| S1. Simple Story | `/lss-story` | Requirements | Functional Story |
+| S2. Simple Tech | `/lss-tech` | Functional Story + Codebase | Complete Story |
+| 5. Implementation | `/ls-impl` | Complete Story | Verified code |
+
+Use when scope is 1-2 flows and ~5-15 ACs. If scope grows beyond that, escalate to the full pipeline.
 
 Within Phase 5, the recommended cycle is: **Skeleton -> TDD Red -> TDD Green -> Gorilla Test -> Verify**. The verification gate is the hard requirement; the TDD process is the engineer's judgment.
 
 ## Key Ideas
 
-**Context isolation.** "Agents" means fresh context with artifact handoff -- not roleplay personas. Each phase gets a clean context window. The artifact (document) is the complete handoff.
+**Why this works.** Ad hoc prompting loses requirements in conversation history, lets implementation drift from intent, and produces tests that verify what was built rather than what was specified. Liminal Spec prevents this by locking requirements (ACs/TCs) before design, locking design before implementation, and making every test trace back to a specific requirement. When tests go green, they prove the implementation matches the spec -- not just that the code runs.
 
-**Confidence chain.** Every line of code traces back: AC (requirement) -> TC (test condition) -> Test -> Implementation.
+**Context isolation.** "Agents" means fresh context with artifact handoff -- not roleplay personas. Each phase gets a clean context window. The artifact (document) is the complete handoff. This prevents context rot, negotiation baggage, and the "lost in the middle" problem that degrades long conversations.
 
-**Upstream scrutiny.** The feature spec gets the most review because errors there cascade through every downstream phase.
+**Confidence chain.** Every line of code traces back: AC (requirement) -> TC (test condition) -> Test -> Implementation. If you can't write a TC, the AC is too vague. If you can't write a test, the TC is too vague.
+
+**Upstream scrutiny.** The feature spec gets the most review because errors there cascade through every downstream phase. Fix problems at the spec level -- they're cheapest to fix there and most expensive to fix in code.
 
 **Multi-model validation.** Different models catch different things. Artifacts are validated by their downstream consumer and by a different model for diverse perspective.
 
-**Story as implementation artifact.** Complete stories with functional sections (BA/SM) and technical sections (Tech Lead) are the sole handoff to engineers. No prompt packs, no orchestration scripts -- engineers implement from stories using TDD discipline and plan mode.
+**Story as implementation artifact.** Complete stories with functional sections (BA/SM) and technical sections (Tech Lead) are the sole handoff to engineers. The technical sections carry substantial tech design content sharded into each story -- the engineer implements from the story alone without reading the full tech design. No prompt packs, no orchestration scripts.
 
 ## Installation
 
@@ -52,14 +100,16 @@ claude plugin marketplace add liminal-ai/liminal-spec
 ### Install
 
 ```bash
-# Full suite -- all 6 skills, router, senior-engineer agent
+# Full suite -- all 8 skills, router, senior-engineer agent
 claude plugin install liminal-spec@liminal-plugins
 
-# Or install individual phases à la carte
-claude plugin install ls-epic@liminal-plugins          # Phase 2: Feature specifications
-claude plugin install ls-tech-design@liminal-plugins   # Phase 3: Technical designs
-claude plugin install ls-story@liminal-plugins         # Phase 4: Story sharding
-claude plugin install ls-story-tech@liminal-plugins    # Phase 4b: Story technical enrichment
+# Or install individual skills à la carte
+claude plugin install ls-epic@liminal-plugins          # Full: Feature specifications
+claude plugin install ls-tech-design@liminal-plugins   # Full: Technical designs
+claude plugin install ls-story@liminal-plugins         # Full: Story sharding
+claude plugin install ls-story-tech@liminal-plugins    # Full: Story technical enrichment
+claude plugin install lss-story@liminal-plugins        # Simple: Functional story
+claude plugin install lss-tech@liminal-plugins         # Simple: Technical design + enrichment
 ```
 
 ### Update
@@ -78,17 +128,19 @@ Or enable auto-update via the `/plugin` manager (Marketplaces tab) to pull new v
 
 | Command | What it does |
 |---------|-------------|
-| `/liminal-spec` | Router -- presents the phase menu, routes to the right skill |
+| `/liminal-spec` | Router -- presents the pipeline menu, routes to the right skill |
 | `/ls-research` | Phase 1 (optional) -- product research and PRD drafting |
 | `/ls-epic` | Phase 2 -- write a Feature Specification |
 | `/ls-tech-design` | Phase 3 -- create a Tech Design from a Feature Spec |
 | `/ls-story` | Phase 4 -- shard epic into functional stories |
 | `/ls-story-tech` | Phase 4b -- add technical sections to functional stories |
 | `/ls-impl` | Phase 5 -- implement from complete stories with TDD |
+| `/lss-story` | Simple S1 -- write a functional story with epic-quality rigor |
+| `/lss-tech` | Simple S2 -- inline technical design + enrichment for a story |
 
-Plus a **senior-engineer agent** (rigorous TypeScript development with quality gates and TDD as the default approach) and the `/liminal-spec` router that guides you to the right phase.
+Plus a **senior-engineer agent** (rigorous TypeScript development with quality gates and TDD as the default approach) and the `/liminal-spec` router that guides you to the right skill.
 
-**Individual plugins** each contain a single self-contained skill -- the same composed content as the full suite, just packaged separately. They do not include the router, the senior-engineer agent, or the research and implementation skills.
+**Individual plugins** each contain a single self-contained skill -- the same composed content as the full suite, just packaged separately for à la carte installation.
 
 ### Team Role Setup
 
@@ -101,12 +153,17 @@ claude plugin install ls-epic@liminal-plugins
 # Tech Lead
 claude plugin install ls-tech-design@liminal-plugins
 claude plugin install ls-story-tech@liminal-plugins
+claude plugin install lss-tech@liminal-plugins         # For story-sized tech enrichment
 
 # Scrum Master / BA (story sharding)
 claude plugin install ls-story@liminal-plugins
 
 # Engineer (use full suite for impl + agent + router)
 claude plugin install liminal-spec@liminal-plugins
+
+# Solo developer (simple pipeline for focused work)
+claude plugin install lss-story@liminal-plugins
+claude plugin install lss-tech@liminal-plugins
 ```
 
 ### Other Distribution Formats
@@ -118,7 +175,7 @@ claude plugin install liminal-spec@liminal-plugins
 
 ### Skill Pack
 
-Download `liminal-spec-skill-pack-vX.Y.Z.zip` from Releases. Contains one directory per phase (`01-product-research/`, `02-epic/`, `03-technical-design/`, `04-story-sharding/`, `04b-story-technical-enrichment/`, `05-implementation/`), each with a `SKILL.md`. Copy the phases you need into your project's `.claude/skills/` directory.
+Download `liminal-spec-skill-pack-vX.Y.Z.zip` from Releases. Contains one directory per phase (`01-product-research/`, `02-epic/`, `03-technical-design/`, `04-story-sharding/`, `04b-story-technical-enrichment/`, `05-implementation/`, `simple-01-story/`, `simple-02-technical-design/`), each with a `SKILL.md`. Copy the phases you need into your project's `.claude/skills/` directory.
 
 The plugin includes the router command and senior-engineer agent that the skill pack doesn't. Use the plugin if your environment supports it.
 
@@ -134,17 +191,25 @@ Download `liminal-spec-markdown-pack-vX.Y.Z.zip` from [Releases](https://github.
 | `04-story-sharding-skill.md` | BA, SM | Breaking epics into functional stories |
 | `04b-story-technical-enrichment-skill.md` | Tech Lead | Adding technical sections to stories |
 | `05-implementation-skill.md` | Engineers | Implementing from complete stories with TDD |
+| `simple-01-story-skill.md` | BA, PO, Solo Dev | Writing a single story with epic-quality rigor |
+| `simple-02-technical-design-skill.md` | Tech Lead, Solo Dev | Inline technical design + enrichment for a story |
 
-## Execution SOP
+## How It Works
 
-Stories contain functional requirements (ACs, TCs, error paths) and technical implementation sections (architecture context, test mapping, technical DoD). Engineers implement from complete stories using TDD discipline:
+### Spec Phases (Full or Simple Pipeline)
+
+Each spec phase produces an artifact that the next phase reads cold. The author validates their own work, then a downstream consumer validates it from their perspective (can the Tech Lead design from this spec? can the engineer implement from this story?). Different models provide diverse perspectives during validation.
+
+### Implementation Phase
+
+Stories contain functional requirements (ACs, TCs, error paths) and technical implementation sections (architecture context, interfaces, test mapping, technical DoD). Engineers implement from complete stories using TDD discipline:
 
 1. Read the story (functional + technical sections).
 2. Plan the implementation (use plan mode if available).
 3. Execute the TDD cycle (recommended): Skeleton -> Red -> Green -> Self-Review -> Gorilla -> Verify.
 4. Verify against the story's technical checklist and functional DoD.
 
-The story is the sole implementation artifact. Epic and tech design are reference material available in the project repo.
+The story is the sole implementation artifact. In the full pipeline, epic and tech design are available as reference material. In the simple pipeline, there are no other artifacts -- the story is self-contained.
 
 ## Development
 
@@ -191,7 +256,7 @@ Release flow:
 
 ```
 src/
-  phases/          -- Phase-specific content (one per skill)
+  phases/          -- Phase-specific content (one per skill, 8 total)
   shared/          -- Cross-cutting concepts used by multiple phases
   templates/       -- Artifact templates
   examples/        -- Verification prompt templates
@@ -208,6 +273,8 @@ plugins/
   ls-tech-design/  -- Individual plugin marketplace source
   ls-story/        -- Individual plugin marketplace source
   ls-story-tech/   -- Individual plugin marketplace source
+  lss-story/       -- Individual plugin marketplace source
+  lss-tech/        -- Individual plugin marketplace source
 ```
 
 ## Links

@@ -40,23 +40,23 @@ A complete story with two halves:
 - Spec Deviation -- where this story intentionally differs from the tech design
 - Technical Checklist -- specific verification commands
 
-**Reference artifacts** (in the project repo, read as needed):
+**Reference artifacts** (in the project repo, consult when needed):
 - **Epic** -- full functional requirements, data contracts, user flows
-- **Tech Design** -- architecture, all interfaces, module boundaries, verification scripts
+- **Tech Design** -- architecture rationale, alternatives-considered, cross-cutting context
 
-The story is your primary guide. The reference artifacts provide depth when you need it -- the full interface definition when the story excerpts aren't enough, the sequence diagram when you need to understand a flow end-to-end.
+The story is your primary and usually sufficient guide. The technical sections contain substantial tech design content sharded into this story's scope -- architecture, interfaces, flows, and test plans. Consult the epic or tech design only when the story is ambiguous, when you need rationale for a decision, or when something seems wrong. If you find a mismatch between the story and the tech design, stop and flag it for reconciliation before proceeding.
 
 ### Plan Before You Build
 
 Before writing code, form an implementation plan:
 
-1. Read the story's functional and technical sections
-2. Review relevant epic flows and tech design sections for context
-3. Identify the implementation sequence (which modules in what order)
-4. Note any risks or ambiguities from the story's Risks & Constraints
-5. Check the spec deviation field -- know where this story diverges from the design
+1. Read the story's functional and technical sections -- this should give you everything needed
+2. Identify the implementation sequence (which modules in what order)
+3. Note any risks or ambiguities from the story's Risks & Constraints
+4. Check the spec deviation field -- know where this story diverges from the design
+5. If anything is unclear or seems incomplete, consult the epic or tech design for context
 
-If using plan mode, present your plan for approval before executing. The story is the planning input -- it should give you everything you need to form a concrete plan.
+If using plan mode, present your plan for approval before executing. The story is the planning input -- it should give you everything you need to form a concrete plan. If you find yourself needing to read the full tech design to understand what to build, flag this as a potential enrichment gap.
 
 ---
 
@@ -459,12 +459,14 @@ Less line-by-line, more shape and completeness:
 
 Story contract compliance check:
 
-1. **TC-to-test mapping present** -- every TC mapped to a test approach
-2. **Technical DoD present** -- specific verification commands
-3. **Spec deviation field present** -- even when empty
-4. **Targets, not steps** -- technical sections describe what, not how
+1. **Tech design shard present** -- substantial, story-scoped tech design content in Architecture Context and Interfaces
+2. **TC-to-test mapping present** -- every TC mapped to a test approach with file names and approaches from the tech design
+3. **Non-TC decided tests present** -- edge/integration tests from tech design carried forward or explicitly noted as absent
+4. **Technical DoD present** -- specific verification commands
+5. **Spec deviation field present with citations** -- checked tech design sections listed, even when no deviations
+6. **Targets, not steps** -- technical sections describe what, not how
 
-Consumer gate: could an engineer implement from this story without clarifying questions?
+Consumer gate: could an engineer implement from this story alone, without reading the full tech design?
 
 ## Implementation Verification
 
@@ -547,7 +549,7 @@ Leaves flexible:
 ### Before Implementation
 
 - [ ] Functional stories complete (all ACs/TCs assigned, integration path traced)
-- [ ] Technical enrichment complete (all four story contract requirements met)
+- [ ] Technical enrichment complete (all six story contract requirements met)
 - [ ] Consumer gate passed: engineer can implement from stories
 - [ ] Different model reviewed stories (if high-stakes)
 

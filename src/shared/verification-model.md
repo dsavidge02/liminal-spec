@@ -75,12 +75,14 @@ Less line-by-line, more shape and completeness:
 
 Story contract compliance check:
 
-1. **TC-to-test mapping present** -- every TC mapped to a test approach
-2. **Technical DoD present** -- specific verification commands
-3. **Spec deviation field present** -- even when empty
-4. **Targets, not steps** -- technical sections describe what, not how
+1. **Tech design shard present** -- substantial, story-scoped tech design content in Architecture Context and Interfaces
+2. **TC-to-test mapping present** -- every TC mapped to a test approach with file names and approaches from the tech design
+3. **Non-TC decided tests present** -- edge/integration tests from tech design carried forward or explicitly noted as absent
+4. **Technical DoD present** -- specific verification commands
+5. **Spec deviation field present with citations** -- checked tech design sections listed, even when no deviations
+6. **Targets, not steps** -- technical sections describe what, not how
 
-Consumer gate: could an engineer implement from this story without clarifying questions?
+Consumer gate: could an engineer implement from this story alone, without reading the full tech design?
 
 ## Implementation Verification
 
@@ -163,7 +165,7 @@ Leaves flexible:
 ### Before Implementation
 
 - [ ] Functional stories complete (all ACs/TCs assigned, integration path traced)
-- [ ] Technical enrichment complete (all four story contract requirements met)
+- [ ] Technical enrichment complete (all six story contract requirements met)
 - [ ] Consumer gate passed: engineer can implement from stories
 - [ ] Different model reviewed stories (if high-stakes)
 

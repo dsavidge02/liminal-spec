@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A spec-driven development methodology packaged as a **Claude Code plugin**. The plugin contains 6 self-contained skills (one per methodology phase), a router command, and a senior-engineer agent.
+A spec-driven development methodology packaged as a **Claude Code plugin**. The plugin contains 8 self-contained skills (6 for the full pipeline, 2 for the simple pipeline), a router command, and a senior-engineer agent.
 
 This is NOT a library or npm package. The build output is markdown files organized into a Claude Code plugin structure. There are three distribution channels:
 
@@ -27,6 +27,8 @@ skills/
   ls-story/SKILL.md        -- /ls-story (Phase 4: Story Sharding)
   ls-story-tech/SKILL.md   -- /ls-story-tech (Phase 4b: Story Technical Enrichment)
   ls-impl/SKILL.md         -- /ls-impl (Phase 5: Implementation)
+  lss-story/SKILL.md       -- /lss-story (Simple Pipeline: Functional Story)
+  lss-tech/SKILL.md        -- /lss-tech (Simple Pipeline: Technical Design + Enrichment)
 commands/
   liminal-spec.md          -- /liminal-spec (router: presents phase menu, invokes skill)
 agents/
@@ -43,7 +45,7 @@ Source-based skill with build composition. Edit in `src/`, never in `dist/`.
 
 ```
 src/
-  phases/          -- Phase-specific content (one per skill: research, epic, tech-design, story, story-tech, impl)
+  phases/          -- Phase-specific content (one per skill: research, epic, tech-design, story, story-tech, impl, story-simple, story-simple-tech)
   shared/          -- Cross-cutting concepts inlined into multiple skills by the build
   templates/       -- Artifact templates (tech design, epic)
   examples/        -- Verification prompt templates
@@ -57,7 +59,7 @@ docs/              -- Reference material not yet in the build pipeline
 dist/              -- Build output (gitignored)
   plugin/          -- Claude Code plugin (skills/ + agents/ + commands/ + marketplace)
   standalone/      -- Paste-ready MDs + skill-pack and markdown-pack zips
-plugins/           -- Committed marketplace-installable plugin directories
+plugins/           -- Committed marketplace-installable plugin directories (liminal-spec full suite + individual skill plugins)
 ```
 
 ### Commands
@@ -84,7 +86,7 @@ The build also copies agents, commands, generates plugin.json + marketplace.json
 |---------|--------|---------|
 | `/liminal-spec` | `src/commands/liminal-spec.md` | Presents phase menu, invokes the appropriate skill |
 
-**Skills** (6 self-contained phase skills):
+**Skills** (8 self-contained skills — 6 full pipeline, 2 simple pipeline):
 
 | Skill | Phase | Primary source | Shared dependencies |
 |-------|-------|----------------|---------------------|
@@ -94,6 +96,8 @@ The build also copies agents, commands, generates plugin.json + marketplace.json
 | `/ls-story` | 4 | `src/phases/story.md` | confidence-chain, context-isolation, writing-style-epic |
 | `/ls-story-tech` | 4b | `src/phases/story-tech.md` | confidence-chain, verification-model, writing-style |
 | `/ls-impl` | 5 | `src/phases/impl.md` | confidence-chain, verification-model, testing, model-selection |
+| `/lss-story` | S1 | `src/phases/story-simple.md` | confidence-chain, writing-style-epic |
+| `/lss-tech` | S2 | `src/phases/story-simple-tech.md` | confidence-chain, verification-model, writing-style, testing |
 
 **Agent:**
 
@@ -147,7 +151,7 @@ Before opening or updating a PR:
 2. Local gate passes: `bun run verify`.
 3. Generated marketplace source is synced:
    - run `bun run build`
-   - verify: `git diff --exit-code -- plugins/liminal-spec .claude-plugin/marketplace.json`
+   - verify: `git diff --exit-code -- plugins/ .claude-plugin/marketplace.json`
 4. For content/methodology edits:
    - spot-check affected `dist/plugin/skills/*/SKILL.md` for composition coherence
    - spot-check affected `dist/standalone/*-skill.md` for standalone usability

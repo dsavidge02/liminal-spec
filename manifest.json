@@ -1,5 +1,5 @@
 {
-  "version": "0.6.0",
+  "version": "0.7.0",
   "skills": {
     "ls-research": {
       "name": "ls-research",
@@ -86,6 +86,30 @@
         "testing",
         "model-selection"
       ]
+    },
+    "lss-story": {
+      "name": "lss-story",
+      "description": "Write a single functional story with epic-quality rigor. Story-sized epic for focused changes that don't warrant the full pipeline.",
+      "phases": [
+        "story-simple"
+      ],
+      "shared": [
+        "confidence-chain",
+        "writing-style-epic"
+      ]
+    },
+    "lss-tech": {
+      "name": "lss-tech",
+      "description": "Perform inline technical design and embed results into a functional story. Story-sized tech design + enrichment with codebase analysis, architecture, interfaces, and test mapping.",
+      "phases": [
+        "story-simple-tech"
+      ],
+      "shared": [
+        "confidence-chain",
+        "verification-model",
+        "writing-style",
+        "testing"
+      ]
     }
   },
   "agents": [
@@ -104,6 +128,12 @@
     },
     "ls-story-tech": {
       "description": "Phase 4b: Add technical implementation sections to functional stories"
+    },
+    "lss-story": {
+      "description": "Simple pipeline: Write a single functional story with epic-quality rigor"
+    },
+    "lss-tech": {
+      "description": "Simple pipeline: Inline technical design and enrichment for a single story"
     }
   }
 }

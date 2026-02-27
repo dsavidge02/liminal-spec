@@ -1,7 +1,7 @@
 {
-  "name": "ls-story-tech",
+  "name": "lss-story",
   "version": "0.7.0",
-  "description": "Phase 4b: Add technical implementation sections to functional stories",
+  "description": "Simple pipeline: Write a single functional story with epic-quality rigor",
   "author": {
     "name": "liminal-ai"
   },

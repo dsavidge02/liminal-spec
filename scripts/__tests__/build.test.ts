@@ -143,7 +143,9 @@ describe("plugin output", () => {
     expect(names).toContain("ls-tech-design");
     expect(names).toContain("ls-story");
     expect(names).toContain("ls-story-tech");
-    expect(names.length).toBe(5);
+    expect(names).toContain("lss-story");
+    expect(names).toContain("lss-tech");
+    expect(names.length).toBe(7);
   });
 });
 
@@ -196,6 +198,8 @@ describe("skill content", () => {
     "ls-story",
     "ls-story-tech",
     "ls-impl",
+    "lss-story",
+    "lss-tech",
   ];
 
   test("epic has correct frontmatter", async () => {
@@ -288,6 +292,8 @@ describe("standalone output", () => {
     "04-story-sharding-skill.md",
     "04b-story-technical-enrichment-skill.md",
     "05-implementation-skill.md",
+    "simple-01-story-skill.md",
+    "simple-02-technical-design-skill.md",
   ];
 
   const expectedStandalonePacks = [
@@ -353,6 +359,8 @@ describe("individual plugins", () => {
     "ls-tech-design",
     "ls-story",
     "ls-story-tech",
+    "lss-story",
+    "lss-tech",
   ];
 
   for (const name of expectedIndividual) {

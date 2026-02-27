@@ -273,9 +273,20 @@ Some teams prefer completing all skeletons first (all Chunk Skeletons, then all 
 - src/features/add-location/hooks/useLocations.ts
 - src/features/add-location/api/locationApi.ts
 
-**Test Count:** 12 tests
-**Running Total:** 12 tests
+**Relevant Tech Design Sections:** §System Context — Data Flow,
+§Module Architecture — AddLocation Page, §Low Altitude — useLocations Hook,
+§Flow 1: Initial Load Sequence, §Testing Strategy — Initial Load Tests
+
+**Non-TC Decided Tests:** Empty state render (no locations), loading
+skeleton timing assertion (Tech Design §Testing Strategy)
+
+**Test Count:** 12 tests + 2 non-TC
+**Running Total:** 14 tests
 ```
+
+The "Relevant Tech Design Sections" field lists which headings from this tech design are relevant to the chunk. This directly supports the Story Technical Enrichment phase: the Tech Lead uses these references to select which tech design content to shard into each story, rather than reading the entire tech design per story.
+
+The "Non-TC Decided Tests" field lists tests this chunk needs that aren't 1:1 with a TC -- edge cases, collision tests, defensive tests. These must be carried forward into stories during technical enrichment so they aren't lost.
 
 ### Chunk Dependencies
 
@@ -294,8 +305,9 @@ Chunk 0 → Chunk 1 → Chunk 2
 - [ ] Every TC mapped to test file
 - [ ] All interfaces defined
 - [ ] Module boundaries clear
-- [ ] Chunk breakdown complete
-- [ ] Test counts estimated
+- [ ] Chunk breakdown complete with relevant tech design section references per chunk
+- [ ] Non-TC decided tests identified and assigned to chunks
+- [ ] Test counts estimated (TC tests + non-TC tests)
 - [ ] No circular dependencies
 
 **Self-review (CRITICAL):**
@@ -418,12 +430,14 @@ Less line-by-line, more shape and completeness:
 
 Story contract compliance check:
 
-1. **TC-to-test mapping present** -- every TC mapped to a test approach
-2. **Technical DoD present** -- specific verification commands
-3. **Spec deviation field present** -- even when empty
-4. **Targets, not steps** -- technical sections describe what, not how
+1. **Tech design shard present** -- substantial, story-scoped tech design content in Architecture Context and Interfaces
+2. **TC-to-test mapping present** -- every TC mapped to a test approach with file names and approaches from the tech design
+3. **Non-TC decided tests present** -- edge/integration tests from tech design carried forward or explicitly noted as absent
+4. **Technical DoD present** -- specific verification commands
+5. **Spec deviation field present with citations** -- checked tech design sections listed, even when no deviations
+6. **Targets, not steps** -- technical sections describe what, not how
 
-Consumer gate: could an engineer implement from this story without clarifying questions?
+Consumer gate: could an engineer implement from this story alone, without reading the full tech design?
 
 ## Implementation Verification
 
@@ -506,7 +520,7 @@ Leaves flexible:
 ### Before Implementation
 
 - [ ] Functional stories complete (all ACs/TCs assigned, integration path traced)
-- [ ] Technical enrichment complete (all four story contract requirements met)
+- [ ] Technical enrichment complete (all six story contract requirements met)
 - [ ] Consumer gate passed: engineer can implement from stories
 - [ ] Different model reviewed stories (if high-stakes)
 
@@ -2338,6 +2352,8 @@ Creates shared foundation that all subsequent chunks build on. No user-facing fu
 **Scope:** [What this chunk delivers]
 **ACs:** AC-X through AC-Y
 **TCs:** TC-Xa through TC-Yb
+**Relevant Tech Design Sections:** [List the headings from this tech design that are relevant to this chunk -- used by Tech Lead during Story Technical Enrichment to select content for story shards]
+**Non-TC Decided Tests:** [Tests this chunk needs beyond TC mappings -- edge cases, collision tests, defensive tests. "None" if all tests are TC-mapped.]
 
 #### Skeleton (if not covered in Chunk 0)
 
@@ -2394,7 +2410,8 @@ Before handoff, verify quality. Read your own design critically—the BA/SM vali
 - [ ] Every TC from epic mapped to a test file
 - [ ] All interfaces fully defined (types, props, hook returns, API signatures)
 - [ ] Module boundaries clear—no ambiguity about what lives where
-- [ ] Chunk breakdown includes test count estimates
+- [ ] Chunk breakdown includes test count estimates and relevant tech design section references
+- [ ] Non-TC decided tests identified and assigned to chunks
 - [ ] Skeleton stubs are copy-paste ready
 
 ### Richness (The Spiral Test)

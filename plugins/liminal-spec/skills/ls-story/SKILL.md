@@ -39,9 +39,9 @@ A story is a functional scoping and acceptance artifact. It spans two concerns:
 
 ## What a Story Is NOT
 
-A story is not an implementation reference. It does not carry file lists, interface definitions, or implementation patterns -- those live in the tech design. It does not carry test file mappings or test count breakdowns -- those are added by the Tech Lead in the Story Technical Enrichment phase. The story provides light technical context as orientation ("this story involves the session creation route and Convex persistence layer") with pointers to the tech design for depth.
+A story at this phase is not an implementation reference. It does not carry file lists, interface definitions, or implementation patterns -- those are added by the Tech Lead in the Story Technical Enrichment phase, which shards the tech design into each story's technical section. The functional story provides light technical context as orientation ("this story involves the session creation route and Convex persistence layer") sufficient for the Tech Lead to plan enrichment.
 
-A story is not a prompt pack. The v0.5.0 pipeline removes prompt packs entirely. Stories -- once enriched with technical sections by the Tech Lead -- become the sole implementation artifact. Engineers implement from complete stories using their own judgment and plan mode.
+After technical enrichment, the story becomes the sole implementation artifact -- self-contained with substantial tech design content, full test mappings, and interface definitions. Engineers implement from complete stories using their own judgment and plan mode. The tech design becomes optional fallback for rationale and cross-cutting context.
 
 ---
 

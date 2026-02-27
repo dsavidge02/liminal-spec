@@ -1,5 +1,44 @@
 # Changelog
 
+## v0.7.0 (2026-02-27)
+
+Simple pipeline and story technical enrichment overhaul. Two new skills (`lss-story`, `lss-tech`) provide a streamlined path for story-sized work with the same rigor as the full pipeline. The `ls-story-tech` skill is substantially rewritten to require tech design sharding into stories rather than thin summaries.
+
+### Added
+
+- **Simple pipeline:** `lss-story` and `lss-tech` -- a two-phase pipeline for story-sized work that doesn't warrant a full epic/tech-design/sharding cycle. Same quality bar, fewer phases. `lss-story` produces a functional story with epic-quality ACs/TCs. `lss-tech` performs inline technical design (codebase analysis, architecture, interfaces, test planning) and embeds the results directly in the story.
+- **`/lss-story` skill (Simple S1):** Story-sized epic. Produces a single functional story with full acceptance criteria, test conditions, data contracts, scope boundaries, and error paths. Includes escalation gate -- if scope exceeds story-sized thresholds, directs to the full pipeline.
+- **`/lss-tech` skill (Simple S2):** Story-sized tech design + enrichment. Design-then-embed workflow: codebase analysis, inline technical design, then embed in story format. Introduces Provenance & Deviation section (replaces Spec Deviation for simple pipeline -- documents codebase files analyzed, patterns adopted, and deviations from existing patterns). Includes escalation gate for technical complexity.
+- **Individual plugins for `lss-story` and `lss-tech`:** Both available as standalone installable plugins in the `liminal-plugins` marketplace, plus standalone markdown files and inclusion in skill/markdown pack zips.
+- **Non-TC Decided Tests section** in `ls-story-tech`: Tests decided in the tech design that aren't 1:1 with a TC (edge cases, collision tests, integration tests) must now be carried forward into each story. Prevents orphaned tests that the implementer would have to discover independently.
+- **Tech Design Sharding concept** in `ls-story-tech`: New section establishing that technical enrichment shards the tech design into stories the same way story sharding distributes ACs/TCs. Enrichment is curation (selection + inclusion), not compression (summarization).
+- **Tech design chunk enrichments** in `ls-tech-design`: Chunk template now includes "Relevant Tech Design Sections" (heading references for enrichment) and "Non-TC Decided Tests" fields. Handoff checklist updated accordingly.
+- **Simple pipeline routing** in `/liminal-spec` command: Router now presents both pipelines and routes to `lss-story`/`lss-tech` based on user intent.
+
+### Changed
+
+- **`ls-story-tech` substantially rewritten:**
+  - Architecture Context: replaced "focused extract, not a repeat" with "story-scoped tech design shard via curation." Examples expanded from 4-line snippets to substantial module tables, flow diagrams, and error handling.
+  - Interfaces & Contracts: now requires full type definitions and function signatures, not thin listings.
+  - TC to Test Mapping: added "no test-plan guessing" rule. Implementer should never derive test approaches the tech design already decided.
+  - Spec Deviation: now requires citing checked tech design sections by heading name. Empty deviations without citations fail the quality gate.
+  - Story Contract Requirements: expanded from 4 to 6 (added: tech design shard present, non-TC decided tests present; strengthened spec deviation to require citations).
+  - Consumer Gate: strengthened from "without asking clarifying questions" to "without reading the full tech design."
+  - Verification Prompt: expanded from 7 to 9 evaluation criteria (added: tech design shard completeness, non-TC test coverage).
+  - New failure modes: "Over-compressed tech sections" and "Missing non-TC decided tests."
+- **`ls-story` updated:** "What a Story Is NOT" section clarified pre-enrichment vs post-enrichment lifecycle. Functional stories are deliberately non-technical; post-enrichment stories are self-contained implementation artifacts.
+- **`ls-impl` updated:** Story is now primary and usually sufficient guide. Tech design shifted from routine reading (step 2) to conditional fallback for ambiguity/rationale. Mismatch between story and tech design triggers stop-and-flag.
+- **Shared `verification-model.md` updated:** Enriched stories checklist expanded from 4 to 6 items. "All four" references updated to "all six." Consumer gate wording updated throughout.
+- **CLAUDE.md updated:** 8 skills, simple pipeline, individual plugins, updated plugin sync paths.
+- **AGENTS.md updated:** Repository map includes simple pipeline phase files, plugin sync covers all individual plugin directories.
+- **README rewritten:** Both pipelines with equal billing, quick start example, compatibility section, value proposition, solo developer setup, expanded markdown/skill pack tables.
+
+### Test Changes
+
+- 51 tests (up from 47). New assertions cover: `lss-story` and `lss-tech` standalone files, individual plugin directories, marketplace entries, and skill content guardrails.
+
+---
+
 ## v0.6.0 (2026-02-25)
 
 Individual skill plugins. Each mid-pipeline phase is now available as a standalone Claude Code plugin, installable separately from the full suite. Teams can assign phases to roles -- BAs install `ls-epic`, Tech Leads install `ls-tech-design` -- without pulling the entire methodology.
