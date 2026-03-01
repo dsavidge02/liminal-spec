@@ -53,6 +53,17 @@ For focused changes that don't warrant the full pipeline -- a single capability,
 
 Use the simple pipeline when scope is 1-2 flows and ~5-15 ACs. If scope grows beyond that, escalate to the full pipeline.
 
+## Team Orchestration
+
+For orchestrating implementation with agent teams in tmux. The orchestrator spawns teammates, manages Codex/Copilot subagents, routes verification, and makes judgment calls.
+
++---------------------+---------------------------+-------------------------------------------------------+
+|        Phase        |           Skill           |                   Start Here If...                    |
++---------------------+---------------------------+-------------------------------------------------------+
+| Team Implementation | /ls-team-impl             | You have complete stories and want to orchestrate     |
+|                     |                           | agent team implementation in tmux                     |
++---------------------+---------------------------+-------------------------------------------------------+
+
 ## When to Use
 
 **Full pipeline** (ls-*):
@@ -81,6 +92,7 @@ Based on the user's response, invoke the appropriate skill:
 - Phase 5 (Implementation) -> use Skill tool: "liminal-spec:ls-impl"
 - Simple Story (focused change) -> use Skill tool: "liminal-spec:lss-story"
 - Simple Tech (enrich simple story) -> use Skill tool: "liminal-spec:lss-tech"
+- Team implementation (orchestrate agent teams in tmux) -> use Skill tool: "liminal-spec:ls-team-impl"
 
 If the user is unclear about phase:
 - Need product exploration or stakeholder alignment first? -> Phase 1
@@ -91,3 +103,4 @@ If the user is unclear about phase:
 - Have complete stories and need implementation? -> Phase 5
 - Have a focused change (one story, not a full epic)? -> Simple Story
 - Have a functional story from lss-story ready for tech enrichment? -> Simple Tech
+- Have complete stories and want to orchestrate implementation with agent teams in tmux? -> Team Implementation

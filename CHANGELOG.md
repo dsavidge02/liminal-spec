@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.8.0 (2026-03-01)
+
+Team implementation orchestration. A new skill (`ls-team-impl`) for orchestrating story-by-story implementation with agent teams in tmux. The orchestrator spawns teammates, routes Codex/Copilot subagents for implementation and review, manages multi-perspective verification, and makes judgment calls across the full cycle.
+
+### Added
+
+- **`/ls-team-impl` skill:** Team implementation orchestration for the team lead / orchestrator role. Covers: dependency lane detection (Codex/Copilot/Sonnet fallback), implementer handoff with iterated self-review, dual verification (fresh reviewer + Codex in parallel), orchestrator final check, story transition with regression tracking, epic-level four-model verification with meta-reports, and operational patterns (idle notification noise, context ceilings, forgot-to-report, sequencing). Distilled from real orchestration logs during multi-story agent team implementation.
+
+### Changed
+
+- **Router command updated:** New "Team Orchestration" section routes to `/ls-team-impl` for agent team implementation.
+- **CI marketplace check widened:** `git diff` now checks all `plugins/` directories, not just `plugins/liminal-spec`.
+
+---
+
 ## v0.7.0 (2026-02-27)
 
 Simple pipeline and story technical enrichment overhaul. Two new skills (`lss-story`, `lss-tech`) provide a streamlined path for story-sized work with the same rigor as the full pipeline. The `ls-story-tech` skill is substantially rewritten to require tech design sharding into stories rather than thin summaries.

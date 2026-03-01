@@ -71,6 +71,7 @@ describe("build script", () => {
     expect(buildOutput).toContain("skill: ls-story");
     expect(buildOutput).toContain("skill: ls-story-tech");
     expect(buildOutput).toContain("skill: ls-impl");
+    expect(buildOutput).toContain("skill: ls-team-impl");
   });
 
   test("prints agent and command in summary", () => {
@@ -98,6 +99,7 @@ describe("plugin output", () => {
     "ls-story",
     "ls-story-tech",
     "ls-impl",
+    "ls-team-impl",
   ];
 
   for (const skill of expectedSkills) {
@@ -169,6 +171,7 @@ describe("marketplace install source", () => {
       join(MARKETPLACE_PLUGIN, "skills", "ls-story", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "skills", "ls-story-tech", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "skills", "ls-impl", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "skills", "ls-team-impl", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "commands", "liminal-spec.md"),
       join(MARKETPLACE_PLUGIN, "agents", "senior-engineer.md"),
     ];
@@ -200,6 +203,7 @@ describe("skill content", () => {
     "ls-impl",
     "lss-story",
     "lss-tech",
+    "ls-team-impl",
   ];
 
   test("epic has correct frontmatter", async () => {
@@ -261,6 +265,14 @@ describe("skill content", () => {
     expect(content).toContain("Spec Deviation");
   });
 
+  test("team-impl contains orchestration content", async () => {
+    const content = await Bun.file(
+      join(DIST_PLUGIN, "skills", "ls-team-impl", "SKILL.md")
+    ).text();
+    expect(content).toContain("Orchestrator");
+    expect(content).toContain("self-review loop");
+  });
+
   test("generated skills do not include legacy inlining phrase", async () => {
     for (const skill of expectedSkills) {
       const content = await Bun.file(
@@ -294,6 +306,7 @@ describe("standalone output", () => {
     "05-implementation-skill.md",
     "simple-01-story-skill.md",
     "simple-02-technical-design-skill.md",
+    "06-team-implementation-skill.md",
   ];
 
   const expectedStandalonePacks = [
@@ -447,6 +460,7 @@ describe("source file safety", () => {
       "src/phases/impl.md",
       "src/shared/confidence-chain.md",
       "src/shared/writing-style.md",
+      "src/phases/team-impl.md",
       "src/commands/liminal-spec.md",
       "src/agents/senior-engineer.md",
     ];

@@ -1,5 +1,5 @@
 {
-  "version": "0.7.0",
+  "version": "0.8.0",
   "skills": {
     "ls-research": {
       "name": "ls-research",
@@ -109,6 +109,17 @@
         "verification-model",
         "writing-style",
         "testing"
+      ]
+    },
+    "ls-team-impl": {
+      "name": "ls-team-impl",
+      "description": "Orchestrate story-by-story implementation with agent teams. Manages teammates, routes verification, and makes judgment calls across the full implementation cycle.",
+      "phases": [
+        "team-impl"
+      ],
+      "shared": [
+        "confidence-chain",
+        "verification-model"
       ]
     }
   },

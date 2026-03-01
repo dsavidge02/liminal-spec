@@ -5,3 +5,4 @@ bun.lock
 .research/
 .comparison/
 .test-tmp/
+docs/ls-team-impl-handoff/

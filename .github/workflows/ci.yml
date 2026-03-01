@@ -19,8 +19,8 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Verify marketplace plugin is committed
-        run: git diff --exit-code -- plugins/liminal-spec .claude-plugin/marketplace.json
+      - name: Verify marketplace plugins are committed
+        run: git diff --exit-code -- plugins/ .claude-plugin/marketplace.json
 
       - name: Validate
         run: bun run validate
