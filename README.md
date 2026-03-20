@@ -30,7 +30,7 @@ Not for: quick bug fixes, single-file changes, spikes, or emergency patches.
 # Full pipeline (multi-story feature)
 /ls-epic          → describe what you're building       → get a detailed epic
 /ls-tech-design   → design from the spec                → get a tech design
-/ls-publish-epic  → publish for handoff                 → get business epic + stories
+/ls-publish-epic  → publish for handoff                 → get individual story files (+ optional business epic)
 
 # Simple pipeline (story-sized change)
 /lss-story        → describe a focused change           → get a functional story
@@ -54,7 +54,7 @@ For multi-story features. Each phase is a separate agent with a separate context
 | 1. Product Research (optional) | `/ls-research` | Vision/idea | PRD |
 | 2. Epic | `/ls-epic` | PRD or requirements | Detailed Epic |
 | 3. Tech Design | `/ls-tech-design` | Detailed Epic | Tech Design |
-| 4. Publish Epic | `/ls-publish-epic` | Detailed Epic | Business Epic + Stories |
+| 4. Publish Epic | `/ls-publish-epic` | Detailed Epic | Individual Story Files (+ optional Business Epic) |
 
 Most work starts at Phase 2 -- if you know what you're building, start there.
 
@@ -90,7 +90,7 @@ Use when scope is 1-2 flows and ~5-15 ACs. If scope grows beyond that, escalate 
 
 **Multi-model validation.** Different models catch different things. Artifacts are validated by their downstream consumer and by a different model for diverse perspective.
 
-**Publish for handoff.** The detailed epic is the engineering source of truth. The published business epic gives POs a clear view of what's being built. The story file gives developers self-contained units of work with full AC/TC detail and relevant contracts. Each audience gets the artifact shaped for their needs.
+**Publish for handoff.** The detailed epic is the engineering source of truth. Publishing shards it into individual story files — self-contained units of work with full AC/TC detail and relevant contracts. A coverage artifact proves complete AC/TC assignment. Optionally, a business epic gives POs a clear view of what's being built. Each audience gets the artifact shaped for their needs.
 
 ## Installation
 
@@ -111,7 +111,7 @@ claude plugin install liminal-spec@liminal-plugins
 # Or install individual skills à la carte
 claude plugin install ls-epic@liminal-plugins            # Full: Feature specifications
 claude plugin install ls-tech-design@liminal-plugins     # Full: Technical designs
-claude plugin install ls-publish-epic@liminal-plugins    # Full: Publish epic as business epic + stories
+claude plugin install ls-publish-epic@liminal-plugins    # Full: Publish epic as individual story files
 claude plugin install lss-story@liminal-plugins          # Simple: Functional story
 claude plugin install lss-tech@liminal-plugins           # Simple: Technical design + enrichment
 ```
@@ -136,7 +136,7 @@ Or enable auto-update via the `/plugin` manager (Marketplaces tab) to pull new v
 | `/ls-research` | Phase 1 (optional) -- product research and PRD drafting |
 | `/ls-epic` | Phase 2 -- write a detailed Feature Specification |
 | `/ls-tech-design` | Phase 3 -- create a Tech Design from a Feature Spec |
-| `/ls-publish-epic` | Phase 4 -- publish epic as business epic + developer stories |
+| `/ls-publish-epic` | Phase 4 -- publish epic as individual story files (+ optional business epic) |
 | `/lss-story` | Simple S1 -- write a functional story with epic-quality rigor |
 | `/lss-tech` | Simple S2 -- inline technical design + enrichment for a story |
 | `/ls-team-spec` | Team -- orchestrate full spec pipeline with agent teams in tmux |
@@ -188,7 +188,7 @@ Download `liminal-spec-markdown-pack-vX.Y.Z.zip` from [Releases](https://github.
 | `01-product-research-skill.md` | PO, PM, BA | Exploring direction and drafting a PRD |
 | `02-epic-skill.md` | BA, PO | Writing feature specifications |
 | `03-technical-design-skill.md` | Senior Dev, Tech Lead | Creating tech designs from a spec |
-| `04-publish-epic-skill.md` | BA, SM | Publishing epic as business epic + developer stories |
+| `04-publish-epic-skill.md` | BA, SM | Publishing epic as individual story files (+ optional business epic) |
 | `06-team-implementation-skill.md` | Team Lead / Orchestrator | Orchestrating agent team implementation |
 | `07-team-spec-skill.md` | Team Lead / Orchestrator | Orchestrating full spec pipeline with agent teams |
 | `simple-01-story-skill.md` | BA, PO, Solo Dev | Writing a single story with epic-quality rigor |
@@ -202,7 +202,7 @@ Each spec phase produces an artifact that the next phase reads cold. The author 
 
 ### Implementation
 
-Developers receive stories from the story file and the tech design as a separate reference. Each story contains full AC/TC detail, relevant data contracts, and Jira section markers for direct copy-paste into project management tooling. The tech design provides the architectural context that ties everything together.
+Developers receive individual story files and the tech design as a separate reference. Each story file contains full AC/TC detail, relevant data contracts, and Jira section markers for direct copy-paste into project management tooling. The tech design provides the architectural context that ties everything together.
 
 ## Development
 

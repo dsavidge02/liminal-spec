@@ -1,44 +1,66 @@
 ---
 name: ls-publish-epic
-description: Publish a detailed epic as two handoff-ready artifacts: a PO-friendly business epic with grouped ACs and a developer story file with full AC/TC detail and Jira section markers.
+description: Publish a detailed epic as individual story files with full AC/TC detail and Jira section markers, and optionally a PO-friendly business epic with grouped ACs.
 ---
 
 # Publish Epic
 
-**Purpose:** Transform a detailed epic into two handoff-ready artifacts — a business-friendly epic for POs and a story file for developers. Both include Jira section markers for direct copy-paste into project management tooling.
+**Purpose:** Transform a detailed epic into implementable stories, and optionally a business-friendly epic for POs. All outputs include Jira section markers for direct copy-paste into project management tooling.
 
-The detailed epic (produced by ls-epic) is the engineering source of truth. This skill derives two views of it: one rolled up for business stakeholders, one broken down for implementation teams. The detailed epic is not modified.
+The detailed epic (produced by ls-epic) is the engineering source of truth. This skill derives implementation artifacts from it: individual story files for development teams, and optionally a roll-up for business stakeholders. The detailed epic is not modified.
+
+## What This Produces
+
+This skill always produces **individual story files** — the detailed epic broken into one file per story, each with full AC/TC detail, data contracts, and Jira section markers. Stories are written to a `stories/` folder alongside the epic.
+
+It can optionally produce a **business epic** — a PO-friendly roll-up with grouped ACs, prose contracts, and story references. This is useful when business stakeholders need a simplified view for prioritization and sign-off.
+
+**Before starting, present the user with these options:**
+1. **Stories only** — shard the epic into individual story files
+2. **Stories + business epic** — also create the PO-facing summary
+
+Proceed based on their choice.
 
 ---
 
 ## Input
 
-A complete, validated detailed epic produced by ls-epic. Read it in full before starting. Every AC, TC, data contract, and architectural decision must be fresh in context — the quality of both outputs depends on having internalized the detail, not summarized it.
+A complete, validated detailed epic produced by ls-epic. Read it in full before starting. Every AC, TC, data contract, and architectural decision must be fresh in context — the quality of the output depends on having internalized the detail, not summarized it.
 
-If the epic has not been validated (validation checklist incomplete, known issues outstanding), stop and tell the user. Publishing from an unvalidated epic propagates errors into two artifacts instead of one.
+If the epic has not been validated (validation checklist incomplete, known issues outstanding), stop and tell the user. Publishing from an unvalidated epic propagates errors into downstream artifacts.
 
 ---
 
 ## Output
 
-Two files:
+**Always produced:**
+- Individual story files, each self-contained with Jira section markers, full AC/TC detail, and a Technical Design section with relevant data contracts
+- A coverage artifact (coverage gate table + integration path trace) validating complete AC/TC assignment
 
-1. **Story file** — all stories in one file, clear delimiters between them. Each story is fully formed with Jira section markers, full AC/TC detail, and a Technical Design section containing relevant data contracts from the epic.
-2. **Business epic** — the PO-facing view. Grouped ACs, prose data contracts, story references. No TCs, no TypeScript, no tool schemas.
+**With filesystem access** (Claude Code, IDE agents): write stories to a `stories/` folder alongside the epic — `stories/00-foundation.md`, `stories/01-[story-name].md`, etc. Coverage artifact goes to `stories/coverage.md`.
+
+**Without filesystem access** (Claude.ai, ChatGPT, paste-into-chat): output all stories as clearly delimited sections in a single document, with the same numbering and structure. Append coverage gate and integration path trace at the end.
+
+**Produced if requested:**
+- `business-epic.md` alongside the epic (or appended after coverage in non-filesystem mode) — the PO-facing view. Grouped ACs, prose data contracts, story references. No TCs, no code blocks or language-specific syntax.
 
 ---
 
-## Process: Stories First, Then Business Epic
+## Process
 
-**Always build stories first.** Moving detail into stories forces re-handling every AC and TC. By the time you write the business epic, the detail is organized by story, coverage is confirmed, and the roll-up is straightforward.
+**Always build stories first.** Moving detail into stories forces re-handling every AC and TC. If the user also requested a business epic, the detail is already organized by story by the time you write it — the roll-up is straightforward.
 
-Writing the business epic first means summarizing from the flat detailed epic — harder to group, easier to lose things. Bottom-up then compress. Not top-down then hope.
-
-### Step 1: Build the Story File
+### Step 1: Build Individual Story Files
 
 Read the detailed epic's Recommended Story Breakdown. Use it as the starting structure — it tells you which ACs belong to which story.
 
-For each story:
+If you have filesystem access, create a `stories/` folder at the same level as the epic file. Write each story to its own numbered file:
+- `00-foundation.md` for Story 0
+- `01-[kebab-case-title].md`, `02-[kebab-case-title].md`, etc. for feature stories
+
+If you don't have filesystem access, output each story as a clearly delimited section (use `---` separators and `# Story N:` headings) in a single document, following the same numbering convention.
+
+For each story file:
 
 1. **Summary** — one line, what this story delivers
 2. **Description** — User Profile (carried from epic), Objective, Scope (in/out), Dependencies
@@ -65,14 +87,18 @@ Mark every section with a Jira comment indicating which Jira field it maps to:
 <!-- Jira: Definition of Done or Acceptance Criteria footer -->
 ```
 
-After all stories, add:
+After all stories are written, perform both validation checks and persist them as a coverage artifact:
 
-- **Integration Path Trace** — every segment of the critical user path mapped to a story and TC. Any segment with no story owner is a gap. Gaps block publishing.
 - **Coverage Gate** — every AC and TC from the detailed epic mapped to exactly one story. Unmapped TCs block publishing.
+- **Integration Path Trace** — every segment of the critical user path mapped to a story and TC. Any segment with no story owner is a gap. Gaps block publishing.
 
-### Step 2: Build the Business Epic
+Write both tables to `stories/coverage.md` (or append to the end of the single document in non-filesystem mode). This artifact is the proof that story sharding is complete and correct — downstream agents and reviewers read it cold to verify coverage without re-deriving it.
 
-With stories complete and coverage confirmed, create the business epic. This is a compression of known detail, not a vague summary.
+### Step 2: Build the Business Epic (if requested)
+
+If the user opted for stories only, skip this step — you're done after coverage validation.
+
+With stories complete and coverage confirmed, create `business-epic.md` alongside the epic file. This is a compression of known detail, not a vague summary.
 
 #### Business Context (new section, optional)
 If the user has provided business objectives or context during the epic phase, include them. If not, ask — but don't block on it. This section is allowed to describe the problem and why it matters. The PO is the audience; context helps them prioritize.
@@ -98,7 +124,7 @@ For each flow in the detailed epic, write one AC summary paragraph covering the 
 
 - Reference the AC number range (e.g., "AC-1.1 through AC-1.7")
 - Summarize what those ACs collectively require — specific enough that a PO can accept or reject the scope
-- End with a pointer: *(See Story N for detailed ACs and test conditions.)*
+- End with a pointer: *(See `stories/01-[story-name].md` for detailed ACs and test conditions.)*
 - No TCs in this document
 
 The grouping should follow the epic's flow structure — typically one group per flow heading, covering 2-7 ACs.
@@ -106,7 +132,7 @@ The grouping should follow the epic's flow structure — typically one group per
 #### Data Contracts
 Describe system inputs and outputs in prose. No TypeScript. No internal component interfaces. Focus on what the user provides and what they get back.
 
-Internal shapes (config schemas, tool parameter tables, component interfaces) belong in the story file's Technical Design sections.
+Internal shapes (config schemas, tool parameter tables, component interfaces) belong in individual story files' Technical Design sections.
 
 #### Non-Functional Requirements
 Carried from the detailed epic. May be simplified slightly but keep the substance.
@@ -120,12 +146,12 @@ If the detailed epic has a Technical Considerations section, carry it forward. I
 If the epic doesn't have enough architectural context to warrant this section, omit it.
 
 #### Story Breakdown
-List each story with a one-line description of what it delivers, which AC range it covers, and a pointer to the story file:
+List each story with a one-line description of what it delivers, which AC range it covers, and a pointer to the individual story file:
 
 ```markdown
 ### Story 1: [Title]
 [What it delivers]. Covers AC-X.Y through AC-X.Z.
-*(See story file Story 1 for full details and test conditions.)*
+*(See `stories/01-[story-name].md` for full details and test conditions.)*
 ```
 
 #### Validation Checklist
@@ -135,11 +161,13 @@ Simplified from the detailed epic — confirms the business epic is complete as 
 
 ## What Changes Between Detailed Epic and Business Epic
 
+This section applies only when producing the business epic.
+
 **Removed entirely:**
-- All TCs (moved to stories)
+- All TCs (moved to individual story files)
 - Detailed boundary contract tables (moved to story Technical Design sections)
-- Tool schemas, parameter tables (moved to stories)
-- Detailed endpoint/API specifications (moved to stories)
+- Tool schemas, parameter tables (moved to story files)
+- Detailed endpoint/API specifications (moved to story files)
 
 **Added:**
 - Business Context section (optional)
@@ -183,7 +211,9 @@ If the epic includes a Story 0 in its breakdown, carry it forward. Story 0 estab
 
 ## Integration Path Trace
 
-After defining all stories, trace each critical end-to-end user path through the story breakdown. This catches cross-story integration gaps that per-story AC/TC coverage cannot detect.
+Both the integration path trace and coverage gate below are written to `stories/coverage.md` (or appended to the single document in non-filesystem mode). They form the coverage artifact — proof that story sharding is complete.
+
+After writing all stories, trace each critical end-to-end user path through the story breakdown. This catches cross-story integration gaps that per-story AC/TC coverage cannot detect.
 
 ### How to Trace
 
@@ -204,7 +234,7 @@ Any segment with no story owner is an integration gap. Fix before publishing.
 
 ## Coverage Gate
 
-Before finalizing, verify every AC and TC from the detailed epic is assigned to exactly one story.
+Before finalizing, verify every AC and TC from the detailed epic is assigned to exactly one story file.
 
 | AC | TC | Story |
 |----|-----|-------|
@@ -219,22 +249,27 @@ Before finalizing, verify every AC and TC from the detailed epic is assigned to 
 
 ## Validation Before Handoff
 
-Before delivering both artifacts:
+**Story validation (always):**
 
-- [ ] Every AC from the detailed epic appears in the story file
-- [ ] Every TC from the detailed epic appears in exactly one story
+- [ ] Every AC from the detailed epic appears in a story file
+- [ ] Every TC from the detailed epic appears in exactly one story file
+- [ ] Coverage artifact (`stories/coverage.md`) persisted with both tables
 - [ ] Integration path trace complete with no gaps
 - [ ] Coverage gate table complete with no orphans
-- [ ] Each story has Jira section markers
+- [ ] Each story file has Jira section markers
+- [ ] Story files are numbered and named consistently (`00-foundation.md`, `01-[name].md`, etc.)
+
+**Business epic validation (if produced):**
+
 - [ ] Business epic has Jira section markers
-- [ ] Business epic grouped ACs reference correct story and AC ranges
+- [ ] Business epic grouped ACs reference correct story files and AC ranges
 - [ ] Business epic data contracts describe system boundary only (no internal types)
 - [ ] Business epic scope is cleaned of internal tech references
 - [ ] No code blocks or language-specific syntax in the business epic
 
 **Self-review (CRITICAL):**
-- Read the business epic as if you're a PO seeing it for the first time. Can you understand what this feature does and why it matters without opening the story file?
-- Read each story as if you're a developer picking it up cold. Do you have everything you need to start implementing?
+- Read each story file as if you're a developer picking it up cold. Do you have everything you need to start implementing?
+- If business epic was produced: read it as if you're a PO seeing it for the first time. Can you understand what this feature does and why it matters without opening a story file?
 
 ---
 

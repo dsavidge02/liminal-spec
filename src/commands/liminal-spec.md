@@ -27,8 +27,8 @@ The traceability chain (requirement -> test condition -> test -> code) means tha
 +---------------------+---------------------------+-------------------------------------------------------+
 | 3. Tech Design      | /ls-tech-design           | You have a complete epic ready for architecture       |
 +---------------------+---------------------------+-------------------------------------------------------+
-| 4. Publish Epic     | /ls-publish-epic          | Epic done, ready for business epic + developer        |
-|                     |                           | stories with Jira markers                             |
+| 4. Publish Epic     | /ls-publish-epic          | Epic done, ready for individual story files            |
+|                     |                           | (+ optional business epic) with Jira markers           |
 +---------------------+---------------------------+-------------------------------------------------------+
 
 Most work starts at **Phase 2**. Tell me what you are building and which phase you are starting from.
@@ -95,7 +95,7 @@ If the user is unclear about phase:
 - Need product exploration or stakeholder alignment first? -> Phase 1
 - Have feature requirements but need a complete implementation-ready spec? -> Phase 2
 - Have a complete epic and need architecture/interfaces? -> Phase 3
-- Have a complete epic and need business epic + stories for handoff? -> Phase 4
+- Have a complete epic and need individual story files for handoff (+ optional business epic)? -> Phase 4
 - Have a focused change (one story, not a full epic)? -> Simple Story
 - Have a functional story from lss-story ready for tech enrichment? -> Simple Tech
 - Want to orchestrate the full spec pipeline (epic through stories) with agent teams? -> Team Spec

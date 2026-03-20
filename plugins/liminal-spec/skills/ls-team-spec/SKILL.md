@@ -7,7 +7,7 @@ description: Orchestrate the full Liminal Spec pipeline with agent teams. Manage
 
 **Purpose:** Orchestrate the full Liminal Spec pipeline using agent teams — from orientation through technically enriched stories. You are the team lead — you gather context, spawn teammates for drafting and verification, manage revision loops, route human review, and move the pipeline forward.
 
-You start with a human who wants to build something. You end with a published epic (business epic + developer stories) ready for implementation (via `/ls-team-impl` or direct handoff to developers).
+You start with a human who wants to build something. You end with published story files (and optionally a business epic) ready for implementation (via `/ls-team-impl` or direct handoff to developers).
 
 If team mode is not available, use the individual phase skills directly (`/ls-research`, `/ls-epic`, `/ls-tech-design`, `/ls-publish-epic`).
 
@@ -262,36 +262,38 @@ Log the tech design phase completion to `team-spec-log.md`: verification rounds,
 Everyone in this phase loads: `ls-epic` AND `ls-publish-epic`
 
 - **Drafter:** Loads `ls-epic` + `ls-publish-epic`, reads the accepted epic
-- **Verifier:** Loads `ls-epic` + `ls-publish-epic`, reads the epic, the business epic, and the story file
+- **Verifier:** Loads `ls-epic` + `ls-publish-epic`, reads the epic, the story files, and the business epic (if produced)
 
 ### Drafting
 
 Spawn a general-purpose Opus teammate. Hand them:
 - Load `ls-epic` with `Skill(ls-epic)` and `ls-publish-epic` with `Skill(ls-publish-epic)`
 - The accepted epic (path)
+- Whether the user wants a business epic (ls-publish-epic will ask if not already decided)
 
-The drafter produces two artifacts:
-- **Story file** — all stories with full AC/TC detail, Jira section markers, Technical Design sections with relevant contracts from the epic, integration path trace, and coverage gate
-- **Business epic** — PO-friendly view with grouped ACs, prose data contracts, Technical Considerations, Jira section markers, and story references
+The drafter produces:
+- **Individual story files** — one file per story in a `stories/` folder, each with full AC/TC detail, Jira section markers, and Technical Design sections with relevant contracts from the epic
+- **Coverage artifact** (`stories/coverage.md`) — coverage gate table and integration path trace proving complete AC/TC assignment across stories
+- **Business epic** (if requested) — PO-friendly view with grouped ACs, prose data contracts, Technical Considerations, Jira section markers, and story file references
 
-The ls-publish-epic skill requires stories first, then the business epic — bottom-up compression.
+The ls-publish-epic skill always builds stories first. If the user also requested a business epic, it's built after — bottom-up compression.
 
 Include a prominent instruction to report back to the orchestrator when complete or blocked.
 
 ### Verification
 
-Run the verification pattern. The verifier and Codex subagent both have ls-epic + ls-publish-epic loaded and read the detailed epic, the business epic, and the story file.
+Run the verification pattern. The verifier and Codex subagent both have ls-epic + ls-publish-epic loaded and read the detailed epic, the story files, the coverage artifact (`stories/coverage.md`), and the business epic (if produced).
 
 Key verification targets for publish epic:
-- **Coverage gate:** Every AC and TC from the detailed epic assigned to exactly one story. Mechanical check — gaps are blockers.
+- **Coverage gate:** Verify `stories/coverage.md` — every AC and TC from the detailed epic assigned to exactly one story file. Mechanical check — gaps are blockers.
 - **Integration path trace:** No cross-story seam gaps. Every segment of critical user paths has a story owner.
-- **Story coherence:** Each story tells a coherent "what the user can do after" narrative and is independently acceptable by a PO.
-- **Business epic fidelity:** Grouped ACs accurately represent the detailed ACs. No code blocks or language-specific syntax in the business epic. Data contracts describe system boundary only.
-- **Cross-document consistency:** Story references in the business epic point to the correct stories. AC ranges match.
+- **Story coherence:** Each story file tells a coherent "what the user can do after" narrative and is independently acceptable by a PO.
+- **Business epic fidelity (if produced):** Grouped ACs accurately represent the detailed ACs. No code blocks or language-specific syntax in the business epic. Data contracts describe system boundary only.
+- **Cross-document consistency (if business epic produced):** Story references in the business epic point to the correct story files. AC ranges match.
 
 ### Human Review
 
-Check in with the human: "Business epic and stories are published and verified. Want to review?" The PO reviews the business epic. The Tech Lead or developers review the story file. Per the scrutiny gradient, the business epic gets shape-and-completeness review — is it clear enough to prioritize and accept from?
+Check in with the human: "Story files are published and verified. Want to review?" The Tech Lead or developers review the story files. If a business epic was produced, the PO reviews it — is it clear enough to prioritize and accept from?
 
 Log the publish epic phase completion to `team-spec-log.md`: coverage gate results, integration path trace gaps found and resolved, verification rounds, any issues encountered. Phase transitions are natural reflection points.
 
@@ -303,11 +305,11 @@ After publishing, the full artifact set gets a final coherence check. This is th
 
 ### Cross-Artifact Coherence Check
 
-Spawn a dual verifier: an Opus teammate who fires a Codex subagent async (default model: `gpt-5.3-codex`). In Sonnet-only mode, the verifier does a solo review. Both read the detailed epic, the business epic, the story file, and the tech design (if available). They check:
+Spawn a dual verifier: an Opus teammate who fires a Codex subagent async (default model: `gpt-5.3-codex`). In Sonnet-only mode, the verifier does a solo review. Both read the detailed epic, the story files, the coverage artifact (`stories/coverage.md`), the business epic (if produced), and the tech design (if available). They check:
 
-- **Coverage completeness:** Every AC and TC from the detailed epic is covered across the story set. No orphaned requirements.
-- **Cross-story seam integrity:** Integration paths between stories are coherent. No gaps where Story N assumes something Story M provides but neither story explicitly owns the connection.
-- **Business epic fidelity:** Grouped ACs accurately compress the detailed ACs. Story references are correct.
+- **Coverage completeness:** Verify the coverage artifact — every AC and TC from the detailed epic covered across the story files. No orphaned requirements.
+- **Cross-story seam integrity:** Integration paths between story files are coherent. No gaps where Story N assumes something Story M provides but neither story explicitly owns the connection.
+- **Business epic fidelity (if produced):** Grouped ACs accurately compress the detailed ACs. Story file references are correct.
 - **Consistency:** Types, contracts, and terminology are consistent across all artifacts.
 
 If fixes are needed, the Opus verifier teammate makes them directly. This is the final signoff — when this pass comes back clean, the spec pipeline is complete.
@@ -325,12 +327,12 @@ Log the final verification phase completion to `team-spec-log.md`: coherence che
 After all phases complete, the pipeline output is a set of handoff-ready artifacts. The orchestrator presents the full artifact set to the human:
 
 - Detailed epic (engineering source of truth)
-- Business epic (PO-facing view)
-- Story file (developer stories with full AC/TC detail)
+- `stories/` folder (individual story files with full AC/TC detail)
+- Business epic (PO-facing view, if produced)
 - Tech design (accepted)
 - `team-spec-log.md` (orchestration log — useful context for implementation: patterns noticed, decisions made, deviations documented)
 
-From here, the human can proceed to implementation via `/ls-team-impl` (team orchestration) or direct handoff to developers with the story file and tech design.
+From here, the human can proceed to implementation via `/ls-team-impl` (team orchestration) or direct handoff to developers with the story files and tech design.
 
 Log the full pipeline completion to `team-spec-log.md`: total phases run, total verification rounds across all phases, significant process decisions, and any recommendations for future runs.
 

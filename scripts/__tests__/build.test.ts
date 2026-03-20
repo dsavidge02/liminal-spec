@@ -247,7 +247,7 @@ describe("skill content", () => {
       join(DIST_PLUGIN, "skills", "ls-publish-epic", "SKILL.md")
     ).text();
     expect(content).toContain("# Publish Epic");
-    expect(content).toContain("Stories First, Then Business Epic");
+    expect(content).toContain("Build Individual Story Files");
     expect(content).toContain("Coverage Gate");
     expect(content).toContain("Integration Path Trace");
     expect(content).toContain("Jira");

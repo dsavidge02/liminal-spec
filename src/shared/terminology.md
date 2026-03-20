@@ -18,7 +18,7 @@
 | **Product Research** | Optional phase. Vision/idea -> PRD. Often skipped. |
 | **Epic** | Creates Epic from requirements. The linchpin -- most scrutiny here. |
 | **Tech Design** | Creates Tech Design from Epic. Validates spec as downstream consumer. |
-| **Publish Epic** | Phase 4. Transforms detailed epic into two handoff-ready artifacts: a PO-friendly business epic and a developer story file with full AC/TC detail and Jira section markers. |
+| **Publish Epic** | Phase 4. Transforms detailed epic into individual story files with full AC/TC detail and Jira section markers, plus a coverage artifact. Optionally produces a PO-friendly business epic. |
 | **Verification** | Validates artifacts and implementation. Different model for rigor -- thoroughness is the point. |
 
 ## Artifacts
@@ -40,7 +40,7 @@
 | **User Flow** | A sequence of steps through the feature. |
 | **AC (Acceptance Criteria)** | A testable requirement. "The system shall..." |
 | **TC (Test Condition)** | Verifiable condition for an AC. Formats: Given/When/Then for behavioral checks, numbered sequential steps, or input/output comparison tables. |
-| **Data Contract** | TypeScript interface defining data shapes. |
+| **Data Contract** | Documentation tables defining data shapes, types, and validations at significant system boundaries. Stack-neutral — no language-specific syntax. |
 | **Non-Functional Requirement (NFR)** | Cross-cutting constraint (performance, security, observability) that affects how things are built. Becomes Tech Design constraints, not TCs. Optional section. |
 
 ## Execution
