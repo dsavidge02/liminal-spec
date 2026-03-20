@@ -25,11 +25,11 @@ The functional story describes *what* the system does from the user's perspectiv
 
 **When technical detail is appropriate in the functional story:**
 
-- **Contract definitions** -- REST endpoint paths, HTTP response codes, error codes. These are interface boundaries, not implementation.
-- **Data shapes** -- TypeScript interfaces, Zod schemas, API payloads. Shapes describe *what* data looks like, not how it's processed.
+- **Boundary contracts** -- Endpoint paths, methods, HTTP response codes, error codes for communication across significant system boundaries (frontend to backend, application to external service). Express in tables and structured prose, not code syntax.
+- **Data shapes** -- Field names, types, cardinality, and validation rules for data crossing system boundaries. Express in documentation tables, not language-specific syntax (no TypeScript interfaces, Zod schemas, or similar). The story is stack-neutral.
 - **Non-functional requirements** -- Performance thresholds, security constraints. These constrain implementation without specifying it.
 
-Even in these cases, stay focused on contracts and constraints rather than implementation choices. If you're specifying *how* something works internally, that belongs in the technical enrichment phase.
+Even in these cases, stay focused on contracts and constraints rather than implementation choices. Internal contracts within a layer belong in the technical enrichment phase. If you're specifying *how* something works internally, that also belongs in the technical enrichment phase.
 
 ---
 
@@ -195,26 +195,39 @@ of tag and search filters.
 
 ### Data Contracts (if applicable)
 
-Define shapes precisely when the story involves API changes. These become the source of truth for implementation.
+Define contracts at significant system boundaries (frontend to backend, application to external service). Express in documentation tables, not code syntax.
 
 ```markdown
 ## Data Contracts
 
-### Export URL Structure
+### Export Endpoint
 
-```
-/prompts?tags={comma-separated}&q={search}&slugs={comma-separated}
-```
+| Operation | Method | Path | Description |
+|-----------|--------|------|-------------|
+| Export prompts | GET | /prompts | Returns prompts matching filter criteria |
 
-### Response Types
+**Query Parameters:**
 
-```typescript
-interface ExportState {
-  tags: string[];
-  query: string;
-  slugs: string[];
-}
-```
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| tags | comma-separated strings | no | Filter by tags |
+| q | string | no | Search query |
+| slugs | comma-separated strings | no | Filter by specific slugs |
+
+### Success Response (200)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| prompts | array of Prompt | Prompts matching the filter criteria |
+| total | integer | Total number of matching prompts |
+
+**Prompt:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| slug | string | Unique prompt identifier |
+| title | string | Display title |
+| tags | array of string | Associated tags |
 
 ### Error Responses
 
@@ -278,7 +291,7 @@ Before handing to lss-tech enricher:
 - [ ] Every AC is testable (no vague terms)
 - [ ] Every AC has at least one TC
 - [ ] TCs cover happy path, edge cases, and errors
-- [ ] Data contracts are fully typed (if applicable)
+- [ ] Data contracts are fully specified at system boundaries (if applicable)
 - [ ] Error paths documented
 - [ ] Scope is genuinely story-sized (1-2 flows, ~5-15 ACs)
 - [ ] All validator issues addressed (Critical, Major, and Minor)
@@ -409,7 +422,8 @@ Brief prose description of what this story delivers:
 
 ## Data Contracts (if applicable)
 
-[TypeScript interfaces, API shapes, error response tables]
+[Contracts at significant system boundaries — documentation tables for
+endpoints, data shapes, and error responses. No code syntax.]
 
 ---
 
@@ -442,7 +456,7 @@ Brief prose description of what this story delivers:
 - [ ] Every AC is testable
 - [ ] Every AC has at least one TC
 - [ ] TCs cover happy path, edge cases, errors
-- [ ] Data contracts fully typed (if applicable)
+- [ ] Data contracts fully specified at system boundaries (if applicable)
 - [ ] Error paths documented
 - [ ] Scope is story-sized (1-2 flows, ~5-15 ACs)
 - [ ] Self-review complete

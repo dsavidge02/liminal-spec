@@ -281,7 +281,7 @@ Key verification targets for publish epic:
 - **Coverage gate:** Every AC and TC from the detailed epic assigned to exactly one story. Mechanical check — gaps are blockers.
 - **Integration path trace:** No cross-story seam gaps. Every segment of critical user paths has a story owner.
 - **Story coherence:** Each story tells a coherent "what the user can do after" narrative and is independently acceptable by a PO.
-- **Business epic fidelity:** Grouped ACs accurately represent the detailed ACs. No TypeScript or code blocks in the business epic. Data contracts describe system boundary only.
+- **Business epic fidelity:** Grouped ACs accurately represent the detailed ACs. No code blocks or language-specific syntax in the business epic. Data contracts describe system boundary only.
 - **Cross-document consistency:** Story references in the business epic point to the correct stories. AC ranges match.
 
 ### Human Review

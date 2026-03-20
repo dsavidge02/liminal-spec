@@ -16,11 +16,11 @@ Epics are **functional and detailed, but generally not technical**. They describ
 
 Some situations warrant technical specificity in the epic:
 
-- **Contract definitions** — REST endpoint paths, HTTP response codes, error codes. These are interface boundaries, not implementation.
-- **Data shapes** — TypeScript interfaces, Zod schemas, API payloads. Shapes describe *what* data looks like, not how it's processed.
+- **Boundary contracts** — Endpoint paths, methods, HTTP response codes, error codes for communication across significant system boundaries (frontend to backend, application to external service, system to integration partner). Express in tables and structured prose, not code syntax.
+- **Data shapes** — Field names, types, cardinality, and validation rules for data crossing system boundaries. Express in documentation tables, not language-specific syntax (no TypeScript interfaces, Zod schemas, or similar). The epic is stack-neutral.
 - **Non-functional requirements** — Performance thresholds, security constraints, compliance needs. These constrain implementation without specifying it.
 
-Even in these cases, stay focused on contracts and constraints rather than implementation choices.
+Even in these cases, stay focused on contracts and constraints rather than implementation choices. Internal contracts within a layer (service-to-service calls, component interfaces, module APIs) belong in Tech Design unless there is strong rationale to surface them in the spec.
 
 ### What Belongs in Tech Design
 
@@ -236,22 +236,35 @@ Users land here after clicking "Add Location" in Guidewire.
 
 ## Data Contracts
 
-Define all shapes precisely. These become the source of truth for implementation. Use this section when defining new or modified API shapes.
+Data contracts define the inputs and outputs at significant system boundaries — frontend to backend, application to external service, system to integration partner. Internal contracts within a layer (service-to-service calls, component props, module interfaces) belong in Tech Design unless there is strong rationale to surface them here.
 
-```typescript
-interface LocationListResponse {
-  locations: Location[];
-  pagination: { page: number; totalPages: number; };
-}
+Express contracts in documentation format — tables, structured prose, and lists. All the precision of typed definitions without language-specific syntax. The epic is stack-neutral; implementation types belong in Tech Design.
 
-interface Location {
-  locRefId: string;
-  locRefVerNbr: number;
-  address: string;
-  city: string;
-  state: string;
-  postalCode: string;
-}
+```markdown
+### Endpoints
+
+| Operation | Method | Path | Description |
+|-----------|--------|------|-------------|
+| List locations | GET | /accounts/{accountId}/locations | Returns paginated locations for an account |
+
+### Location List Response
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| locations | array of Location | yes | All locations for the account |
+| pagination.page | integer | yes | Current page number |
+| pagination.totalPages | integer | yes | Total number of pages |
+
+### Location
+
+| Field | Type | Required | Validation | Description |
+|-------|------|----------|------------|-------------|
+| locRefId | string | yes | non-empty | Location reference identifier |
+| locRefVerNbr | integer | yes | ≥ 0 | Location reference version number |
+| address | string | yes | non-empty | Street address |
+| city | string | yes | non-empty | City name |
+| state | string | yes | 2-char code | State code |
+| postalCode | string | yes | 5 or 9 digit | Postal/ZIP code |
 ```
 
 Include error response shapes:
@@ -371,7 +384,7 @@ Before handing to Tech Lead:
 - [ ] Every AC is testable (no vague terms)
 - [ ] Every AC has at least one TC
 - [ ] TCs cover happy path, edge cases, and errors
-- [ ] Data contracts are fully typed (if applicable)
+- [ ] Data contracts are fully specified at system boundaries (if applicable)
 - [ ] Scope boundaries are explicit (in/out/assumptions)
 - [ ] Story breakdown covers all ACs
 - [ ] Stories sequence logically (read before write, happy before edge)
@@ -531,21 +544,27 @@ Brief prose description of what this feature delivers and why:
 
 ## Data Contracts (if applicable)
 
-### Request Parameters
+[Contracts at significant system boundaries — frontend to backend, application
+to external service, system to integration partner. Express in documentation
+tables, not code syntax.]
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| param1 | string | Yes | Description |
+### Endpoints
 
-### Response Types
+| Operation | Method | Path | Description |
+|-----------|--------|------|-------------|
+| [operation] | [method] | [path] | [description] |
 
-[TypeScript interfaces or equivalent typed shapes]
+### [Response/Message Name]
+
+| Field | Type | Required | Validation | Description |
+|-------|------|----------|------------|-------------|
+| [field] | [type] | [yes/no] | [rules] | [description] |
 
 ### Error Responses
 
 | Status | Code | Description |
 |--------|------|-------------|
-| 400 | ERROR_CODE | Description |
+| [status] | [ERROR_CODE] | [description] |
 
 ---
 
@@ -606,7 +625,7 @@ Questions for the Tech Lead to address during design:
 - [ ] Every AC is testable (no vague terms)
 - [ ] Every AC has at least one TC
 - [ ] TCs cover happy path, edge cases, and errors
-- [ ] Data contracts are fully typed (if applicable)
+- [ ] Data contracts are fully specified at system boundaries (if applicable)
 - [ ] Scope boundaries are explicit (in/out/assumptions)
 - [ ] Story breakdown covers all ACs
 - [ ] Stories sequence logically (read before write, happy before edge)

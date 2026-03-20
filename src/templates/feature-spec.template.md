@@ -134,7 +134,7 @@ Brief prose description of what this feature delivers and why:
 
 ### Response Types
 
-[TypeScript interfaces or equivalent typed shapes]
+[Documentation tables describing field names, types, and descriptions]
 
 ### Error Responses
 
@@ -201,7 +201,7 @@ Questions for the Tech Lead to address during design:
 - [ ] Every AC is testable (no vague terms)
 - [ ] Every AC has at least one TC
 - [ ] TCs cover happy path, edge cases, and errors
-- [ ] Data contracts are fully typed (if applicable)
+- [ ] Data contracts are fully specified at system boundaries (if applicable)
 - [ ] Scope boundaries are explicit (in/out/assumptions)
 - [ ] Story breakdown covers all ACs
 - [ ] Stories sequence logically (read before write, happy before edge)

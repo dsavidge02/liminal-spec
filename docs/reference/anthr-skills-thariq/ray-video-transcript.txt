@@ -1,0 +1,156 @@
+ay, so yesterday Enthropic released the most incredible guide on writing good effective cloud code skills that everyone has seen. Now this covers a lot
+0:088 secondsof the key lessons that they learned from making hundreds of skills that they have in use across pretty much the entire organization. I'll be breaking it down with a bunch of nice images,
+0:1717 secondsexamples, and things that you can be doing to improve your own skills and workflows. All right, now starting out they talk about why skills even matter
+Chapter 2: The Default Problem
+0:2424 secondsand that is because of the default output problem. When you give a prompted model, it will give you statistically the most likely thing based on its
+0:3232 secondstraining data. And this can be good in situations because if you're implementing an authentication system,
+0:3737 secondsyou want to be given the most likely most common authentication system because it will work. You don't want the model to be overly creative when it comes to designing something that
+0:4646 secondsimportant. You want to follow the standard procedure that everyone else is using. Now, the problem is when it comes to things like design, it can lead to
+0:5353 secondsbad output. For example, we've all seen the purple gradient into font like same layout AI looking design websites and that is because of distributional
+1:021 minute, 2 secondsconvergence in the training data. All these examples of designs have been blended and washed together that Claude will only give the safe common patterns
+1:101 minute, 10 secondsthat it finds. But by using a skill, you can make the model sample differently from its training data distribution. So with the right words, you can basically
+1:181 minute, 18 secondsmake it use unique fonts, move towards experimental layouts or different kinds of animations and essentially move it away from the high probability boring
+1:261 minute, 26 secondscenter to like a more specific and creative regions of its training data.
+1:301 minute, 30 secondsSo you can kind of think of skills as being a way to differentiate yourself from everyone else. So for example, if a thousand people say build me a landing page, they will all get pretty similar
+1:381 minute, 38 secondsdesigns from cloud code. But if everyone has their own unique design skill that is kind of influenced and contains information about design they like and
+1:461 minute, 46 secondsalso their own experiences and kind of what they're after and their brand guidelines and so forth, then everyone will be seeing a different outcome. So the way to think about skills is that
+1:541 minute, 54 secondsthey're basically overriding the default behavior and pushing the model to less common and more specific parts of its knowledge. You're kind of invoking a
+2:022 minutes, 2 secondsdifferent part of the model's latent space to get better and more distinct outcomes. Another way to imagine this is that you will get the cloud code default
+2:092 minutes, 9 secondsbehavior by not using a skill and your outputs will be very similar to pretty much everyone else's over here. But a skill is kind of like a forcing function
+2:162 minutes, 16 secondsthat forces the underlying distribution to take a different shape and give you different outcomes. So whilst the knowledge that you're after does exist in the model, for example, right over
+2:252 minutes, 25 secondshere, it has a low probability. But by using a skill, you're kind of activating this low probability region over here to give you different outcomes. Now, what
+2:332 minutes, 33 secondsthis means is that a bad skill would be restating obvious behavior to Claude code. You'd be restating something that Claude already has a high probability of
+2:412 minutes, 41 secondsbeing able to do and achieving. So, for example, if I said make me a landing page in a brand new project and I didn't give it any additional information, then
+2:482 minutes, 48 secondsit would give me a pretty generic AI looking design right over here. And then if I told Claude Code, okay, you know what, like turn this into a skill. So, I would trigger the skill creator and be
+2:572 minutes, 57 secondslike, okay, turn this into a skill for me. Then it would take that default behavior, turn it into design related skill and make all successive design with that skill look very AI related.
+3:063 minutes, 6 secondsWhich means that the bad distribution that would kind of look like this without a skill would end up pushing up to look more like this with a skill instead. But good skills are pushing
+3:153 minutes, 15 secondsclaws to new outputs and then steering the underlying distribution. And this means that when you're making a skill,
+3:213 minutes, 21 secondsyou usually want to be encoding something such as your own lived experience, your own expertise, or something that you found online. So, for
+3:283 minutes, 28 secondsexample, if you asked Claude, "Hey, can you help me with marketing?" Then it would give you really generic and boring advice that won't really help you stand out because everything that is trained
+3:373 minutes, 37 secondson already contains a lot of that advice and people already following it. Now,
+3:413 minutes, 41 secondsClaude does know like better marketing advice and it does know how to do things more uniquely. So if you gave it a few examples, then you could turn that into
+3:493 minutes, 49 secondsa skill because that skill would be steering the underlying distribution to give you better outputs more suitable for your goal. And one of the common ways that I've seen people do this is
+3:573 minutes, 57 secondsthat they listen to a really good podcast episode that talks about an idea that not many people are talking about.
+4:024 minutes, 2 secondsAnd I kind of want to expand on this idea and understand how it applies to their projects and like start applying it every single day. So they would get
+4:104 minutes, 10 secondsthe transcript of that podcast, turn that into a skill and then triggering that every time they're getting help with claude for marketing. Now I have
+4:174 minutes, 17 secondstalked about this idea in more detail a few weeks ago at my claude code master class which is the most comprehensive class on claude code that you will find online. Now I am working on the claude
+4:264 minutes, 26 secondsskills class of the master class which will be the most comprehensive class on cloud skills that you will find. So if you are interested there will be a link
+4:334 minutes, 33 secondsdown below to sign up. Now they say the most valuable part of any skill is a gotchas section. So things that Claude has to be careful of when it comes to
+Chapter 3: Gotchas
+4:414 minutes, 41 secondsusing the skill and it's very similar to hiring and training a brand new employee. You wouldn't just give them instructions and be like hey here's a work and go do it. You would usually
+4:504 minutes, 50 secondstell them about things that they have to watch out for things that will come back and bite them. And basically all the experience that you've gained so far in doing the thing yourself. Similarly you
+4:594 minutes, 59 secondsshould be ingraining this knowledge into your skills as well. So for example let's say you made a skill to help you draft customer support replies. You
+5:075 minutes, 7 secondsmight make the skill and then realize that it starts promising like timelines to customers of I promise that this will
+5:145 minutes, 14 secondsbe resolved in 24 hours and this is a real failure that your customer support people learned not to make and you did not tell Claude the exact same thing. So
+5:225 minutes, 22 secondsyou would add to your skill like at the bottom never promise specific timelines say we're working hard on it and you would use a skill again read for its
+5:295 minutes, 29 secondsoutputs it'd be improved and as you add in more and more gotchas as well your skill becomes like a rich knowledge base that will be applied consistently over
+5:375 minutes, 37 secondstime and this is exactly the flywheel that makes skills more and more valuable over time. A lot of people make a skill once then they notice Claude makes one
+5:445 minutes, 44 secondsmistake and then they never bother to improve on the skill or add that as a gotcha. So, by you taking the time to add that to your skill, you will already be doing better than most other people.
+5:545 minutes, 54 secondsAnd the example that they use is they have a skill for an internal billing library that isn't really captured inside Claude's default behavior. So, by
+6:026 minutes, 2 secondsmaking it a skill, they will see Claude does a better job at dealing with anything billing related inside their repository. Now, the first gotcha they
+6:106 minutes, 10 secondsadd is like prorations round down, not near ascent. Then they add another for like test mode, another one for like
+6:176 minutes, 17 secondskeys. And a lot of this knowledge would already be ingrained inside their heads of engineers and employees. So ideally you should be getting this knowledge,
+6:246 minutes, 24 secondsthis like implicit knowledge outside of people's heads inside your claude skills. Now next up they talk about avoid railroading claude. And this is
+Chapter 4: Railroading
+6:326 minutes, 32 secondsvery similar to another idea that I talked about a few weeks ago in my Claude code master class. But essentially what many people do with
+6:386 minutes, 38 secondsskills and just claude in general is they give it a really rigid set of instructions because a lot of people like say skills are kind of like recipes or you want to give it some workflows,
+6:486 minutes, 48 secondsinstructions and this can be helpful in some situations when there's a very specific way of doing things. But in other situations, it's not as flexible
+6:566 minutes, 56 secondsor versatile. So for example, let's say you made a skill to help you interview candidates and it came up with a bunch of questions that you should use. A bad
+7:057 minutes, 5 secondsskill would kind of be like write free behavioral questions, write free technical questions and like write one culture fit question. So this is really
+7:137 minutes, 13 secondsrigid and it doesn't allow for any flexibility. Now what would happen is that if you used a skill like this, a senior architect would get very similar
+7:207 minutes, 20 secondsquestions to a junior intern and you won't really be able to pull out the best in them. Essentially you have a rigid recipe that gives you identical
+7:277 minutes, 27 secondsoutputs regardless of the context. So you want to take a more goal oriented approach where you give Claude some information and the flexibility to
+7:357 minutes, 35 secondsadapt. So a better example would kind of be like prepare interview questions for this role. Test for what actually predict success here. Here are the
+7:427 minutes, 42 secondstraits our best hires have had. And then you give it a bunch of relevant context for your organization and then you will find your interview questions are much better for whichever roles that people
+7:517 minutes, 51 secondsare applying for. And if you notice its output being bad, then you can go back to previous section and then add the gotchas such as never ask family related
+7:597 minutes, 59 secondsquestions or something. Which means that in many situations, it can be better to take a goal first approach with context than to take a constraint first approach
+8:088 minutes, 8 secondsinstead. And to relate this to the distribution thing that I said before,
+8:118 minutes, 11 secondsthe way that I imagine this in my mind is that when you railroad cloud, then you're basically collapsing this wider distribution that it has for creating
+8:198 minutes, 19 secondslike a creative solution, an optimized solution, and so forth. You're collapsing this down into a really rigid like small path. Instead, you basically
+8:278 minutes, 27 secondseliminate all optionality and you have no room for cloud to make its own judgment. Now, next up, you want to make use of progressive disclosure and you
+Chapter 5: Progressive Disclosure
+8:348 minutes, 34 secondsdon't want to cram every single thing into the single skill.mmd file. So, for example, if you had a content repurposing skill, then you know that
+8:428 minutes, 42 secondsdifferent types of content does well on different platforms. What works on LinkedIn will not necessarily work on YouTube or Twitter. So, you would have
+8:508 minutes, 50 secondsyour main skill.md outlining any gotchas and the main goal to avoid railroading clawed. And then you would have separate
+8:588 minutes, 58 secondsmarkdown files inside like a formats folder that contains information on effective LinkedIn posts, effective newsletters, and then Twitter threads
+9:059 minutes, 5 secondsand so forth. And that means that if you were repurposing one bit of content,
+9:099 minutes, 9 secondsthen Claude wouldn't be able to load in only the files that are relevant. Which means that if you wanted something repurposed from a newsletter to a
+9:159 minutes, 15 secondsLinkedIn post, then Claude will be able to load in only those files that are relevant, keeping the context window high signal and avoid adding irrelevant
+9:249 minutes, 24 secondsnoise to the context window. Now the way I do this in my skills is that I have reference files. So I have one file for kernel tuning. I have another one for operations like certifica management.
+9:349 minutes, 34 secondsAnd this is helpful because cloud code may not always be troubleshooting something and just needs to know some operation stuff instead. Which means that only the irrelevant context will be
+9:429 minutes, 42 secondsloaded in when it needs to be. Now next up, your skill descriptions should be routing logic for Claude and not marked copy. So many people write their skill
+Chapter 6: Skill Descriptions
+9:519 minutes, 51 secondsdescriptions kind of like they were advertising their skill to human for example or telling a team member of like what exactly it does. So a bad
+9:599 minutes, 59 secondsdescription would be something like a comprehensive tool for monitoring poll request status across the deployment life cycle. But you may notice that Claude may not know when to trigger the
+10:0810 minutes, 8 secondsskill because it doesn't mention any other keywords that a user would be mentioning in their query. But a good skill description would be something
+10:1510 minutes, 15 secondslike monitors a PR until it merges triggers on babysit watch CI make sure this lands and then Claude can semantically match any user question or
+10:2410 minutes, 24 secondsquery to a skill easily. And you can kind of see this in this skill that I have which is a image cleanup skill for
+10:3110 minutes, 31 secondsmy Ray OS folder. And it says over here triggers on clean up images, delete unused images, flatten images, tidy up
+10:3810 minutes, 38 secondsimages and so forth. And these are all semantically similar to things that I would potentially say when I want my images cleaned up in this project. Now,
+Chapter 7: Scripts
+10:4510 minutes, 45 secondsyou also want to be improving your skills with scripts that Claude can run.
+10:4910 minutes, 49 secondsAnd this is especially important for skills that are fetching data and using data from an external source because otherwise if you just give it an API key
+10:5710 minutes, 57 secondsand say like go figure it out then claude will spend a bunch of time looking at the API documentation figuring out how to make the requests and stuff and if you don't save that
+11:0511 minutes, 5 secondsinformation inside of the skill then that can lead to wasted tokens and time every single time that skill is triggered in the future. But if Claude
+11:1311 minutes, 13 secondshas pre-built functions in a library file, then it can simply compose them together in the right way to analyze the data and give you insights rather than
+11:2111 minutes, 21 secondswasting tokens and potentially being distracted by the fact it has to figure out how an API works. And a practical example would be something like let's
+11:2911 minutes, 29 secondssay I wanted to make a skill that would combine my YouTube analytics and then my Stripe data and then also post hog as well for the website to figure out which
+11:3711 minutes, 37 secondsvideos are driving most of the traffic and sales to my applications. What I can do is I can basically make a read only
+11:4511 minutes, 45 secondsAPI key for cloud code. I'll give it read only access to everything because I don't want to doing something crazy. And then I can copy this API key, give it
+11:5211 minutes, 52 secondscloud code, which should be fine because it's a read only. And then I can say something like using the stripe API key
+11:5911 minutes, 59 secondsand also super data, can you figure out which of my recent videos have been driving most of the sales, can you correlate the like release date with the
+12:0712 minutes, 7 secondsrevenue that came the days after? I think there's also some metadata attached to checkout that should help you with that. And then once you figured out how to use the API effectively, can
+12:1512 minutes, 15 secondsyou turn that into a set of scripts that you can call reliably so that you don't always have to make up the requests every single time. And then I can go to something like super data for example,
+12:2612 minutes, 26 secondsgive an API key from there as well and then also give it a link to the documentation as well. And finally, I can trigger the skill critter skill by
+12:3312 minutes, 33 secondsjust doing /skill critter and say make this into a skill. Now you can see that Claude code is trying to figure out with a bunch of Python code and testing all
+12:4112 minutes, 41 secondsthese scripts that it should make and run. Okay, so now finished making me the skill with a bunch of Python files that I can use next time to run through the
+12:4912 minutes, 49 secondsskill faster and focus more on the results rather than building out the scaffolding pipeline to gather that data. And the final report kind of looks
+12:5712 minutes, 57 secondslike this. So it looks pretty good to me. And then the scripts kind of look like this. So we have a stripe API
+13:0413 minutes, 4 secondsscript. We also have a report HTML template that can use every single time and then we have a end that contains API keys going forwards. Now they also talk
+Chapter 8: Hooks for Skills
+13:1313 minutes, 13 secondsabout using ondemand hooks with cloud skills. And if you don't know much about cloud hooks then I have a whole video about that in my cloud code masterass
+13:2113 minutes, 21 secondslinked down below. But essentially what you can do with cloud hooks is restricts the scope or access of the skill to make it more secure going forwards. Now, one
+13:2913 minutes, 29 secondsof the problems in the skill that we just made so far is that cloud code may decide like, okay, I'm going to gather some other data or I'm going to edit this Python script around and then read
+13:3813 minutes, 38 secondsthe environment variable directly or something like that. Then it might decide to access a random website on the internet and maybe get prompt injected and give our API key away. So, we can
+13:4713 minutes, 47 secondsmake our skill even more secure with a bunch of cloud hooks. So the way we do this is we can use a cloud hook to restrict claude code to only being able
+13:5613 minutes, 56 secondsto run those scripts and then banning pretty much everything else. And hooks are defined at the top in the front matter. But writing hooks manually is
+14:0314 minutes, 3 secondslike kind of tedious. So we can get Claude code to make them for us. And the way we do this is by triggering the Claude code guide sub agent and then we can describe the behavior that we want.
+14:1314 minutes, 13 secondsCan you make a hook for the skill that will basically restrict the skill to only being able to use those Python files? It should not be able to read the
+14:2214 minutes, 22 secondsenv. It should not be able to do any color requests or access data online or do like a web fetch or something like that. It should only be able to use
+14:3014 minutes, 30 secondsthose scripts and then make a HTML file for us. Basically add any relevant hooks that blocks any behavior that is not what I just described. All right. So now
+14:3814 minutes, 38 secondswe can see that it made a bunch of hooks to block any kind of web access. uh editing the library files that we made earlier, reading the environment
+14:4614 minutes, 46 secondsvariables and a bunch of other stuff. So this will make our skill even more secure going forwards and it will make sure that it only does a behavior that
+14:5414 minutes, 54 secondsis expected of the skill. All right, so next up, you may also want to add some kind of log file or storage to your skills so it can help remember earlier
+Chapter 9: Store Data in Skills
+15:0215 minutes, 2 secondsthings that have happened the last time it ran. Or for example, you may have a skill that helps you write content and any previous suggestions or outputs that
+15:1015 minutes, 10 secondsare bad are stored into one log file or data file and then anything that you have previously written about and published before is stored into another
+15:1715 minutes, 17 secondsfile. So the skill knows not to write about the same topic again. Or if it does write about the same topic, then it knows to write about it from a different
+15:2515 minutes, 25 secondsangle perhaps. And essentially this will help ensure continuity between skill runs because a skill will know what it did the last time it was called. And
+15:3215 minutes, 32 secondsthis can either take the form of a JSON file, a simple log file, TX txt file, or like a SQL light database. And then you can either commit this so the rest of
+15:4115 minutes, 41 secondsthe team can use it or you can do get ignore so that everyone has their own copy for when the skill last ran. And if you tell cloud code to add this to your skill MD uh called claude plug-in data,
+15:5115 minutes, 51 secondsthen it will store it reliably on your computer somewhere such that if the skill was updated from the like external plug-in library, then the data would not
+Chapter 10: Skills as Operational Packages
+15:5915 minutes, 59 secondsbe lost. Okay. Okay, now combining everything that we talked about so far,
+16:0216 minutes, 2 secondswe want to be thinking of skills more as operational packages for completing a specific task. And that means that they should contain any scripts, assets,
+16:1216 minutes, 12 secondsreference files, configuration, and also any data from the last time that they ran. Essentially, it's kind of like having an employee whose sole role is to
+16:2016 minutes, 20 secondsdo one particular task. And the people who you are treating skills like this are getting the most value out of them.
+16:2416 minutes, 24 secondsAnd you will also notice the best skills fall cleanly into one category. You shouldn't have skills trying to span too many categories or complete too many
+16:3316 minutes, 33 secondsdifferent distinct tasks at once. They should only be focused on doing their particular task really well. The analogy that I personally find helpful is that
+16:4016 minutes, 40 secondseach skill is kind of like its own mini application that has a specific goal. So one skill may be for gathering data from
+16:4816 minutes, 48 secondsa certain source and then just making a nice visual out of it. Another skill would be only dedicated to finding the relevant websites of competitors. For
+16:5616 minutes, 56 secondsexample, another skill they have is gathering data from data dog, for example. And that would of course be different from their bug hunting skill.
+17:0317 minutes, 3 secondsAnd their bug hunt skill may realize that they need to use the data dog skill to gather more data about what the bug should be. So skills should be able to
+17:1117 minutes, 11 secondscombine together and you should be having complimentary skills rather than overlapping skills. Now, finally, if you're going to be sharing your skills,
+Chapter 11: Config Files
+17:1817 minutes, 18 secondsyou may want to consider having a setup wizard inside your skill. Now let's say I wanted to share my video revenue report skill with some friends who want
+17:2617 minutes, 26 secondsto run it on their own data or YouTube channels. Then I can make a nice like config.json file here. And then I can have something like this YouTube channel
+17:3417 minutes, 34 secondsID and YouTube channel handle. And then in my skill.md I can have something like this. So it says your config. And what
+17:4117 minutes, 41 secondsthis command does is it's a batch command that loads in the data from the config file the skill folder that I have. If there's no config file, then it
+17:5017 minutes, 50 secondswill just say not configured. And then if I edit this, I can basically say ask the user what their channel handle is
+17:5817 minutes, 58 secondsand then use that and the super data API to find their channel ID and update the config. Now, this can be really handy for skills that are shared widely within
+18:0618 minutes, 6 secondsan organization and everyone is using the same skill but need slightly different config. But if you're not really sharing your skills with others
+18:1418 minutes, 14 secondsor in an organization, then there's no real point in doing this. Anyways,
+18:1718 minutes, 17 secondsthere's a bunch more information in the article that I will be covering later on this week in my Claude code skills class. So, if you are interested in signing up to it, then it will be
+18:2518 minutes, 25 secondsavailable within my Claude Code master class. And there are a bunch of other classes that you may find handy about prompt engineering, context engineering,
+18:3318 minutes, 33 secondsmy own daily workflows, and a bunch more things as well. You also do get access to free videos from the class if you sign up to my Claude Code newsletter.
+18:4018 minutes, 40 secondsAnd you also get many insights from me whenever I discover

@@ -43,7 +43,7 @@ For each story:
 1. **Summary** — one line, what this story delivers
 2. **Description** — User Profile (carried from epic), Objective, Scope (in/out), Dependencies
 3. **Acceptance Criteria** — full ACs with interspersed TCs, pulled from the detailed epic. Given/When/Then preserved exactly. If the story context requires refinement of a TC (e.g., noting that a TC is exercisable only after a later story), add a note — don't drop the TC.
-4. **Technical Design** — data contracts (TypeScript interfaces) relevant to this story, pulled from the detailed epic's Data Contracts section. Include tool schemas, config shapes, or other typed contracts that the developer implementing this story needs. After the contracts, add: *"See the tech design document for full architecture, implementation targets, and test mapping."*
+4. **Technical Design** — data contracts relevant to this story, pulled from the detailed epic's Data Contracts section. Include endpoint tables, data shape tables, error responses, and other boundary contracts that the developer implementing this story needs. After the contracts, add: *"See the tech design document for full architecture, implementation targets, and test mapping."*
 5. **Definition of Done** — checklist specific to this story
 
 Mark every section with a Jira comment indicating which Jira field it maps to:
@@ -137,9 +137,9 @@ Simplified from the detailed epic — confirms the business epic is complete as 
 
 **Removed entirely:**
 - All TCs (moved to stories)
-- All TypeScript interfaces and code blocks (moved to story Technical Design sections)
+- Detailed boundary contract tables (moved to story Technical Design sections)
 - Tool schemas, parameter tables (moved to stories)
-- Detailed CLI/API interface specifications (moved to stories)
+- Detailed endpoint/API specifications (moved to stories)
 
 **Added:**
 - Business Context section (optional)
@@ -150,7 +150,7 @@ Simplified from the detailed epic — confirms the business epic is complete as 
 
 **Transformed:**
 - Individual ACs → grouped AC summary paragraphs with ranges
-- TypeScript contracts → prose descriptions of inputs and outputs
+- Detailed contract tables → prose descriptions of inputs and outputs
 - Scope bullets cleaned of internal tech references
 
 **Kept as-is:**
@@ -230,7 +230,7 @@ Before delivering both artifacts:
 - [ ] Business epic grouped ACs reference correct story and AC ranges
 - [ ] Business epic data contracts describe system boundary only (no internal types)
 - [ ] Business epic scope is cleaned of internal tech references
-- [ ] No TypeScript or code blocks in the business epic
+- [ ] No code blocks or language-specific syntax in the business epic
 
 **Self-review (CRITICAL):**
 - Read the business epic as if you're a PO seeing it for the first time. Can you understand what this feature does and why it matters without opening the story file?
