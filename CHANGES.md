@@ -92,3 +92,51 @@ Scratch pad for tracking changes as we go. Will be consolidated into CHANGELOG.m
 - `plugins/liminal-spec/` — marketplace source synced
 
 **Why:** The original ls-team-impl treated the Sonnet-only path as a degraded fallback. In practice, users either have an external CLI or they don't — the process is fundamentally different. Splitting into dedicated skills eliminates "if Codex... if Sonnet-only..." branching and lets each skill be optimized for its coordination model. All changes are grounded in specific failures from operational feedback logs.
+
+---
+
+### ls-team-impl-c refinements — autonomy, state model, inlined verification (d303045)
+
+**What changed:** Major refinements to ls-team-impl-c based on operational feedback review and skill design principles discussion.
+
+- **Autonomy objective** replaces "discuss before dispatch" — goal-oriented forward progress with blocker examples, not universal stop-and-ask behavior
+- **State model tightened** — STORY_ACTIVE now tracks implementing/reviewing phase for mid-story reload recovery
+- **Epic verification inlined** — removed progressive disclosure reference file, full 4-phase protocol now in the main SKILL.md
+- **Single-story flow explicit** — skips pre-verification cleanup and epic verification when only one story
+- **Pre-verification cleanup** aligned with autonomy objective (present batch, not discuss each item)
+- **"Large Fix Batches Need Human Eyes"** replaces the overly broad "Discuss Before Dispatch" gotcha
+
+**Files touched:**
+- `src/phases/team-impl-c.md` — all changes above
+- `plugins/liminal-spec/skills/ls-team-impl-c/references/epic-verification.md` — removed
+- `plugins/liminal-spec/skills/ls-team-impl-c/SKILL.md` — rebuilt
+
+**Why:** "Discuss before dispatch" was an overgeneralized rule from one failure (auto-dispatching 16 fixes) that got promoted to a universal behavior. It conflicted with the skill's purpose of autonomous orchestration and caused the orchestrator to stop at routine transitions asking permission. The Anthropic skill-writing guidance ("avoid railroading") and operational feedback both pointed to replacing low-level control rules with a goal-oriented autonomy objective.
+
+---
+
+### ls-subagent-impl-cc — Claude Code subagent orchestration with staged TDD (b320e13)
+
+**What changed:** New implementation orchestration skill for Claude Code subagents without external CLI. Designed as the Claude-only complement to ls-team-impl-c.
+
+**Key features:**
+- **Four-phase TDD cycle:** red scaffold (Opus) → red verify (Sonnet) → green implementation (senior-engineer/Opus) → full verification (Opus + Sonnet)
+- **Commit after red phase** creates a locked test contract baseline
+- **Green-phase test diff protocol** — diffs test files against red baseline, categorizes changes (legitimate correction, assertion weakening, scope shift, etc.), investigates suspicious changes
+- **Opus/Sonnet role separation** — Opus for broad implementation and architecture review, Sonnet for strict red-phase verification and pedantic spec compliance
+- **Five materialized prompt templates** — concrete prompt bodies for each phase written to log during On Load
+- **Same orchestration infrastructure** as ls-team-impl-c: skill reload, autonomy objective, state model, boundary inventory, logging discipline
+
+**Build system:**
+- New manifest entry, standalone name mapping, router routing
+- 70 tests total (2 new content assertions)
+
+**Files touched:**
+- `src/phases/subagent-impl-cc.md` (new, 589 lines)
+- `manifest.json` — new skill entry
+- `scripts/build.ts` — standalone name mapping
+- `scripts/__tests__/build.test.ts` — new skill in expected lists, content assertions
+- `src/commands/liminal-spec.md` — router updated
+- `plugins/liminal-spec/` — marketplace source synced
+
+**Why:** Users without Codex/Copilot CLI need an implementation orchestration path. The Claude-only approach compensates for the lack of cross-model-family diversity by using Opus and Sonnet in differentiated roles (broad vs pedantic) and by adding the TDD red-phase separation — a structural integrity mechanism that catches test weakening before implementation begins.
