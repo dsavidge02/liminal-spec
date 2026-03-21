@@ -70,6 +70,7 @@ describe("build script", () => {
     expect(buildOutput).toContain("skill: ls-tech-design");
     expect(buildOutput).toContain("skill: ls-publish-epic");
     expect(buildOutput).toContain("skill: ls-team-impl");
+    expect(buildOutput).toContain("skill: ls-team-impl-c");
     expect(buildOutput).toContain("skill: ls-team-spec");
   });
 
@@ -96,6 +97,7 @@ describe("plugin output", () => {
     "ls-tech-design",
     "ls-publish-epic",
     "ls-team-impl",
+    "ls-team-impl-c",
     "ls-team-spec",
   ];
 
@@ -175,6 +177,7 @@ describe("marketplace install source", () => {
       join(MARKETPLACE_PLUGIN, "skills", "ls-tech-design", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "skills", "ls-publish-epic", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "skills", "ls-team-impl", "SKILL.md"),
+      join(MARKETPLACE_PLUGIN, "skills", "ls-team-impl-c", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "skills", "ls-team-spec", "SKILL.md"),
       join(MARKETPLACE_PLUGIN, "commands", "liminal-spec.md"),
       join(MARKETPLACE_PLUGIN, "agents", "senior-engineer.md"),
@@ -206,6 +209,7 @@ describe("skill content", () => {
     "lss-story",
     "lss-tech",
     "ls-team-impl",
+    "ls-team-impl-c",
     "ls-team-spec",
   ];
 
@@ -269,6 +273,29 @@ describe("skill content", () => {
     expect(content).toContain("self-review loop");
   });
 
+  test("team-impl-c contains CLI orchestration content", async () => {
+    const content = await Bun.file(
+      join(DIST_PLUGIN, "skills", "ls-team-impl-c", "SKILL.md")
+    ).text();
+    expect(content).toContain("Orchestrator");
+    expect(content).toContain("Skill Reload Requirement");
+    expect(content).toContain("External Model Failure Protocol");
+    expect(content).toContain("team-impl-log.md");
+  });
+
+  test("team-impl-c has reference files", async () => {
+    const exists = await Bun.file(
+      join(
+        DIST_PLUGIN,
+        "skills",
+        "ls-team-impl-c",
+        "references",
+        "epic-verification.md"
+      )
+    ).exists();
+    expect(exists).toBe(true);
+  });
+
   test("team-spec contains spec orchestration content", async () => {
     const content = await Bun.file(
       join(DIST_PLUGIN, "skills", "ls-team-spec", "SKILL.md")
@@ -310,6 +337,7 @@ describe("standalone output", () => {
     "simple-01-story-skill.md",
     "simple-02-technical-design-skill.md",
     "06-team-implementation-skill.md",
+    "06c-team-implementation-cli-skill.md",
     "07-team-spec-skill.md",
   ];
 
@@ -462,6 +490,8 @@ describe("source file safety", () => {
       "src/shared/confidence-chain.md",
       "src/shared/writing-style.md",
       "src/phases/team-impl.md",
+      "src/phases/team-impl-c.md",
+      "src/references/team-impl-c/epic-verification.md",
       "src/phases/team-spec.md",
       "src/commands/liminal-spec.md",
       "src/agents/senior-engineer.md",

@@ -93,6 +93,15 @@
         "verification-model"
       ]
     },
+    "ls-team-impl-c": {
+      "name": "ls-team-impl-c",
+      "description": "Orchestrate story-by-story implementation with agent teams and an external CLI model (Codex or Copilot). Opus teammates manage external model subagents for implementation and verification.",
+      "phases": [
+        "team-impl-c"
+      ],
+      "shared": [],
+      "references": "team-impl-c"
+    },
     "ls-team-spec": {
       "name": "ls-team-spec",
       "description": "Orchestrate the full Liminal Spec pipeline with agent teams. Manages drafters and verifiers from orientation through technically enriched stories.",

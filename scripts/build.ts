@@ -37,6 +37,7 @@ interface SkillEntry {
   shared: string[];
   templates?: string[];
   examples?: string[];
+  references?: string;
 }
 
 interface IndividualPluginEntry {
@@ -95,6 +96,7 @@ const STANDALONE_NAMES: Record<string, string> = {
   "lss-story": "simple-01-story",
   "lss-tech": "simple-02-technical-design",
   "ls-team-impl": "06-team-implementation",
+  "ls-team-impl-c": "06c-team-implementation-cli",
   "ls-team-spec": "07-team-spec",
 };
 
@@ -313,19 +315,60 @@ async function build(): Promise<void> {
     await mkdir(skillDir, { recursive: true });
     await Bun.write(join(skillDir, "SKILL.md"), composed);
 
+    // Copy reference files if the skill has them (progressive disclosure)
+    let referenceContent = "";
+    if (skill.references) {
+      const refSrcDir = join(SRC, "references", skill.references);
+      const refDestDir = join(skillDir, "references");
+      await mkdir(refDestDir, { recursive: true });
+      // Copy each file and collect content for standalone concatenation
+      const refDir = await Array.fromAsync(
+        new Bun.Glob("*.md").scan({ cwd: refSrcDir, absolute: false })
+      );
+      for (const refFile of refDir.sort()) {
+        const refContent = await Bun.file(join(refSrcDir, refFile)).text();
+        await Bun.write(join(refDestDir, refFile), refContent);
+        referenceContent +=
+          "\n\n---\n\n## Reference: " +
+          extractTitle(refContent, refFile.replace(/\.md$/, "")) +
+          "\n\n" +
+          refContent.trimEnd();
+      }
+      console.log(
+        `  skill: ${key} references: ${refDir.length} files copied`
+      );
+    }
+
     // Standalone .md output (no frontmatter, for paste-into-chat)
-    const standalone = stripFrontmatter(composed);
+    // For skills with references, concatenate them into the standalone output
+    const standalone = stripFrontmatter(composed) + referenceContent;
     const standaloneName = STANDALONE_NAMES[key] ?? key;
     const mdFileName = `${standaloneName}-skill.md`;
-    await Bun.write(join(DIST_STANDALONE, mdFileName), standalone);
-    await Bun.write(join(MARKDOWN_PACK_DIR, mdFileName), standalone);
+    await Bun.write(join(DIST_STANDALONE, mdFileName), standalone + "\n");
+    await Bun.write(join(MARKDOWN_PACK_DIR, mdFileName), standalone + "\n");
 
-    // Skill-pack content (directory with SKILL.md + frontmatter per skill)
+    // Skill-pack content (directory with SKILL.md + references per skill)
     const skillPkgDir = join(SKILL_PACK_DIR, standaloneName);
     await mkdir(skillPkgDir, { recursive: true });
+    const skillPackContent = stripFrontmatter(composed);
     const skillMd =
-      buildFrontmatter(standaloneName, skill.description) + "\n\n" + standalone;
+      buildFrontmatter(standaloneName, skill.description) +
+      "\n\n" +
+      skillPackContent;
     await Bun.write(join(skillPkgDir, "SKILL.md"), skillMd);
+
+    // Copy references into skill-pack directory (mirrors plugin structure)
+    if (skill.references) {
+      const refSrcDir = join(SRC, "references", skill.references);
+      const refPkgDir = join(skillPkgDir, "references");
+      await mkdir(refPkgDir, { recursive: true });
+      const refFiles = await Array.fromAsync(
+        new Bun.Glob("*.md").scan({ cwd: refSrcDir, absolute: false })
+      );
+      for (const refFile of refFiles) {
+        await cp(join(refSrcDir, refFile), join(refPkgDir, refFile));
+      }
+    }
 
     summary.skills.push({ name: key, lines: lineCount });
     console.log(`  skill: ${key} (${lineCount} lines)`);
