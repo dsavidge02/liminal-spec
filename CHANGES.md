@@ -4,6 +4,39 @@ Scratch pad for tracking changes as we go. Will be consolidated into CHANGELOG.m
 
 ---
 
+### ls-team-spec rebuild — procedural learning architect with contextual pedagogy
+
+**What changed:** Complete rebuild of ls-team-spec. The old skill was a first-attempt orchestration that froze before absorbing operational lessons from ls-team-impl-c and real spec pipeline runs. The rebuild encodes proven patterns from 6 epics of md-viewer spec work and the evolution of ls-team-impl-c.
+
+**Core design shifts:**
+
+- **Procedural learning architect** — the orchestrator is deep on process, handoff design, and guidance timing. Shallow on product domain specifics. Teammates go deep on the project through curated reading journeys.
+- **Three-phase handoff structure** — every teammate launch follows: objective framing → reading journey with reflection → skill activation (loaded LAST, after all context). The objective shapes attention during reading. The skill lands fresh on prepared ground.
+- **Contextual pedagogy** — guidance delivered at the point of action, not front-loaded. Question curation filter delivered when questions surface. Self-review discipline delivered when the draft is complete. Deviation documentation guidance delivered when the tech designer discovers a divergence. TC fidelity guidance delivered when the publisher is sharding stories.
+- **Prompt map as spine** — concrete handoff prompts for all 7 roles (epic writer, epic verifier, dependency researcher, tech design writer, tech design verifier, epic publisher, publisher verifier). Each prompt embodies the three-phase structure. The prompt map lives in the skill; the log records dispatched prompts with customizations.
+- **Core/foundational spec tagging** — human tags which prior epics are foundational (established the architectural shape). These are read in full by every new drafter. Solves continuity scaling without lossy summarization.
+- **Curated questions only** — taught as a discipline at the right moment, not as a rule block. Drafters self-apply the filter after receiving the guidance.
+- **External verification required** — Codex/Copilot lane only. No Sonnet-only fallback. Claude-only spec orchestration is a separate future concern.
+- **Dependency research gate** — web-researched version/dependency analysis with human review before tech design drafting begins.
+- **Human scrutiny gradient** — more human involvement upstream (PRD conversational, epic every-line review), less downstream (tech design at discretion, publish epic spot-check).
+
+**What's new vs old ls-team-spec:**
+- Prompt map replaces inline process descriptions
+- Three-phase handoff replaces "spawn and instruct"
+- Contextual pedagogy replaces front-loaded methodology dumps
+- Core spec tagging replaces "read everything" or "read nothing"
+- ls-prd as upstream entry replaces ad-hoc pre-epic documentation
+- Dependency research gate (new)
+- Technical enrichment notes in published stories (new)
+- Procedural vs deep verification distinction (new)
+
+**Files touched:**
+- `src/phases/team-spec-v2.md` (new, 644 lines — replaces team-spec.md)
+
+**Why:** The old skill tried to compensate for an immature method with heavy orchestration (dual verification, parallel Opus+Codex, complex lane logic). The method is now mature — the reliable pattern is: strong single drafter with curated reading journey → self-review → external review → iterate to signoff. The rebuild encodes this proven pattern with the discovery that handoff prompt construction IS the orchestration, and that guidance timing determines how effectively agents learn and perform.
+
+---
+
 ### Stack-neutral data contracts (214114b)
 
 **What changed:** Data contracts in epics and stories now use documentation tables (endpoints, field/type/validation tables, error response tables) instead of language-specific syntax (TypeScript interfaces, Zod schemas). Contracts scoped to significant system boundaries (frontend-to-backend, app-to-external) rather than internal layer contracts.
