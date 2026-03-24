@@ -1,5 +1,39 @@
 # Changelog
 
+## v1.0.0 (2026-03-24)
+
+Skill pack distribution. Rebuilt orchestration. New upstream pipeline. The methodology reaches a coherent, proven state — validated through 6 epics of real spec work and iterative operational refinement.
+
+### Distribution
+
+Plugin system removed entirely. Output is now a skill pack (`dist/skills/`) installable to `~/.claude/skills/` or `~/.agents/skills/`, plus a standalone markdown pack for paste-into-chat use. No plugin.json, no marketplace, no router command.
+
+### Added
+
+- **`ls-prd` skill:** Shape product direction into a structured PRD with epic breakdown and optional Technical Architecture document. Replaces `ls-research` as the upstream entry point. The PRD operates at 50k-30k feet with rolled-up ACs (not line-level). The tech arch companion establishes "what technical world the epics must live inside." Both artifacts feed `ls-epic` and the full pipeline.
+
+- **`ls-subagent-impl` skill:** Orchestrate implementation with Claude Code subagents using staged TDD. Four-phase cycle: red scaffold (Opus) → red verify (Sonnet) → green implementation → full verification. Commit after red phase creates a locked test contract baseline. Green-phase test diff protocol catches assertion weakening.
+
+### Changed
+
+- **`ls-team-spec` rebuilt:** Complete rebuild as procedural learning architect with contextual pedagogy. The orchestrator designs learning journeys for teammates, delivers guidance at the point of action (not front-loaded), and constructs handoff prompts using three-phase structure: objective framing → reading journey with reflection → skill activation (loaded last). Includes prompt map with concrete prompts for 7 roles, core/foundational spec tagging for continuity scaling, question curation filter, dependency research gate, and human scrutiny gradient (more involvement upstream, less downstream).
+
+- **`ls-team-impl` rebuilt:** Replaced with external CLI orchestration (was `ls-team-impl-c`). Requires Codex or Copilot CLI — no fallback mode. Hard skill reload per story to combat context drift. Materialized handoff templates written to log for recall durability. Explicit state model for mid-story reload recovery. Boundary inventory tracking across stories. Epic-level four-model verification with meta-reports.
+
+- **`ls-tech-design` refined:** Multi-doc output standardized to 2-doc (index + test plan) or 4-doc (+ frontend/backend companions). Never 3. Spec validation deviation table taught as first-class pattern ("Resolved — deviated", "Resolved — clarified"). Dependency/version grounding via web research required. Verification scripts introduced in phase source. Test count reconciliation step. Actor-reading-stage-directions cleaned up — altitude labels removed from template headings, methodology commentary marked as writer guidance.
+
+- **`ls-publish-epic` refined:** Individual story files (one per story in `stories/` folder) instead of monolithic output. Business epic optional (user chooses at start). Coverage artifact (`stories/coverage.md`) with coverage gate table and integration path trace.
+
+- **`ls-epic` refined:** Stack-neutral data contracts — documentation tables instead of language-specific syntax. Epic size and scope check checkpoint for large epics.
+
+### Removed
+
+- **`ls-research` skill:** Superseded by `ls-prd`.
+- **Plugin system:** plugin.json, marketplace.json, individual plugins, router command (`/liminal-spec`), marketplace source directories.
+- **Senior engineer agent:** Dropped from distribution. Implementation skills reference it as optional ("if available, otherwise Opus").
+
+---
+
 ## v0.9.0 (2026-03-06)
 
 Pipeline simplification: publish-epic replaces story sharding + tech enrichment. Implementation handled by external orchestration.

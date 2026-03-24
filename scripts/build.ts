@@ -45,15 +45,14 @@ const DIST_DIR = process.env.DIST_DIR?.trim() || "dist";
 const DIST = isAbsolute(DIST_DIR) ? DIST_DIR : join(ROOT, DIST_DIR);
 const DIST_SKILLS = join(DIST, "skills");
 const DIST_STANDALONE = join(DIST, "standalone");
-const SKILL_PACK_DIR_NAME = "liminal-spec-skill-pack";
+const SKILL_PACK_DIR_NAME = "skills";
 const MARKDOWN_PACK_DIR_NAME = "liminal-spec-markdown-pack";
 const SKILL_PACK_DIR = join(DIST_STANDALONE, SKILL_PACK_DIR_NAME);
 const MARKDOWN_PACK_DIR = join(DIST_STANDALONE, MARKDOWN_PACK_DIR_NAME);
-const SKILL_PACK_ZIP = join(DIST_STANDALONE, `${SKILL_PACK_DIR_NAME}.zip`);
-const MARKDOWN_PACK_ZIP = join(
-  DIST_STANDALONE,
-  `${MARKDOWN_PACK_DIR_NAME}.zip`
-);
+const SKILL_PACK_ZIP_NAME = "liminal-spec-skill-pack.zip";
+const MARKDOWN_PACK_ZIP_NAME = `${MARKDOWN_PACK_DIR_NAME}.zip`;
+const SKILL_PACK_ZIP = join(DIST_STANDALONE, SKILL_PACK_ZIP_NAME);
+const MARKDOWN_PACK_ZIP = join(DIST_STANDALONE, MARKDOWN_PACK_ZIP_NAME);
 
 /** Maps internal skill keys to descriptive filenames for standalone release artifacts. */
 const STANDALONE_NAMES: Record<string, string> = {
@@ -234,13 +233,15 @@ async function build(): Promise<void> {
     console.log(`  skill: ${key} (${lineCount} lines)`);
   }
 
+  // Copy READMEs into pack staging directories
+  const skillReadme = await Bun.file(join(SRC, "README-pack.md")).text();
+  const markdownReadme = await Bun.file(join(SRC, "README-markdown-pack.md")).text();
+  await Bun.write(join(SKILL_PACK_DIR, "liminal-spec-skillpack-readme.md"), skillReadme);
+  await Bun.write(join(MARKDOWN_PACK_DIR, "README.md"), markdownReadme);
+
   // Create packs
-  await zipDirectory(`${SKILL_PACK_DIR_NAME}.zip`, SKILL_PACK_DIR_NAME, DIST_STANDALONE);
-  await zipDirectory(
-    `${MARKDOWN_PACK_DIR_NAME}.zip`,
-    MARKDOWN_PACK_DIR_NAME,
-    DIST_STANDALONE
-  );
+  await zipDirectory(SKILL_PACK_ZIP_NAME, SKILL_PACK_DIR_NAME, DIST_STANDALONE);
+  await zipDirectory(MARKDOWN_PACK_ZIP_NAME, MARKDOWN_PACK_DIR_NAME, DIST_STANDALONE);
   console.log(`  skill pack: ${SKILL_PACK_ZIP}`);
   console.log(`  markdown pack: ${MARKDOWN_PACK_ZIP}`);
 
