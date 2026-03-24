@@ -31,7 +31,6 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
           mkdir -p release
           cp dist/standalone/*-skill.md release/
-          cd dist/plugin && zip -r ../../release/liminal-spec-plugin-v${VERSION}.zip . && cd ../..
           cp dist/standalone/liminal-spec-skill-pack.zip release/liminal-spec-skill-pack-v${VERSION}.zip
           cp dist/standalone/liminal-spec-markdown-pack.zip release/liminal-spec-markdown-pack-v${VERSION}.zip
 
@@ -49,7 +48,6 @@ jobs:
             release/*-skill.md \
             release/liminal-spec-markdown-pack-*.zip \
             release/liminal-spec-skill-pack-*.zip \
-            release/liminal-spec-plugin-*.zip \
             --title "$TAG" \
             --notes-file release/notes.md \
             2>/dev/null \
@@ -57,5 +55,4 @@ jobs:
             release/*-skill.md \
             release/liminal-spec-markdown-pack-*.zip \
             release/liminal-spec-skill-pack-*.zip \
-            release/liminal-spec-plugin-*.zip \
             --clobber
