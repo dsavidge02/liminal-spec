@@ -537,7 +537,7 @@ Present the complete artifact set to the human:
 - Business epic (if produced)
 - `team-spec-log.md` (orchestration log)
 
-From here, the human proceeds to implementation via `ls-team-impl`, `ls-subagent-impl`, or direct handoff to developers.
+From here, the human proceeds to implementation via `ls-team-impl`, `ls-team-impl-cc`, or direct handoff to developers.
 
 ---
 

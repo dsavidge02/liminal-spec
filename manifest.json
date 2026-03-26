@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "skills": {
     "ls-prd": {
       "name": "ls-prd",
@@ -86,11 +86,11 @@
       ],
       "shared": []
     },
-    "ls-subagent-impl": {
-      "name": "ls-subagent-impl",
-      "description": "Orchestrate story-by-story implementation with Claude Code subagents using staged TDD. Opus builds red-phase scaffolds and implements, Sonnet verifies red integrity and provides pedantic review. No external CLI required.",
+    "ls-team-impl-cc": {
+      "name": "ls-team-impl-cc",
+      "description": "Orchestrate story-by-story implementation with Claude Code agent teams. Sonnet implements with TDD methodology, Opus and Sonnet verify in fresh sessions with evidence-bound review. No external CLI required.",
       "phases": [
-        "subagent-impl"
+        "team-impl-cc"
       ],
       "shared": []
     },

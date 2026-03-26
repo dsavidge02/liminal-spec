@@ -12,7 +12,7 @@ A skill pack for spec-driven software development with AI coding assistants. Lim
 | **ls-publish-epic** | Publish an Epic as individual story files with full AC/TC detail, technical notes, and Jira markers. Optionally produce a PO-friendly business epic. |
 | **ls-team-spec** | Orchestrate the full spec pipeline with agent teams and external CLI verification. Manages drafters and verifiers from orientation through published stories. |
 | **ls-team-impl** | Orchestrate story-by-story implementation with agent teams and an external CLI model (Codex or Copilot). |
-| **ls-subagent-impl** | Orchestrate implementation with Claude Code subagents using staged TDD. No external CLI required. |
+| **ls-team-impl-cc** | Orchestrate implementation with Claude Code agent teams. Sonnet implements with TDD, Opus and Sonnet verify with evidence-bound review. No external CLI required. |
 | **lss-story** | Write a single functional story with epic-quality rigor. For focused changes that don't warrant the full pipeline. |
 | **lss-tech** | Inline technical design and enrichment for a single story. Codebase analysis, architecture, interfaces, and test mapping embedded directly in the story. |
 
@@ -79,7 +79,7 @@ For orchestrating the pipeline or implementation with agent teams.
 |-------|-------|--------|
 | `ls-team-spec` | Requirements / PRD | Published story files via agent teams with external verification |
 | `ls-team-impl` | Stories + Tech Design | Verified code via agent teams with Codex/Copilot |
-| `ls-subagent-impl` | Stories + Tech Design | Verified code via Claude Code subagents |
+| `ls-team-impl-cc` | Stories + Tech Design + Test Plan | Verified code via Claude Code agent teams |
 
 ## Key Ideas
 

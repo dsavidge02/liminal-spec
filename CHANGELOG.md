@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.0.1 (2026-03-26)
+
+Claude Code-only implementation orchestration. Replaces `ls-subagent-impl` with `ls-team-impl-cc`.
+
+### Added
+
+- **`ls-team-impl-cc` skill:** Claude Code-only implementation orchestration using agent teams. Sonnet implements with TDD methodology (skeleton → red → green per chunk), Opus and Sonnet verify in fresh sessions with evidence-bound review. Red-stop/green-resume flow with committed red baseline for diff-based verification. Dual story-level verification on every story. Evidence log with finding schema (including disproof requirements) replaces external CLI session IDs. Story 0 and correction-batch exception flows. Prompt map with six formalized prompts adapted from research on Claude 4.6 prompting.
+
+### Removed
+
+- **`ls-subagent-impl` skill:** Replaced by `ls-team-impl-cc`. The subagent-based approach was never used in production. The new skill uses agent teams (with SendMessage for mid-task communication) instead of fire-and-forget subagents, and is built as a Claude-only fork of the battle-tested `ls-team-impl` rather than an independent design.
+
+### Changed
+
+- **`ls-team-spec` updated:** Implementation handoff reference updated from `ls-subagent-impl` to `ls-team-impl-cc`.
+
+---
+
 ## v1.0.0 (2026-03-24)
 
 Skill pack distribution. Rebuilt orchestration. New upstream pipeline. The methodology reaches a coherent, proven state — validated through 6 epics of real spec work and iterative operational refinement.

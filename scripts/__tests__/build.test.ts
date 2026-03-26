@@ -67,14 +67,16 @@ describe("build script", () => {
     expect(buildOutput).toContain("skill: lss-story");
     expect(buildOutput).toContain("skill: lss-tech");
     expect(buildOutput).toContain("skill: ls-team-impl");
-    expect(buildOutput).toContain("skill: ls-subagent-impl");
+    expect(buildOutput).toContain("skill: ls-team-impl-cc");
     expect(buildOutput).toContain("skill: ls-team-spec");
   });
 
   test("does not emit removed skills", () => {
     expect(buildOutput).not.toContain("skill: ls-research");
-    expect(buildOutput).not.toContain("skill: ls-team-impl-c");
+    expect(buildOutput).not.toContain("skill: ls-team-impl-c\n");
+    expect(buildOutput).not.toContain("skill: ls-team-impl-c ");
     expect(buildOutput).not.toContain("skill: ls-subagent-impl-cc");
+    expect(buildOutput).not.toContain("skill: ls-subagent-impl");
   });
 });
 
@@ -91,7 +93,7 @@ describe("skill output", () => {
     "lss-story",
     "lss-tech",
     "ls-team-impl",
-    "ls-subagent-impl",
+    "ls-team-impl-cc",
     "ls-team-spec",
   ];
 
@@ -105,7 +107,7 @@ describe("skill output", () => {
   }
 
   test("does not emit removed skills", async () => {
-    for (const removed of ["ls-research", "ls-team-impl-c", "ls-subagent-impl-cc", "ls-story", "ls-story-tech", "ls-impl"]) {
+    for (const removed of ["ls-research", "ls-team-impl-c", "ls-subagent-impl-cc", "ls-subagent-impl", "ls-story", "ls-story-tech", "ls-impl"]) {
       const exists = await Bun.file(
         join(DIST_SKILLS, removed, "SKILL.md")
       ).exists();
@@ -173,14 +175,16 @@ describe("skill content", () => {
     expect(content).toContain("Phase 3: Orchestrator Synthesis");
   });
 
-  test("subagent-impl contains staged TDD content", async () => {
+  test("team-impl-cc contains Claude Code orchestration content", async () => {
     const content = await Bun.file(
-      join(DIST_SKILLS, "ls-subagent-impl", "SKILL.md")
+      join(DIST_SKILLS, "ls-team-impl-cc", "SKILL.md")
     ).text();
     expect(content).toContain("Orchestrator");
     expect(content).toContain("Skill Reload Requirement");
-    expect(content).toContain("Phase 1: Red Scaffold");
-    expect(content).toContain("Phase 2: Red Verify");
+    expect(content).toContain("Prompt Map");
+    expect(content).toContain("Red-Stop / Green-Resume");
+    expect(content).toContain("Dual Verification Default");
+    expect(content).toContain("team-impl-cc-log.md");
   });
 
   test("prd contains PRD and tech arch content", async () => {
@@ -206,7 +210,7 @@ describe("skill content", () => {
   test("generated skills do not include legacy phrases", async () => {
     const expectedSkills = [
       "ls-prd", "ls-epic", "ls-tech-design", "ls-publish-epic",
-      "lss-story", "lss-tech", "ls-team-impl", "ls-subagent-impl", "ls-team-spec",
+      "lss-story", "lss-tech", "ls-team-impl", "ls-team-impl-cc", "ls-team-spec",
     ];
     for (const skill of expectedSkills) {
       const content = await Bun.file(
@@ -231,7 +235,7 @@ describe("standalone output", () => {
     "simple-01-story-skill.md",
     "simple-02-technical-design-skill.md",
     "06-team-implementation-skill.md",
-    "06s-subagent-implementation-skill.md",
+    "06cc-team-implementation-claude-code-skill.md",
     "07-team-spec-skill.md",
   ];
 
@@ -305,7 +309,7 @@ describe("source file safety", () => {
       "src/phases/tech-design.md",
       "src/phases/publish-epic.md",
       "src/phases/team-impl.md",
-      "src/phases/subagent-impl.md",
+      "src/phases/team-impl-cc.md",
       "src/phases/team-spec.md",
       "src/shared/confidence-chain.md",
       "src/shared/writing-style.md",

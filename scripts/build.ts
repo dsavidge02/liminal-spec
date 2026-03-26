@@ -63,7 +63,7 @@ const STANDALONE_NAMES: Record<string, string> = {
   "lss-story": "simple-01-story",
   "lss-tech": "simple-02-technical-design",
   "ls-team-impl": "06-team-implementation",
-  "ls-subagent-impl": "06s-subagent-implementation",
+  "ls-team-impl-cc": "06cc-team-implementation-claude-code",
   "ls-team-spec": "07-team-spec",
 };
 

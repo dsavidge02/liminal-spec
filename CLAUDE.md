@@ -25,7 +25,7 @@ dist/
     lss-tech/SKILL.md           -- Simple: Technical Design + Enrichment
     ls-team-spec/SKILL.md       -- Team: Spec Pipeline Orchestration
     ls-team-impl/SKILL.md       -- Team: Implementation with CLI
-    ls-subagent-impl/SKILL.md   -- Team: Implementation with Claude Code subagents
+    ls-team-impl-cc/SKILL.md    -- Team: Implementation with Claude Code teams
   standalone/
     *-skill.md                  -- Per-skill paste-ready markdown
     liminal-spec-skill-pack.zip
@@ -42,7 +42,7 @@ Source-based skill with build composition. Edit in `src/`, never in `dist/`.
 
 ```
 src/
-  phases/          -- Phase-specific content (one per skill: prd, epic, tech-design, publish-epic, story-simple, story-simple-tech, team-impl, subagent-impl, team-spec)
+  phases/          -- Phase-specific content (one per skill: prd, epic, tech-design, publish-epic, story-simple, story-simple-tech, team-impl, team-impl-cc, team-spec)
   shared/          -- Cross-cutting concepts inlined into multiple skills by the build
   templates/       -- Artifact templates (tech design)
   examples/        -- Verification prompt templates
@@ -81,7 +81,7 @@ bun run verify      # Build + validate + tests
 | `ls-tech-design` | 2 | `src/phases/tech-design.md` | confidence-chain, verification-model, writing-style, testing |
 | `ls-publish-epic` | 3 | `src/phases/publish-epic.md` | confidence-chain, writing-style-epic |
 | `ls-team-impl` | Team | `src/phases/team-impl.md` | (none — self-contained) |
-| `ls-subagent-impl` | Team | `src/phases/subagent-impl.md` | (none — self-contained) |
+| `ls-team-impl-cc` | Team | `src/phases/team-impl-cc.md` | (none — self-contained) |
 | `ls-team-spec` | Team | `src/phases/team-spec.md` | (none — self-contained) |
 | `lss-story` | S1 | `src/phases/story-simple.md` | confidence-chain, writing-style-epic |
 | `lss-tech` | S2 | `src/phases/story-simple-tech.md` | confidence-chain, verification-model, writing-style, testing |
@@ -141,6 +141,14 @@ Before opening or updating a PR:
    - spot-check affected `dist/skills/*/SKILL.md` for composition coherence
    - spot-check affected `dist/standalone/*-skill.md` for standalone usability
    - confirm standalone packs exist and no legacy `.skill` files are emitted
+4. For skill additions or removals:
+   - update `manifest.json` (add/remove entry)
+   - update `scripts/build.ts` standalone name mapping
+   - update `scripts/__tests__/build.test.ts` (expected skills, content tests, standalone files, removed-skills assertions)
+   - update `CLAUDE.md` (output structure, phases list, skill table)
+   - update `README.md` (skill table, pipeline tables)
+   - update `src/README-pack.md` and `src/README-markdown-pack.md` (skill listings)
+   - update any cross-references in other phase source files (e.g. `team-spec.md` references implementation skills)
 
 ### About `docs/`
 
@@ -154,9 +162,12 @@ The `docs/` directory holds long-form reference material that may or may not be 
    - `manifest.json`
    - `package.json`
 3. Update the changelog: add entry for `vX.Y.Z (YYYY-MM-DD)`.
-4. Run `bun run verify` (builds, validates, runs tests).
-5. Commit the version bump + changelog, then tag and push: `git tag vX.Y.Z && git push origin vX.Y.Z`
-6. Tag triggers release workflow -> builds, validates, tests, packages skill-pack + markdown-pack zips, creates GitHub Release with artifacts
+4. Update the pack READMEs (bundled into release artifacts):
+   - `src/README-pack.md` — version in title, add changelog entry
+   - `src/README-markdown-pack.md` — version in title, add changelog entry
+5. Run `bun run verify` (builds, validates, runs tests).
+6. Commit the version bump + changelog, then tag and push: `git tag vX.Y.Z && git push origin vX.Y.Z`
+7. Tag triggers release workflow -> builds, validates, tests, packages skill-pack + markdown-pack zips, creates GitHub Release with artifacts
 
 The tag is the explicit "ship it" signal. Code can accumulate on main across multiple pushes without releasing.
 
