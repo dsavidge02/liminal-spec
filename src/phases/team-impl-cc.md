@@ -108,7 +108,7 @@ Ask the human what artifacts are available:
 - **Test plan** (required) — TC-to-test mapping, mock strategy, and test infrastructure decisions. May be a separate document or embedded in the tech design. Ask where the test plan content lives.
 - **Epic** (optional) — the full feature specification the stories derive from
 
-This skill requires tech design and test plan artifacts because the implementer's TDD cycle follows the chunk breakdown and the verifiers cross-reference TC-to-test mappings. For story-only implementations from the simple pipeline (lss-story + lss-tech), the tech design and test plan content is embedded in the story's technical sections — confirm with the human that the story contains this content before proceeding.
+This skill requires tech design and test plan artifacts because the implementer's TDD cycle follows the chunk breakdown and the verifiers cross-reference TC-to-test mappings. If the tech design and test plan content is embedded in the story's technical sections rather than existing as separate documents, confirm with the human that the story contains this content before proceeding.
 
 **Implementation prompt discovery:** check whether per-story implementation prompts exist alongside the stories. If a `prompts/` directory (or similar) contains `story-N-implementation-prompt.md` files, log their presence and paths. The implementer uses these for story-specific detail, but the TDD methodology in the prompt map is binding.
 

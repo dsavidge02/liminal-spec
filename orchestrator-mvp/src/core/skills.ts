@@ -24,12 +24,8 @@ const PHASE_SKILL_MAP: Record<FlowId, Record<string, string[]>> = {
     "final-verification": ["ls-team-spec", "ls-publish-epic"],
     "handoff-close": ["ls-team-spec"],
   },
-  "single-story": {
-    "single-spec": ["lss-story"],
-    "single-tech": ["lss-tech"],
-    "single-impl": ["lss-tech"],
-    "single-final-verify": ["lss-tech"],
-  },
+  // simple pipeline removed — lss-story and lss-tech will be regenerated from updated principles
+  "single-story": {},
 };
 
 const SKILL_FILE_CACHE = new Map<string, string>();

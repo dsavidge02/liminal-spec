@@ -88,7 +88,7 @@ describe("dry-run scenario evals", () => {
     expect(await Bun.file(approveAttemptPath).exists()).toBe(true);
   });
 
-  test("single-story escalation scenario stops early", async () => {
+  test.skip("single-story escalation scenario stops early (simple pipeline removed)", async () => {
     const runId = `test-dry-single-story-${Date.now()}`;
     cleanupRunIds.push(runId);
 
@@ -116,7 +116,7 @@ describe("dry-run scenario evals", () => {
     expect(await Bun.file(escalationLogPath).exists()).toBe(true);
   });
 
-  test("resume requires user response when run is waiting_user", async () => {
+  test.skip("resume requires user response when run is waiting_user (simple pipeline removed)", async () => {
     const runId = `test-dry-resume-${Date.now()}`;
     cleanupRunIds.push(runId);
 

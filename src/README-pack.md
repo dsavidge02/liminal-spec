@@ -1,4 +1,4 @@
-# Liminal Spec — Skill Pack (v1.0.2)
+# Liminal Spec — Skill Pack (v1.1.0)
 
 A set of skills for spec-driven software development with AI coding assistants. Liminal Spec guides agents through a structured pipeline: define what you're building (PRD), settle the technical world (Tech Architecture), specify the requirements in detail (Epic), design the implementation (Tech Design), and publish implementable stories. Each phase produces an artifact the next phase reads cold — no shared conversation history, no accumulated assumptions. The traceability chain (requirement → test condition → test → code) means when tests go green, the implementation matches the spec.
 
@@ -14,8 +14,6 @@ A set of skills for spec-driven software development with AI coding assistants. 
 | **ls-team-spec** | Orchestrate the full spec pipeline with agent teams and external CLI verification. |
 | **ls-team-impl** | Orchestrate implementation with agent teams and Codex/Copilot CLI. |
 | **ls-team-impl-cc** | Orchestrate implementation with Claude Code agent teams. Sonnet implements, Opus and Sonnet verify. |
-| **lss-story** | Write a single functional story with epic-quality rigor. |
-| **lss-tech** | Inline technical design and enrichment for a single story. |
 
 ## Installation
 
@@ -38,6 +36,12 @@ Or cherry-pick individual skill directories — each is self-contained.
 Each `.md` file is a self-contained skill. Paste directly into Claude, ChatGPT, Codex, or any AI assistant that accepts instructions.
 
 ## Changelog
+
+### v1.1.0 (2026-03-29)
+
+- **Dimensional reasoning check** added — higher-order reasoning prompts at key structural decisions (top-tier surfaces, module boundaries, feature boundaries, story partitions) across ls-prd, ls-arch, ls-epic, ls-tech-design. Prompts the model to enumerate competing considerations, identify tensions, and weight which should win before committing. Heaviest in ls-arch, lightest in ls-epic.
+- **lss-story and lss-tech removed** — simple pipeline skills removed pending regeneration from updated principles.
+- Skill count: 10 → 8.
 
 ### v1.0.2 (2026-03-28)
 

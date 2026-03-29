@@ -92,6 +92,8 @@ Guidewire → Embed with params → Fetch locations → User selects → Return 
 
 **Human-first module design.** The module structure should be designed for human navigability. If a human can't look at the responsibility matrix and immediately know where to go for any capability in this epic, it's over-segmented. If half the epic's functionality is jammed into one module, it's under-decomposed. Strong human abstractions are also the most model-navigable abstractions — models work better within clear responsibility boundaries than within structures optimized for technical purity.
 
+Run a dimensional reasoning check before fixing module boundaries. Inherited surface fit, responsibility clarity, coupling, AC coverage, and testability do not always point toward the same decomposition; identify the tensions for this epic and weight which should win before you commit. See the Dimensional Reasoning Check reference.
+
 ```markdown
 ## Module Architecture
 
@@ -262,6 +264,8 @@ The test plan must explicitly map every TC from the Epic to a test. This is the 
 ## Work Plan: Chunking for Stories
 
 Break work into manageable pieces. Each chunk becomes a story or set of stories. The chunk is the Tech Lead's unit of decomposition; chunks inform how stories are organized when the epic is published (usually 1:1, sometimes a chunk splits into multiple stories or merges with another).
+
+**Dimensional reasoning check:** chunk boundaries are compositional. Functional coherence, dependency sequencing, and scope manageability do not always agree; weigh the tension before partitioning the work.
 
 ### Chunks vs. Phases
 

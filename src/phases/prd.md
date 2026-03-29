@@ -140,6 +140,8 @@ Each feature maps to one downstream epic. The boundary between features is one o
 - Two features that share all scenarios and differ only in scope depth
 - A feature so small it would produce a 1-2 story epic with minimal ACs
 
+These criteria do not always agree. When user workflow, system capability, delivery independence, and manageable scope point toward different feature maps, run a dimensional reasoning check before committing. Identify the tensions for this product, weigh which should win here, and let that resolution drive the boundary choice. See the Dimensional Reasoning Check reference.
+
 Don't over-optimize boundaries upfront. Get them roughly right, then refine as scenarios and ACs surface natural seams during drafting.
 
 ### Feature Section Structure

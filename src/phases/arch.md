@@ -65,6 +65,8 @@ Characteristics of good top-tier surfaces:
 - **Each becomes a high-leverage testing seam.** A well-defined top-tier surface is a capability-like or service-like entry point from which you get broad test coverage with consistent input patterns. This testing leverage is a design outcome, not an accident.
 - **Stable under feature growth.** New epics should typically nest within existing top-tier surfaces, not require new ones. A surface that splits every time a feature is added was drawn at the wrong level.
 
+These characteristics do not always point to the same surface map. Before committing, run a dimensional reasoning check. Navigability, ownership clarity, testing leverage, stability under growth, and domain coherence can pull toward different top-tier cuts; identify the tensions for this system and weight which should win here. See the Dimensional Reasoning Check reference.
+
 The tech arch identifies and names these top-tier surfaces. The tech design inherits them and decomposes within their boundaries. If a tech design needs a module that doesn't fit in any surface the tech arch defined, that's a signal — either the tech arch missed something (flag it as a deviation and surface upstream) or the epic is crossing boundaries it shouldn't.
 
 ### Not a Number Game

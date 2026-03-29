@@ -96,7 +96,48 @@ Downstream work regularly surfaces new facts that reveal the need to realign ups
 
 ## ls-epic
 
-*Section pending — will be added when ls-epic is reviewed for deeper objective clarity beyond its current documented purpose.*
+### What it is
+
+The functional source of truth for a single feature. The pivot point of the pipeline — the last purely functional artifact before everything downstream gets technical. Everything before the epic (PRD, tech arch) is the human's front-loaded investment. Everything after it (tech design, stories, implementation) builds from what the epic settles. If the epic is right, the tech design designs the right thing, the stories test the right things, and the implementation builds the right thing. If the epic is wrong, everything downstream is wrong — and more expensively wrong at each step.
+
+The epic is where the confidence chain goes operational. The PRD introduced rolled-up ACs as seeds. The epic decomposes them into line-level ACs, each with test conditions, each traceable forward to tests and implementation. This is the moment requirements become testable — and testability is the quality that makes everything downstream work.
+
+### What it produces
+
+- **Epic document**: User Profile, Feature Overview, Scope (in/out/assumptions), Flows with line-level Acceptance Criteria and Test Conditions, Data Contracts at system boundaries, Non-Functional Requirements, Tech Design Questions, Recommended Story Breakdown
+
+### Who consumes it
+
+- **ls-tech-design** (primary): Validates the epic is implementation-ready, then designs architecture, interfaces, and test mapping from it. The Tech Lead is the most demanding consumer — they need to map every AC to implementation work.
+- **ls-publish-epic**: Uses the recommended story breakdown to shard the epic into individual story files with full AC/TC detail.
+- **Validators** (fresh-context agents): Read the epic cold to catch issues the author missed. The epic must be self-contained — a validator with no conversation history should be able to assess it.
+- **The human**: Reviews every line. The epic gets the most scrutiny of any artifact in the pipeline because errors here cascade through every downstream phase.
+
+### What the consumer needs to succeed
+
+The Tech Lead must be able to design from the epic without asking what the system does. Not how to build it — that's the tech design's job. But what the system does, what behavior is required, what the boundaries are, and what data crosses them. Functional ambiguity in the epic becomes structural ambiguity in the tech design, becomes implementation guesswork in stories.
+
+Specifically:
+
+- **Testable ACs**: Every AC must be verifiable as true or false. No "appropriate," no "properly," no "handles errors gracefully." If you can't write a TC for it, the AC is too vague — and that vagueness will propagate through the TC-to-test mapping into untestable code.
+- **TC coverage across paths**: Happy path, edge cases, error handling, empty/null states for every AC. Missing coverage doesn't surface until the tech design tries to map TCs to tests and finds gaps — or worse, doesn't find them and the implementation ships without covering the path.
+- **Data contracts at system boundaries**: Endpoint tables, data shape tables, error responses — expressed in documentation format, not code syntax. The epic is stack-neutral. The Tech Lead needs enough contract precision to design interfaces; the specific types and syntax are tech design decisions.
+- **Functional, not technical**: The epic describes what the system does from the user's perspective. Implementation algorithms, directory structures, library choices, internal architecture — these belong in tech design. When technical detail appears in the epic (boundary contracts, NFRs), it's there because it constrains what, not because it specifies how. The more implementation the epic prescribes, the less room the Tech Lead has to design the right solution.
+- **Story breakdown that covers all ACs**: Each AC assigned to a story, stories sequenced logically (foundation first, read before write, happy path before edge cases). This is the bridge to ls-publish-epic — if the breakdown has gaps, story sharding will have gaps.
+
+### Quality signal
+
+The same foundational-vs-refinement framework as the PRD and arch, applied at functional specification depth. The Tech Lead reading the epic should have refinement questions ("should this edge case use a modal or inline error?", "what's the right caching TTL?") not foundational questions ("what does the user actually do here?", "what's this flow supposed to accomplish?", "what data comes back from this endpoint?").
+
+A second quality signal is the confidence chain's mechanical integrity: AC → TC traceability. Every AC has TCs. Every TC has Given/When/Then (or equivalent structured format). The traceability is explicit — TC-1.1a traces to AC-1.1. If you audit the epic and find ACs without TCs, or TCs that don't clearly verify their AC, the chain is broken and everything downstream from that break is untested by design.
+
+### What it settles vs. what it leaves open
+
+**Settles**: Who the user is and how they think about the task (User Profile), what the feature does (Feature Overview), what's in and out of scope, the complete set of user flows with behavioral detail, every line-level AC with full TC coverage, data contracts at system boundaries, NFRs, and a recommended story breakdown covering all ACs
+
+**Leaves open for ls-tech-design**: How to build it. Module decomposition, interface definitions, test file mapping, mock strategy, chunk breakdown, verification scripts, epic-scoped dependency choices. The tech design answers every question in the epic's "Tech Design Questions" section.
+
+**Leaves open for ls-publish-epic**: Final story sharding decisions (the recommended breakdown is a starting point, not a mandate), story file structure, coverage artifact generation, optional business epic
 
 ---
 
@@ -160,4 +201,4 @@ The BA/SM can shard stories from the design without asking clarifying questions 
 
 ---
 
-*Sections for ls-publish-epic, lss-story, lss-tech, ls-team-spec, ls-team-impl, ls-team-impl-cc will be added as those skills are reviewed and updated.*
+*Sections for ls-publish-epic, ls-team-spec, ls-team-impl, ls-team-impl-cc will be added as those skills are reviewed and updated.*

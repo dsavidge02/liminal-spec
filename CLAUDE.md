@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A spec-driven development methodology packaged as a **skill pack**. The pack contains 10 self-contained skills — 5 for the full pipeline, 2 for the simple pipeline, and 3 for team orchestration.
+A spec-driven development methodology packaged as a **skill pack**. The pack contains 8 self-contained skills — 5 for the full pipeline and 3 for team orchestration.
 
 This is NOT a library or npm package. The build output is markdown files organized as installable skill directories. There are two distribution channels:
 
@@ -22,8 +22,6 @@ dist/
     ls-epic/SKILL.md            -- Epic (Phase 1)
     ls-tech-design/SKILL.md     -- Tech Design (Phase 2)
     ls-publish-epic/SKILL.md    -- Publish Epic (Phase 3)
-    lss-story/SKILL.md          -- Simple: Functional Story
-    lss-tech/SKILL.md           -- Simple: Technical Design + Enrichment
     ls-team-spec/SKILL.md       -- Team: Spec Pipeline Orchestration
     ls-team-impl/SKILL.md       -- Team: Implementation with CLI
     ls-team-impl-cc/SKILL.md    -- Team: Implementation with Claude Code teams
@@ -43,7 +41,7 @@ Source-based skill with build composition. Edit in `src/`, never in `dist/`.
 
 ```
 src/
-  phases/          -- Phase-specific content (one per skill: prd, arch, epic, tech-design, publish-epic, story-simple, story-simple-tech, team-impl, team-impl-cc, team-spec)
+  phases/          -- Phase-specific content (one per skill: prd, arch, epic, tech-design, publish-epic, team-impl, team-impl-cc, team-spec)
   shared/          -- Cross-cutting concepts inlined into multiple skills by the build
   templates/       -- Artifact templates (tech design)
   examples/        -- Verification prompt templates
@@ -73,7 +71,7 @@ bun run verify      # Build + validate + tests
 
 ### What Gets Built
 
-**Skills** (10 self-contained skills — 5 full pipeline, 2 simple pipeline, 3 team orchestration):
+**Skills** (8 self-contained skills — 5 full pipeline, 3 team orchestration):
 
 | Skill | Phase | Primary source | Shared dependencies |
 |-------|-------|----------------|---------------------|
@@ -85,8 +83,6 @@ bun run verify      # Build + validate + tests
 | `ls-team-impl` | Team | `src/phases/team-impl.md` | (none — self-contained) |
 | `ls-team-impl-cc` | Team | `src/phases/team-impl-cc.md` | (none — self-contained) |
 | `ls-team-spec` | Team | `src/phases/team-spec.md` | (none — self-contained) |
-| `lss-story` | S1 | `src/phases/story-simple.md` | confidence-chain, writing-style-epic |
-| `lss-tech` | S2 | `src/phases/story-simple-tech.md` | confidence-chain, verification-model, writing-style, testing |
 
 ## How to Update Content
 

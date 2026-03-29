@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.1.0",
   "skills": {
     "ls-prd": {
       "name": "ls-prd",
@@ -9,6 +9,7 @@
       ],
       "shared": [
         "confidence-chain",
+        "dimensional-reasoning",
         "writing-style-epic"
       ]
     },
@@ -18,7 +19,9 @@
       "phases": [
         "arch"
       ],
-      "shared": []
+      "shared": [
+        "dimensional-reasoning"
+      ]
     },
     "ls-epic": {
       "name": "ls-epic",
@@ -29,6 +32,7 @@
       "shared": [
         "confidence-chain",
         "context-isolation",
+        "dimensional-reasoning",
         "writing-style-epic"
       ],
       "examples": [
@@ -43,6 +47,7 @@
       ],
       "shared": [
         "confidence-chain",
+        "dimensional-reasoning",
         "verification-model",
         "writing-style",
         "testing"
@@ -63,30 +68,6 @@
       "shared": [
         "confidence-chain",
         "writing-style-epic"
-      ]
-    },
-    "lss-story": {
-      "name": "lss-story",
-      "description": "Write a single functional story with epic-quality rigor. Story-sized epic for focused changes that don't warrant the full pipeline.",
-      "phases": [
-        "story-simple"
-      ],
-      "shared": [
-        "confidence-chain",
-        "writing-style-epic"
-      ]
-    },
-    "lss-tech": {
-      "name": "lss-tech",
-      "description": "Perform inline technical design and embed results into a functional story. Story-sized tech design + enrichment with codebase analysis, architecture, interfaces, and test mapping.",
-      "phases": [
-        "story-simple-tech"
-      ],
-      "shared": [
-        "confidence-chain",
-        "verification-model",
-        "writing-style",
-        "testing"
       ]
     },
     "ls-team-impl": {

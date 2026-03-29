@@ -105,7 +105,7 @@ Ask the human what artifacts are available:
 - **Epic** (optional) — the full feature specification the stories derive from
 - **Tech design** (optional) — the architecture and interface definitions
 
-Epic and tech design are optional because stories can come from the simple pipeline (lss-story + lss-tech) where no separate epic or tech design exists. The story is always required.
+Epic and tech design are optional because stories may exist without a separate epic or tech design document. The story is always required.
 
 **Implementation prompt discovery:** check whether per-story implementation prompts exist alongside the stories. If a `prompts/` directory (or similar) contains `story-N-implementation-prompt.md` files, these should be treated as the primary CLI launch input. Log their presence and paths. Teammates should pipe these directly to the CLI rather than writing prompts from scratch.
 

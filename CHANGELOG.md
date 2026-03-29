@@ -1,5 +1,40 @@
 # Changelog
 
+## v1.1.0 (2026-03-29)
+
+Dimensional reasoning interrupts. Simple pipeline removal.
+
+### Added
+
+- **Dimensional reasoning check:** New shared concept (`src/shared/dimensional-reasoning.md`) adding higher-order reasoning prompts at key structural decisions across four skills. When a model chooses an organizing structure — top-tier surfaces, module boundaries, feature boundaries, story partitions — it tends to lock onto the first compelling axis and settle the decision before weighing competing considerations. The check prompts the model to enumerate the tensions for the specific system, identify where they pull toward different answers, and weight which should win before committing. It names the process, not the factors — those are different every time.
+
+  Added at four decision points, heaviest where the decision is most unconstrained and highest-cascade:
+  - **ls-arch:** top-tier surface identification — navigability, ownership, testing leverage, stability, and domain coherence compete
+  - **ls-tech-design:** module decomposition (including inherited surface fit) and chunk breakdown
+  - **ls-prd:** feature boundary selection when the four boundary criteria conflict
+  - **ls-epic:** story grouping when flows don't suggest an obvious partition
+
+### Removed
+
+- **`lss-story` and `lss-tech` skills:** Simple pipeline skills removed. These encoded older principles and had not been updated since initial creation. Will be regenerated from current methodology when needed. Source files (`src/phases/story-simple.md`, `src/phases/story-simple-tech.md`) deleted. Orchestrator single-story flow emptied with skip markers on affected tests.
+
+### Changed
+
+- **`ls-tech-design`:** Module decomposition interrupt includes inherited surface fit as a competing factor alongside responsibility clarity, coupling, AC coverage, and testability.
+- **`ls-epic`:** Story breakdown guidance names the specific default failure mode ("one flow = one story") to avoid when partitioning is ambiguous.
+- **`ls-prd`:** Feature boundary section now explicitly addresses what to do when the four boundary criteria conflict rather than only listing the criteria.
+- **`ls-team-impl` and `ls-team-impl-cc`:** Removed simple pipeline cross-references; language generalized for stories without separate epic/tech-design documents.
+
+### Testing
+
+- Regression test for dimensional reasoning composition: positive inclusion across 4 skills, negative exclusion across 4 skills that should not contain it.
+- Source safety check updated for new shared file.
+- Removed skills added to build-output and build-summary exclusion assertions.
+- 3 orchestrator tests for single-story flow skipped with removal labels.
+- Skill count: 10 → 8. Test count: 48 pass, 3 skip.
+
+---
+
 ## v1.0.2 (2026-03-28)
 
 Technical architecture breakout. PRD rewrite. Tech design bridge. The upstream pipeline is now three skills with distinct jobs and distinct writing registers, connected by explicit inheritance.

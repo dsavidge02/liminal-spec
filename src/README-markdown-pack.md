@@ -1,4 +1,4 @@
-# Liminal Spec — Markdown Pack (v1.0.2)
+# Liminal Spec — Markdown Pack (v1.1.0)
 
 Paste-into-chat skills for spec-driven software development. Each file is a self-contained skill — paste directly into Claude, ChatGPT, Codex, or any AI assistant that accepts instructions. No installation required.
 
@@ -16,14 +16,17 @@ Liminal Spec guides agents through a structured pipeline: define what you're bui
 | `06-team-implementation-skill.md` | ls-team-impl | Orchestrate implementation with agent teams and Codex/Copilot CLI |
 | `06cc-team-implementation-claude-code-skill.md` | ls-team-impl-cc | Orchestrate implementation with Claude Code agent teams |
 | `07-team-spec-skill.md` | ls-team-spec | Orchestrate the full spec pipeline with agent teams |
-| `simple-01-story-skill.md` | lss-story | Write a single functional story with epic-quality rigor |
-| `simple-02-technical-design-skill.md` | lss-tech | Inline technical design and enrichment for a single story |
 
 ## Usage
 
 Pick the file for the phase you need. Paste the entire contents into your AI assistant's system instructions or conversation. Each file is self-contained — no dependencies on other files.
 
 ## Changelog
+
+### v1.1.0 (2026-03-29)
+
+**Added:** Dimensional reasoning check — higher-order reasoning prompts at key structural decisions across ls-prd, ls-arch, ls-epic, ls-tech-design.
+**Removed:** lss-story and lss-tech (simple pipeline removed pending regeneration)
 
 ### v1.0.2 (2026-03-28)
 

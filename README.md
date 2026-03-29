@@ -14,8 +14,6 @@ A skill pack for spec-driven software development with AI coding assistants. Lim
 | **ls-team-spec** | Orchestrate the full spec pipeline with agent teams and external CLI verification. Manages drafters and verifiers from orientation through published stories. |
 | **ls-team-impl** | Orchestrate story-by-story implementation with agent teams and an external CLI model (Codex or Copilot). |
 | **ls-team-impl-cc** | Orchestrate implementation with Claude Code agent teams. Sonnet implements with TDD, Opus and Sonnet verify with evidence-bound review. No external CLI required. |
-| **lss-story** | Write a single functional story with epic-quality rigor. For focused changes that don't warrant the full pipeline. |
-| **lss-tech** | Inline technical design and enrichment for a single story. Codebase analysis, architecture, interfaces, and test mapping embedded directly in the story. |
 
 ## When to Use
 
@@ -23,10 +21,6 @@ A skill pack for spec-driven software development with AI coding assistants. Lim
 - New features with multiple components or integration points
 - Complex business logic where requirements need precision
 - Multi-agent builds where context isolation matters
-
-**Simple pipeline** — story-sized work, focused changes, same rigor:
-- Single capability additions or contained feature changes
-- Work scoped to 1-2 flows and ~5-15 acceptance criteria
 
 **Not for:** quick bug fixes, single-file changes, spikes, or emergency patches.
 
@@ -63,15 +57,6 @@ For multi-story features. Each phase is a separate agent with a separate context
 | 1. Epic | `ls-epic` | PRD or requirements | Detailed Epic |
 | 2. Tech Design | `ls-tech-design` | Epic + optional Tech Arch | Tech Design (2 or 4 docs) |
 | 3. Publish | `ls-publish-epic` | Epic + Tech Design | Story files + coverage artifact |
-
-### Simple Pipeline
-
-For story-sized work. Two phases, same quality bar.
-
-| Phase | Skill | Input | Output |
-|-------|-------|-------|--------|
-| S1. Story | `lss-story` | Requirements | Functional Story |
-| S2. Tech | `lss-tech` | Story + Codebase | Complete Story |
 
 ### Team Orchestration
 

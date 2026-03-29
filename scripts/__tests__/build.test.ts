@@ -65,8 +65,6 @@ describe("build script", () => {
     expect(buildOutput).toContain("skill: ls-epic");
     expect(buildOutput).toContain("skill: ls-tech-design");
     expect(buildOutput).toContain("skill: ls-publish-epic");
-    expect(buildOutput).toContain("skill: lss-story");
-    expect(buildOutput).toContain("skill: lss-tech");
     expect(buildOutput).toContain("skill: ls-team-impl");
     expect(buildOutput).toContain("skill: ls-team-impl-cc");
     expect(buildOutput).toContain("skill: ls-team-spec");
@@ -78,6 +76,8 @@ describe("build script", () => {
     expect(buildOutput).not.toContain("skill: ls-team-impl-c ");
     expect(buildOutput).not.toContain("skill: ls-subagent-impl-cc");
     expect(buildOutput).not.toContain("skill: ls-subagent-impl");
+    expect(buildOutput).not.toContain("skill: lss-story");
+    expect(buildOutput).not.toContain("skill: lss-tech");
   });
 });
 
@@ -92,8 +92,6 @@ describe("skill output", () => {
     "ls-epic",
     "ls-tech-design",
     "ls-publish-epic",
-    "lss-story",
-    "lss-tech",
     "ls-team-impl",
     "ls-team-impl-cc",
     "ls-team-spec",
@@ -109,7 +107,7 @@ describe("skill output", () => {
   }
 
   test("does not emit removed skills", async () => {
-    for (const removed of ["ls-research", "ls-team-impl-c", "ls-subagent-impl-cc", "ls-subagent-impl", "ls-story", "ls-story-tech", "ls-impl"]) {
+    for (const removed of ["ls-research", "ls-team-impl-c", "ls-subagent-impl-cc", "ls-subagent-impl", "ls-story", "ls-story-tech", "ls-impl", "lss-story", "lss-tech"]) {
       const exists = await Bun.file(
         join(DIST_SKILLS, removed, "SKILL.md")
       ).exists();
@@ -209,6 +207,36 @@ describe("skill content", () => {
     expect(content).toContain("System Shape");
   });
 
+  test("dimensional reasoning shared reference is composed into relevant skills", async () => {
+    const skillsWithDimensionalReasoning = [
+      "ls-prd",
+      "ls-arch",
+      "ls-epic",
+      "ls-tech-design",
+    ];
+    const skillsWithout = [
+      "ls-publish-epic",
+      "ls-team-impl",
+      "ls-team-impl-cc",
+      "ls-team-spec",
+    ];
+
+    for (const skill of skillsWithDimensionalReasoning) {
+      const content = await Bun.file(
+        join(DIST_SKILLS, skill, "SKILL.md")
+      ).text();
+      expect(content).toContain("Dimensional Reasoning Check");
+      expect(content).toContain("single-axis reasoning");
+    }
+
+    for (const skill of skillsWithout) {
+      const content = await Bun.file(
+        join(DIST_SKILLS, skill, "SKILL.md")
+      ).text();
+      expect(content).not.toContain("Dimensional Reasoning Check");
+    }
+  });
+
   test("team-spec contains rebuilt orchestration content", async () => {
     const content = await Bun.file(
       join(DIST_SKILLS, "ls-team-spec", "SKILL.md")
@@ -223,7 +251,7 @@ describe("skill content", () => {
   test("generated skills do not include legacy phrases", async () => {
     const expectedSkills = [
       "ls-prd", "ls-arch", "ls-epic", "ls-tech-design", "ls-publish-epic",
-      "lss-story", "lss-tech", "ls-team-impl", "ls-team-impl-cc", "ls-team-spec",
+      "ls-team-impl", "ls-team-impl-cc", "ls-team-spec",
     ];
     for (const skill of expectedSkills) {
       const content = await Bun.file(
@@ -246,8 +274,6 @@ describe("standalone output", () => {
     "02-epic-skill.md",
     "03-technical-design-skill.md",
     "04-publish-epic-skill.md",
-    "simple-01-story-skill.md",
-    "simple-02-technical-design-skill.md",
     "06-team-implementation-skill.md",
     "06cc-team-implementation-claude-code-skill.md",
     "07-team-spec-skill.md",
@@ -327,6 +353,7 @@ describe("source file safety", () => {
       "src/phases/team-impl-cc.md",
       "src/phases/team-spec.md",
       "src/shared/confidence-chain.md",
+      "src/shared/dimensional-reasoning.md",
       "src/shared/writing-style.md",
     ];
 

@@ -46,7 +46,7 @@ describe("entry point behavior", () => {
     expect(await Bun.file(epicPrompt).exists()).toBe(true);
   });
 
-  test("single-story can start at single-tech when functional story already exists", async () => {
+  test.skip("single-story can start at single-tech when functional story already exists (simple pipeline removed)", async () => {
     const runId = `test-entry-single-story-${Date.now()}`;
     cleanupRunIds.push(runId);
 

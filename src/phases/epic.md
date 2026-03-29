@@ -381,6 +381,8 @@ Each story delivers a vertical slice of user-facing functionality. Derive storie
 3. **Happy path before edge cases** — Core flow before error handling (though basic error states often belong with their happy path story)
 4. **Independent slices** — Each story should be demo-able on its own
 
+When the right grouping is not obvious, run a dimensional reasoning check rather than defaulting to one flow = one story. Functional coherence, dependency sequencing, and story size can point toward different cuts; identify the tensions and weight them before finalizing the breakdown. See the Dimensional Reasoning Check reference.
+
 ---
 
 ## Validation Before Handoff
