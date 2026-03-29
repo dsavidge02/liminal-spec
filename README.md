@@ -1,80 +1,96 @@
 # Liminal Spec
 
-A skill pack for spec-driven software development with AI coding assistants. Liminal Spec provides a set of skills that guide agents through a structured pipeline: define what you're building (PRD), settle the technical world (Tech Architecture), specify the requirements in detail (Epic), design the implementation (Tech Design), and publish implementable stories. Each phase produces an artifact the next phase reads cold — no shared conversation history, no accumulated assumptions. The traceability chain (requirement → test condition → test → code) means when tests go green, the implementation matches the spec.
+A spec-driven development skill pack for AI coding assistants.
 
-## Skills
+## What This Is
 
-| Skill | Purpose |
-|-------|---------|
-| **ls-prd** | Produce compressed proto-epics across 3-8 features with scenario-driven acceptance criteria. The upstream product artifact that seeds the full pipeline. |
-| **ls-arch** | Produce a research-grounded Technical Architecture document. Settles foundational technical decisions that downstream tech designs inherit. |
-| **ls-epic** | Write a complete, traceable Epic — User Profile, Flows, Acceptance Criteria, Test Conditions, Data Contracts, and Story Breakdown. |
-| **ls-tech-design** | Transform an Epic into an implementable Tech Design with architecture, interfaces, test mapping, and work breakdown. Inherits from tech arch when available. |
-| **ls-publish-epic** | Publish an Epic as individual story files with full AC/TC detail, technical notes, and Jira markers. Optionally produce a PO-friendly business epic. |
-| **ls-team-spec** | Orchestrate the full spec pipeline with agent teams and external CLI verification. Manages drafters and verifiers from orientation through published stories. |
-| **ls-team-impl** | Orchestrate story-by-story implementation with agent teams and an external CLI model (Codex or Copilot). |
-| **ls-team-impl-cc** | Orchestrate implementation with Claude Code agent teams. Sonnet implements with TDD, Opus and Sonnet verify with evidence-bound review. No external CLI required. |
+Liminal Spec is a set of skills that guide AI agents through a structured development process: define what you're building, specify the requirements in detail, design the implementation, and break it into implementable stories. Each phase produces a document that the next phase reads cold — no shared conversation, no accumulated assumptions.
 
-## When to Use
+The core idea is a traceability chain: every acceptance criterion gets test conditions, every test condition maps to a test, every test drives implementation. When tests pass, you can follow the chain from any test back to the requirement it verifies. You know the build matches what was specified because the chain makes it auditable.
 
-**Full pipeline** — multi-story features, complex integrations, team coordination:
-- New features with multiple components or integration points
-- Complex business logic where requirements need precision
-- Multi-agent builds where context isolation matters
+## Is This For You?
 
-**Not for:** quick bug fixes, single-file changes, spikes, or emergency patches.
+Liminal Spec works best when you can describe most of what you want to build before you start building it. The sweet spot is a feature or epic that would take a team 1-4 weeks to build traditionally — standard database patterns, known integrations, established UI frameworks, clear user workflows. The kind of work where you can spend a few hours thinking through what users need and what the system should do, and come away with 90-95% of the picture.
 
-## Installation
+That describes most enterprise business applications, many startup products, and a lot of hobbyist projects with clear goals.
 
-### Skill Pack (recommended)
+**Not the right tool for:**
+- Quick bug fixes or single-file changes — just do them
+- Experimental work where you're discovering what works through iteration — a novel algorithm, an unfamiliar protocol, something where the hard part is figuring out whether the approach even works
+- Situations where you genuinely don't know what you want yet and need to build small pieces to find out
 
-Download `liminal-spec-skill-pack.zip` from [Releases](https://github.com/liminal-ai/liminal-spec/releases). The zip contains a `skills/` directory. Unzip directly into `~/.claude/` (or `~/.agents/`):
+You can also mix approaches. The surrounding system benefits from specs even when one component requires experimental iteration.
 
-```bash
-# Claude Code — skills land at ~/.claude/skills/ls-epic/ etc.
-unzip liminal-spec-skill-pack.zip -d ~/.claude/
+## Who Benefits Most
 
-# Or for .agents-based setups
-unzip liminal-spec-skill-pack.zip -d ~/.agents/
-```
+**Senior engineers and tech leads** get the most out of this. The methodology assumes you can reason about user needs, system boundaries, and technical tradeoffs — then express that reasoning as structured requirements. Engineers who've been turning business problems into code for years already think this way. The specs formalize and amplify that thinking so AI agents can execute from it reliably.
 
-Each skill is a directory with a `SKILL.md` file. Install all of them or cherry-pick the ones you need.
+**POs and BAs** can use the functional-side skills (writing epics, publishing stories) in Claude.ai or any AI assistant using the standalone markdown files. The specs force enough clarifying questions that even someone new to the process produces detailed, testable output. The output format includes Jira section markers for direct copy-paste into project management tools.
 
-### Markdown Pack
+**Developers receiving stories** from this process get implementation artifacts with full acceptance criteria, test conditions, and technical notes. The stories are self-contained — you implement from the story, not from a conversation with the person who wrote the spec.
 
-Download `liminal-spec-markdown-pack.zip` from [Releases](https://github.com/liminal-ai/liminal-spec/releases). Each file is self-contained — paste directly into Claude, ChatGPT, Codex, or any AI assistant that accepts instructions.
+## How It Works
 
-## Pipelines
+The pipeline has five phases. Each produces an artifact the next phase consumes.
 
-### Full Pipeline
+**1. PRD** (`ls-prd`) — Define what you're building across 3-8 features. Each feature section has user scenarios and acceptance criteria at a level of detail that lets the next phase expand them without going back to the human for basic questions. Run alongside `ls-arch` (Technical Architecture) to settle the technical world — stack, system shape, major boundaries.
 
-For multi-story features. Each phase is a separate agent with a separate context window.
+**2. Epic** (`ls-epic`) — Expand one feature into a complete functional specification. Line-level acceptance criteria, each with test conditions. Data contracts at system boundaries. A recommended story breakdown. This is the most important artifact — errors here cascade through everything downstream. The human reviews every line.
 
-| Phase | Skill | Input | Output |
-|-------|-------|-------|--------|
-| 0a. PRD (optional) | `ls-prd` | Vision, requirements | PRD (compressed proto-epics) |
-| 0b. Tech Arch (optional) | `ls-arch` | PRD or technical context | Technical Architecture |
-| 1. Epic | `ls-epic` | PRD or requirements | Detailed Epic |
-| 2. Tech Design | `ls-tech-design` | Epic + optional Tech Arch | Tech Design (2 or 4 docs) |
-| 3. Publish | `ls-publish-epic` | Epic + Tech Design | Story files + coverage artifact |
+**3. Tech Design** (`ls-tech-design`) — Design the implementation. Module architecture, interface definitions, test mapping, work breakdown. The tech design validates the epic first — if it can't design from the spec, the spec isn't ready. Produces 2 or 4 documents depending on complexity.
+
+**4. Publish Epic** (`ls-publish-epic`) — Break the epic into individual story files, each with full acceptance criteria, test conditions, and technical notes from the tech design. Produces a coverage artifact proving every requirement is assigned to exactly one story. Optionally produces a PO-friendly business epic.
+
+**5. Implement** (`ls-team-impl-cc` or `ls-team-impl`) — Orchestrate story-by-story implementation with agent teams. TDD methodology (skeleton, red, green per story). External model verification. Each story gets a fresh implementer and a fresh reviewer — no carrying assumptions between stories.
+
+You don't have to use the full pipeline. If you already have requirements, start at step 2. If you have a spec, start at step 3. If you have stories, start at step 5.
 
 ### Team Orchestration
 
-For orchestrating the pipeline or implementation with agent teams.
+`ls-team-spec` orchestrates the spec pipeline (steps 1-4) with agent teams — drafters, external verifiers, and human review gates. `ls-team-impl-cc` and `ls-team-impl` orchestrate implementation (step 5) with Claude Code teams or external CLI models (Codex, Copilot).
 
-| Skill | Input | Output |
-|-------|-------|--------|
-| `ls-team-spec` | Requirements / PRD | Published story files via agent teams with external verification |
-| `ls-team-impl` | Stories + Tech Design | Verified code via agent teams with Codex/Copilot |
-| `ls-team-impl-cc` | Stories + Tech Design + Test Plan | Verified code via Claude Code agent teams |
+## Try It Out
 
-## Key Ideas
+### If you have Claude Code
 
-**Confidence chain.** Every line of code traces back: AC (requirement) → TC (test condition) → Test → Implementation. If you can't write a TC, the AC is too vague. If you can't write a test, the TC is too vague.
+Download the skill pack from [Releases](https://github.com/liminal-ai/liminal-spec/releases) and unzip into your skills directory:
 
-**Context isolation.** Each phase gets a clean context window. The artifact is the complete handoff. This prevents context rot and the "lost in the middle" problem that degrades long conversations.
+```bash
+unzip liminal-spec-skill-pack.zip -d ~/.claude/
+```
 
-**Upstream scrutiny.** The epic gets the most review because errors cascade through every downstream phase. Fix problems at the spec level — cheapest to fix there, most expensive in code.
+Start a new conversation in your project. The easiest first experience is writing an epic for something you already understand well — a feature you've been thinking about or a piece of work already on your board.
+
+Tell Claude: "I want to write a spec for [your feature]. Use ls-epic."
+
+The skill will interview you — user profile, scope, flows, acceptance criteria. Don't fight the structure; let it ask its questions. The output will be longer and more detailed than you'd write by hand. That's the point — the detail is what makes the downstream phases work.
+
+Once you have an epic you're happy with, try `ls-tech-design` on it. Then `ls-publish-epic` to get stories. Each step builds on the previous artifact.
+
+### If you have Claude.ai (Enterprise, Pro, or Team)
+
+Download the markdown pack from [Releases](https://github.com/liminal-ai/liminal-spec/releases). Each file is a standalone skill — paste it into a Claude.ai project's instructions, or drop it into the conversation.
+
+Start with `02-epic-skill.md`. Create a new project, paste the skill content into the project instructions, then start a conversation describing what you want to build. Same process — let it interview you, let it build the spec.
+
+### What to Expect
+
+Your first epic will take longer than you think. The skill asks a lot of questions because it's building something with enough detail that an AI agent can implement from it without asking you what the system is supposed to do. That upfront investment is the point — it's cheaper to answer questions during spec writing than to discover gaps during implementation.
+
+A good first test: after the epic is done, read the acceptance criteria and test conditions. Can you tell exactly what the system does and how to verify it? If yes, the spec is working. If you find vague spots, the skill probably asked about them and you gave a vague answer — that's the feedback loop.
+
+## Skills Reference
+
+| Skill | Purpose |
+|-------|---------|
+| `ls-prd` | Product requirements — features as scenario-driven proto-epics |
+| `ls-arch` | Technical architecture — stack, system shape, cross-cutting decisions |
+| `ls-epic` | Functional specification — acceptance criteria, test conditions, story breakdown |
+| `ls-tech-design` | Implementation design — modules, interfaces, test mapping, work plan |
+| `ls-publish-epic` | Story files with full AC/TC detail, Jira markers, coverage artifact |
+| `ls-team-spec` | Spec pipeline orchestration with agent teams |
+| `ls-team-impl` | Implementation orchestration with Codex/Copilot CLI |
+| `ls-team-impl-cc` | Implementation orchestration with Claude Code agent teams |
 
 ## Development
 
