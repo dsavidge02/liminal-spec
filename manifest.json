@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "skills": {
     "ls-prd": {
       "name": "ls-prd",
@@ -8,6 +8,7 @@
         "prd"
       ],
       "shared": [
+        "intake-discipline",
         "confidence-chain",
         "dimensional-reasoning",
         "writing-style-epic"
@@ -30,6 +31,7 @@
         "epic"
       ],
       "shared": [
+        "intake-discipline",
         "confidence-chain",
         "context-isolation",
         "dimensional-reasoning",

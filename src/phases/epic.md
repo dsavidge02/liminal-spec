@@ -6,6 +6,14 @@ The epic gets the most scrutiny because errors here cascade through every downst
 
 ---
 
+## On Load
+
+If a PRD or structured requirements exist, use them as input — they establish the intent, scope, and feature boundaries that the epic decomposes into testable detail.
+
+If no upstream artifact exists — the user provides a brief, idea, or description — the epic is doing a larger job: turning vague input into testable flows, ACs, and TCs. Conduct a structured intake before drafting. See the Requirements Intake reference.
+
+---
+
 ## Functional, Not Technical
 
 Epics are **functional and detailed, but generally not technical**. They describe *what* the system does from the user's perspective, not *how* it's implemented internally. Technical implementation belongs in Tech Design.

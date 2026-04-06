@@ -1,4 +1,4 @@
-# Liminal Spec — Markdown Pack (v1.1.0)
+# Liminal Spec — Markdown Pack (v1.1.1)
 
 Paste-into-chat skills for spec-driven software development. Each file is a self-contained skill — paste directly into Claude, ChatGPT, Codex, or any AI assistant that accepts instructions. No installation required.
 
@@ -22,6 +22,11 @@ Liminal Spec guides agents through a structured pipeline: define what you're bui
 Pick the file for the phase you need. Paste the entire contents into your AI assistant's system instructions or conversation. Each file is self-contained — no dependencies on other files.
 
 ## Changelog
+
+### v1.1.1 (2026-04-05)
+
+**Added:** Requirements intake discipline — structured Socratic clarification for ls-prd and ls-epic when requirements arrive as vague input. Questioning stance, pressure ladder, readiness gates.
+**Changed:** ls-epic gets an On Load section for standalone cold start.
 
 ### v1.1.0 (2026-03-29)
 

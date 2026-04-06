@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.1.1 (2026-04-05)
+
+Requirements intake discipline. Structured Socratic clarification for ls-prd and ls-epic before drafting from vague input.
+
+### Added
+
+- **Requirements intake shared concept** (`src/shared/intake-discipline.md`): Structured clarification protocol for when requirements arrive as a brief, idea, or conversation rather than a structured artifact. Core thesis: execution quality is bottlenecked by intent clarity, not implementation detail. Includes a questioning stance (treat every answer as a claim to pressure-test, depth over breadth, intent and boundaries before implementation detail), a four-step pressure ladder (evidence, assumption, boundary/tradeoff, root-cause reframe), brownfield evidence-backed confirmation technique, and explicit readiness gates (intent articulable in user's words, non-goals explicit, decision boundaries clear, no dimension thin enough for invention). Adapted from concepts in the open-source `deep-interview` skill.
+
+  Added to two skills where human-agent dialogue drives requirements discovery:
+  - **ls-prd:** Highest-leverage integration — the PRD intake had five example questions and no questioning discipline. Now references the shared concept with a compressed stance summary.
+  - **ls-epic:** New On Load section handles both paths — upstream artifact exists (use it) and standalone cold start (conduct structured intake). The epic's altitude drop is larger when no PRD exists, making intake discipline proportionally more important.
+
+### Changed
+
+- **`ls-prd`:** On Load paragraph updated — five example interview questions replaced with a reference to the Requirements Intake shared concept and a compressed summary of the questioning stance and readiness criteria. Intake bar and consumer test sentences preserved.
+- **`ls-epic`:** On Load section added between Purpose and Functional, Not Technical. Two-path intake: if PRD exists, use it as input; if standalone, conduct structured intake before drafting.
+
+---
+
 ## v1.1.0 (2026-03-29)
 
 Dimensional reasoning interrupts. Simple pipeline removal.

@@ -1,4 +1,4 @@
-# Liminal Spec — Skill Pack (v1.1.0)
+# Liminal Spec — Skill Pack (v1.1.1)
 
 A set of skills for spec-driven software development with AI coding assistants. Liminal Spec guides agents through a structured pipeline: define what you're building (PRD), settle the technical world (Tech Architecture), specify the requirements in detail (Epic), design the implementation (Tech Design), and publish implementable stories. Each phase produces an artifact the next phase reads cold — no shared conversation history, no accumulated assumptions. The traceability chain (requirement → test condition → test → code) means when tests go green, the implementation matches the spec.
 
@@ -36,6 +36,11 @@ Or cherry-pick individual skill directories — each is self-contained.
 Each `.md` file is a self-contained skill. Paste directly into Claude, ChatGPT, Codex, or any AI assistant that accepts instructions.
 
 ## Changelog
+
+### v1.1.1 (2026-04-05)
+
+- **Requirements intake discipline** added — structured Socratic clarification protocol for ls-prd and ls-epic when requirements arrive as vague input. Questioning stance (intent-first, pressure-test every answer, depth over breadth), four-step pressure ladder, brownfield evidence-backed confirmation, and explicit readiness gates (intent articulable in user's words, non-goals explicit, decision boundaries clear). Adapted from the open-source `deep-interview` skill.
+- **ls-epic** gets an On Load section — handles standalone cold start (no PRD) and upstream artifact paths.
 
 ### v1.1.0 (2026-03-29)
 
