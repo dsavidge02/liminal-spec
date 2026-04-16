@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A spec-driven development methodology packaged as a **skill pack**. The pack contains 10 self-contained skills — 5 for the full pipeline, 1 current-docs continuity skill, and 4 team orchestration skills.
+A spec-driven development methodology packaged as a **skill pack**. The pack contains 10 stable self-contained skills — 5 for the full pipeline, 1 current-docs continuity skill, and 4 team orchestration skills — plus experimental skills (currently `ls-tech-design-v2` and `ls-team-impl-v2`) that pilot proposed methodology changes.
 
 This is NOT a library or npm package. The build output is markdown files organized as installable skill directories. There are two distribution channels:
 
@@ -21,12 +21,14 @@ dist/
     ls-arch/SKILL.md            -- Technical Architecture
     ls-epic/SKILL.md            -- Epic (Phase 1)
     ls-tech-design/SKILL.md     -- Tech Design (Phase 2)
+    ls-tech-design-v2/SKILL.md  -- (experimental) Tech Design + optional UI companion
     ls-publish-epic/SKILL.md    -- Publish Epic (Phase 3)
     ls-codex-impl/SKILL.md      -- Codex Implementation Orchestration
     ls-current-docs/SKILL.md   -- Current Docs Baseline
     ls-current-docs/references/ -- Installed-skill companion guides for functional + technical + code-map drafting
     ls-team-spec/SKILL.md       -- Team: Spec Pipeline Orchestration
     ls-team-impl/SKILL.md       -- Team: Implementation with CLI
+    ls-team-impl-v2/SKILL.md    -- (experimental) Team: Implementation with CLI + UI spec consumer
     ls-team-impl-cc/SKILL.md    -- Team: Implementation with Claude Code teams
   standalone/
     *-skill.md                  -- Per-skill paste-ready markdown
@@ -75,7 +77,7 @@ bun run verify      # Build + validate + tests
 
 ### What Gets Built
 
-**Skills** (10 self-contained skills — 5 full pipeline, 1 current-docs continuity, 4 team orchestration):
+**Skills** (10 stable + 2 experimental — 5 full pipeline, 1 current-docs continuity, 4 team orchestration, plus the v2 pilot pair):
 
 | Skill | Phase | Primary source | Shared dependencies |
 |-------|-------|----------------|---------------------|
@@ -83,12 +85,16 @@ bun run verify      # Build + validate + tests
 | `ls-arch` | 0b | `src/phases/arch.md` | (none — self-contained) |
 | `ls-epic` | 1 | `src/phases/epic.md` | confidence-chain, context-isolation, writing-style-epic |
 | `ls-tech-design` | 2 | `src/phases/tech-design.md` | confidence-chain, verification-model, writing-style, testing |
+| `ls-tech-design-v2` *(experimental)* | 2 | `src/phases/tech-design-v2.md` | confidence-chain, dimensional-reasoning, verification-model, writing-style, testing |
 | `ls-publish-epic` | 3 | `src/phases/publish-epic.md` | confidence-chain, writing-style-epic |
 | `ls-current-docs` | Current | `src/phases/current-state.md` | confidence-chain, context-isolation, dimensional-reasoning |
 | `ls-codex-impl` | Team | `src/phases/codex-impl.md` | (none — self-contained) |
 | `ls-team-impl` | Team | `src/phases/team-impl.md` | (none — self-contained) |
+| `ls-team-impl-v2` *(experimental)* | Team | `src/phases/team-impl-v2.md` | (none — self-contained) |
 | `ls-team-impl-cc` | Team | `src/phases/team-impl-cc.md` | (none — self-contained) |
 | `ls-team-spec` | Team | `src/phases/team-spec.md` | (none — self-contained) |
+
+**Experimental skills** (`ls-tech-design-v2`, `ls-team-impl-v2`) are pilot skills running the UI-companion experiment. See `docs/research/ls-tech-design-v2-plan.md` for the experiment plan, decision matrix, and exit criteria. They are exempt from the standard skill-addition documentation rules — see "Experimental Skill Convention" below.
 
 ## How to Update Content
 
@@ -153,6 +159,18 @@ Before opening or updating a PR:
    - update `README.md` (skill table, pipeline tables)
    - update `src/README-pack.md` and `src/README-markdown-pack.md` (skill listings)
    - update any cross-references in other phase source files (e.g. `team-spec.md` references implementation skills)
+
+### Experimental Skill Convention
+
+Skills marked as experimental in the skill table (currently `ls-tech-design-v2`, `ls-team-impl-v2`) are **exempt from the public-docs portion** of the standard skill-addition rules. They are listed in `CLAUDE.md` and composed through the normal build, but they are **not** added to `README.md`, `src/README-pack.md`, or `src/README-markdown-pack.md`. The public surface stays stable while experiments run.
+
+Rationale: experimental skills exist to test whether a methodology change earns its place. Advertising them in public docs before the experiment resolves would either overstate their status (if they retire) or create churn (if they get renamed, merged, or promoted). Holding the public surface steady lets experiments resolve cleanly.
+
+When an experiment resolves:
+
+- **Promote** (experimental skill graduates to a top-level skill in its own right) → update all public docs per the standard skill-addition rules at that point.
+- **Merge** (experimental skill folds into its stable counterpart) → remove the experimental entry from `manifest.json`, `CLAUDE.md`, `scripts/build.ts`, and tests; fold the new content into the stable skill's sources and update the public docs to reflect the stable skill's expanded capability.
+- **Retire** → remove the experimental entry everywhere (manifest, build, tests, `CLAUDE.md`); document the negative result in `docs/research/`. Public docs were never updated, so nothing to roll back there.
 
 ### About `docs/`
 

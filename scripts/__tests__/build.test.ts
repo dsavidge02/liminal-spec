@@ -64,10 +64,12 @@ describe("build script", () => {
     expect(buildOutput).toContain("skill: ls-arch");
     expect(buildOutput).toContain("skill: ls-epic");
     expect(buildOutput).toContain("skill: ls-tech-design");
+    expect(buildOutput).toContain("skill: ls-tech-design-v2");
     expect(buildOutput).toContain("skill: ls-publish-epic");
     expect(buildOutput).toContain("skill: ls-current-docs");
     expect(buildOutput).toContain("skill: ls-codex-impl");
     expect(buildOutput).toContain("skill: ls-team-impl");
+    expect(buildOutput).toContain("skill: ls-team-impl-v2");
     expect(buildOutput).toContain("skill: ls-team-impl-cc");
     expect(buildOutput).toContain("skill: ls-team-spec");
   });
@@ -93,10 +95,12 @@ describe("skill output", () => {
     "ls-arch",
     "ls-epic",
     "ls-tech-design",
+    "ls-tech-design-v2",
     "ls-publish-epic",
     "ls-current-docs",
     "ls-codex-impl",
     "ls-team-impl",
+    "ls-team-impl-v2",
     "ls-team-impl-cc",
     "ls-team-spec",
   ];
@@ -223,6 +227,53 @@ describe("skill content", () => {
     expect(content).toContain("Phase 3: Orchestrator Synthesis");
   });
 
+  test("tech-design-v2 inherits v1 body and adds UI Companion section", async () => {
+    const content = await Bun.file(
+      join(DIST_SKILLS, "ls-tech-design-v2", "SKILL.md")
+    ).text();
+    expect(content).toContain("name: ls-tech-design-v2");
+    // Inherited v1 body markers
+    expect(content).toContain("Config A: 2 docs (default)");
+    expect(content).toContain("Config B: 4 docs (when the index gets dense)");
+    expect(content).toContain("Never go 3");
+    expect(content).toContain("Mock Strategy");
+    // v2-specific additions
+    expect(content).toContain("Output Contract Addendum (v2 only)");
+    expect(content).toContain("UI Companion Invocation Rubric");
+    expect(content).toContain("One-Way Ownership Contract");
+    expect(content).toContain("Visual System Strategy");
+    expect(content).toContain("Playwright screenshot capture");
+  });
+
+  test("tech-design-v2 preserves the template and verification prompt from v1", async () => {
+    const content = await Bun.file(
+      join(DIST_SKILLS, "ls-tech-design-v2", "SKILL.md")
+    ).text();
+    // Templates block
+    expect(content).toContain("## Template");
+    // Examples block
+    expect(content).toContain("## Verification Prompt");
+  });
+
+  test("team-impl-v2 inherits v1 body and adds UI spec handling", async () => {
+    const content = await Bun.file(
+      join(DIST_SKILLS, "ls-team-impl-v2", "SKILL.md")
+    ).text();
+    expect(content).toContain("name: ls-team-impl-v2");
+    // Inherited v1 body markers
+    expect(content).toContain("Orchestrator");
+    expect(content).toContain("Skill Reload Requirement");
+    expect(content).toContain("External Model Failure Protocol");
+    expect(content).toContain("team-impl-log.md");
+    // Still a generic external-CLI skill — preserves the Codex-or-Copilot selection
+    expect(content).toContain("Codex or Copilot");
+    // v2-specific additions
+    expect(content).toContain("UI spec");
+    expect(content).toContain("one-way ownership contract");
+    expect(content).toContain("Playwright");
+    expect(content).toContain("verification ceiling");
+  });
+
   test("team-impl-cc contains Claude Code orchestration content", async () => {
     const content = await Bun.file(
       join(DIST_SKILLS, "ls-team-impl-cc", "SKILL.md")
@@ -261,12 +312,14 @@ describe("skill content", () => {
       "ls-arch",
       "ls-epic",
       "ls-tech-design",
+      "ls-tech-design-v2",
       "ls-current-docs",
     ];
     const skillsWithout = [
       "ls-codex-impl",
       "ls-publish-epic",
       "ls-team-impl",
+      "ls-team-impl-v2",
       "ls-team-impl-cc",
       "ls-team-spec",
     ];
@@ -300,9 +353,9 @@ describe("skill content", () => {
 
   test("generated skills do not include legacy phrases", async () => {
     const expectedSkills = [
-      "ls-prd", "ls-arch", "ls-epic", "ls-tech-design", "ls-publish-epic",
+      "ls-prd", "ls-arch", "ls-epic", "ls-tech-design", "ls-tech-design-v2", "ls-publish-epic",
       "ls-current-docs",
-      "ls-team-impl", "ls-team-impl-cc", "ls-team-spec",
+      "ls-team-impl", "ls-team-impl-v2", "ls-team-impl-cc", "ls-team-spec",
     ];
     for (const skill of expectedSkills) {
       const content = await Bun.file(
@@ -324,10 +377,12 @@ describe("standalone output", () => {
     "01-technical-architecture-skill.md",
     "02-epic-skill.md",
     "03-technical-design-skill.md",
+    "03v2-technical-design-v2-skill.md",
     "04-publish-epic-skill.md",
     "05-current-docs-skill.md",
     "06c-codex-implementation-skill.md",
     "06-team-implementation-skill.md",
+    "06v2-team-implementation-v2-skill.md",
     "06cc-team-implementation-claude-code-skill.md",
     "07-team-spec-skill.md",
   ];
@@ -401,12 +456,14 @@ describe("source file safety", () => {
       "src/phases/arch.md",
       "src/phases/epic.md",
       "src/phases/tech-design.md",
+      "src/phases/tech-design-v2.md",
       "src/phases/publish-epic.md",
       "src/phases/current-state.md",
       "src/references/current-state-functional.md",
       "src/references/current-state-technical.md",
       "src/references/current-state-code-map.md",
       "src/phases/team-impl.md",
+      "src/phases/team-impl-v2.md",
       "src/phases/team-impl-cc.md",
       "src/phases/team-spec.md",
       "src/shared/confidence-chain.md",

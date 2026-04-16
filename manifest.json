@@ -61,6 +61,26 @@
         "tech-design-verification-prompt"
       ]
     },
+    "ls-tech-design-v2": {
+      "name": "ls-tech-design-v2",
+      "description": "Experimental Tech Design with optional UI companion artifact for frontend-heavy work. Produces tech-design.md and conditionally ui-spec.md with codebase-aware visual specification, screen inventory, state coverage, and AC-to-UI traceability. Pilot skill paired with ls-team-impl-v2 — use ls-tech-design for stable workflow.",
+      "phases": [
+        "tech-design-v2"
+      ],
+      "shared": [
+        "confidence-chain",
+        "dimensional-reasoning",
+        "verification-model",
+        "writing-style",
+        "testing"
+      ],
+      "templates": [
+        "tech-design.template"
+      ],
+      "examples": [
+        "tech-design-verification-prompt"
+      ]
+    },
     "ls-publish-epic": {
       "name": "ls-publish-epic",
       "description": "Publish a detailed epic as individual story files with full AC/TC detail and Jira section markers, and optionally a PO-friendly business epic with grouped ACs.",
@@ -102,6 +122,14 @@
       "description": "Orchestrate story-by-story implementation with agent teams and an external CLI model (Codex or Copilot). Opus teammates manage external model subagents for implementation and verification.",
       "phases": [
         "team-impl"
+      ],
+      "shared": []
+    },
+    "ls-team-impl-v2": {
+      "name": "ls-team-impl-v2",
+      "description": "Experimental team implementation orchestration paired with ls-tech-design-v2. Opus teammates manage external CLI subagents (Codex or Copilot) for implementation and verification, with conditional handling of the optional ui-spec.md companion. Pilot skill — use ls-team-impl for stable workflow.",
+      "phases": [
+        "team-impl-v2"
       ],
       "shared": []
     },

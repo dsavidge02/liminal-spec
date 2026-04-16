@@ -62,10 +62,12 @@ const STANDALONE_NAMES: Record<string, string> = {
   "ls-arch": "01-technical-architecture",
   "ls-epic": "02-epic",
   "ls-tech-design": "03-technical-design",
+  "ls-tech-design-v2": "03v2-technical-design-v2",
   "ls-publish-epic": "04-publish-epic",
   "ls-current-docs": "05-current-docs",
   "ls-codex-impl": "06c-codex-implementation",
   "ls-team-impl": "06-team-implementation",
+  "ls-team-impl-v2": "06v2-team-implementation-v2",
   "ls-team-impl-cc": "06cc-team-implementation-claude-code",
   "ls-team-spec": "07-team-spec",
 };

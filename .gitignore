@@ -9,3 +9,4 @@ docs/ls-team-impl-handoff/
 example-specs-pr-review/
 .op-feedback/
 docs/liminal-spec-docs-braindump.md
+.claude/settings.local.json
