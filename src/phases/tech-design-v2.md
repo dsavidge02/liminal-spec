@@ -393,6 +393,23 @@ After completing the test plan, do a single mechanical reconciliation pass: per-
 
 ---
 
+## Toolchain Config Snippet Validation
+
+Tech-design documents prescribe configuration snippets — bundler configs, dev-server configs, test-runner configs, framework configs. Implementers copy them verbatim. Dual review checks faithfulness-to-spec, not tool-shape correctness. The result is a class of defect the spec itself carries: empty reserved slots the tool rejects as invalid, missing required fields the tool needs at runtime, format inconsistencies the tool's parser refuses to load. None of these surface until the prescribed end-to-end command actually runs.
+
+Before handoff, validate every prescribed config snippet against the tool's real shape requirements:
+
+1. **Constraint annotation (lighter weight, always required).** For every snippet, ask: *"Would this validate as-is if the tool ran against it right now?"* Annotate the snippet with the tool's minimum-required shape at that level (e.g., "every Rollup input must have at least one entry," "every Vite plugin entry must have a `name` field," "the root `package.json` must define `main` for the build output to be locatable"). The annotation forces the author to read the snippet under the tool's lens, which catches "empty slot" and "reserved for future" defects at spec time.
+2. **Synthetic-repo validation (heavier weight, when feasible).** When the prescribed toolchain is well-known and self-validating, run the tool against a synthetic repo built from the snippet and confirm it starts. Not always practical, but cheap for framework-level configs like bundlers and dev servers.
+
+**Load-bearing corollary: the observed-run gate is not advisory.** Some defects are not config-shape problems and cannot be caught by snippet annotation. Runtime paths that differ between dev and packaged surfaces — top-level-await chains that resolve in one and hang in the other, code paths only reached by the production startup sequence, behaviors that depend on the actual deployment artifact — are invisible to every static review. The observed-run gate (a human running the prescribed end-to-end command at least once before story acceptance, against the actual runtime artifact) is the only surface that reaches this class. It belongs in the acceptance path, not as optional polish.
+
+When the tech design prescribes an observed-run gate, name the exact command(s), the runtime artifact they execute against (e.g., the packaged installer, not the dev server), and whether the gate applies to story acceptance, epic acceptance, or both. The orchestration skill (`team-impl-v2.md`) then locks those commands into the gate set during `Verification Gate Discovery` and runs them as part of story acceptance.
+
+Snippet annotation addresses *config-shape* defects (the snippet's text is wrong against the tool's parser). The observed-run gate addresses *runtime-path* defects (the snippet is fine, but the runtime path it triggers behaves differently from the path dev validation exercised). Both fixes are required because they close different defect classes; better spec review does not replace running the actual runtime path at least once.
+
+---
+
 ## Validation Before Handoff
 
 **Before handing off:**
@@ -408,6 +425,7 @@ After completing the test plan, do a single mechanical reconciliation pass: per-
 - [ ] Modules nest within inherited surfaces (or deviations documented in Issues Found)
 - [ ] Inherited stack decisions respected (or deviations documented with rationale)
 - [ ] Epic-scoped dependency additions grounded in fresh research
+- [ ] Every prescribed toolchain config snippet annotated with its minimum-required shape; runtime-validation step performed where feasible
 - [ ] If the UI Companion Invocation Rubric fired: `ui-spec.md` exists, honors the one-way ownership contract, specifies the Playwright verification surface, and passes its own Validation Before Handoff checklist (see UI Companion section below)
 
 **Self-review (CRITICAL):**
@@ -532,6 +550,12 @@ Rationale for the default:
 - The screenshot *is* the evidence that the state is reachable — a separate state-capture checklist is redundant.
 - Screenshots do double duty: verification evidence now + visual regression baseline for future work.
 
+**Capture-mode default: full page, deterministic.** When the verification surface is screenshot capture, the default for every named state is full-page capture (`fullPage: true` or the tool-equivalent option) with deterministic options enabled (animations disabled, fonts loaded, network idle reached). Viewport-only captures are an explicit exception — they are named in the state matrix as `above-the-fold`, `header-only`, or another descriptive label, with the capture mode annotated alongside the state name. Default-viewport capture on a full-page state silently truncates content below the configured fold; the structural compliance check still passes, but the visual-review surface is incomplete.
+
+**Width-vs-rectangle distinction.** When a state names a responsive width (e.g., `<state> at 960×600`), the dimension specifies the minimum viewport target, not the capture rectangle. Baselines capture full-page at the specified width, not clipped to the specified height.
+
+**Narrow general principle: declare tool defaults that silently narrow the human-review surface.** When the spec names a verification tool, every default whose effect is to narrow what the human reviewer can see must be declared in the spec as a non-default. The principle is anchored to the *human-review surface*, not to "every tool option" — the failure mode is silent narrowing of what reaches the reviewer, not configuration completeness. Screenshot capture mode (full-page vs. viewport-only) is the concrete instance that proved the rule. If later pilots surface the same shape on a different tool class, this principle extends to that class at that point; until then, screenshot capture mode is the only application required by current evidence.
+
 If Playwright is not yet set up in the project, budget a small pre-pilot spike: install, fixture directory, state-driving conventions (force props, mocked responses), and a screenshot path convention the downstream implementation reviewer can expect.
 
 **Fallback (only if Playwright setup is genuinely blocked):** per-screen state capture checklist as a markdown artifact. Materially weaker signal — it confirms structural presence but misses visual problems entirely. Should not be the default.
@@ -550,6 +574,18 @@ A single file with these sections:
 8. **Open Questions and Assumptions** — explicit unknowns and design assumptions made
 
 Sections beyond these (Component Reuse Matrix, Token and Theme Impact as separate sections, Layout and Responsive Rules as separate sections, Visual Direction, Issues Found, etc.) are deliberately deferred for v2. Fold their essentials into Component Specifications when the feature calls for it; split them out into named sections only when their absence causes observable downstream errors. The 8-section shape is intentional — earn complexity, don't front-load it.
+
+**Required trailing section: Verification Surface (v2 contract adjustment, provisional).** When the companion is produced, the artifact carries an explicit **Verification Surface** section after Section 8 that codifies what the body's Verification Surface Requirement settled. Adding this required trailing section is a small adjustment to the v2 artifact contract, adopted for the next pilot to remove the placement ambiguity the first pilot exposed.
+
+Minimum required contents:
+
+- The chosen verification tool/surface
+- The state-by-state matrix where applicable (state × variant if relevant)
+- Any non-default tool options being declared (per the narrowing principle in Verification Surface Requirement)
+- The state-driving mechanism the implementation must support (e.g., DEV-only query-string flags or pre-seeded fixtures)
+- Any setup/spike prerequisites before the surface can run
+
+The exact section structure beyond these required contents is left to the author. The shape this section took in the first pilot was workable but is not yet promoted into permanent doctrine — revisit after a second pilot to see whether the same shape emerges or a clearer one does.
 
 ## Operating Principles
 

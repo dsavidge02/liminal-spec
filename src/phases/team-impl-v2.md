@@ -38,10 +38,10 @@ You should be able to handle routine decisions autonomously — fix routing, sev
 
 **The orchestrator NEVER creates, modifies, or deletes code files.** This is absolute. In every orchestration run to date where the orchestrator touched code, it burned context needed for later stories, introduced completion bias (reviewing your own work), and conflated roles. The correct routing:
 
-- Quick fixes (typos, one-file adjustments) → fire a `senior-engineer` subagent
-- More extensive work (multi-file changes, architectural adjustments) → spawn a new general-purpose teammate
+- **All routed work — fixes large or small — spawns on the active team.** Use `Agent({team_name, name, subagent_type})` for every dispatch. Quick fixes (typos, one-file adjustments) and extensive work (multi-file changes, architectural adjustments) differ only in scope and teammate lifetime, not in spawn mechanism. Even a 3-line edit goes to a short-lived team-resident teammate, not a standalone subagent.
+- The `senior-engineer` phrasing in this skill refers to a worker's *type*, not to a distinct spawn mechanism. There is no "subagent path" parallel to the team path.
 - Verification gate → run the command yourself (this is the ONE implementation-adjacent action you take — it's a pass/fail check, not investigation)
-- If a test fails during the gate check → route it to a teammate or subagent. Do NOT debug it.
+- If a test fails during the gate check → route it to a fresh team-resident teammate. Do NOT debug it.
 
 ### Autonomy and Forward Progress
 
@@ -98,7 +98,8 @@ Before Story 1 starts, discover and lock the project's verification gates.
 2. Define and log two gate sets in `team-impl-log.md`:
    - **Story acceptance gate**: commands required before accepting an individual story
    - **Epic acceptance gate**: commands required before final epic acceptance
-3. If policy is ambiguous, ask the human once before implementation begins.
+3. **If the tech design specifies observed-run gates** (per the Toolchain Config Snippet Validation section in `tech-design-v2.md`), add them to the story acceptance gate, the epic acceptance gate, or both as the tech design prescribes. Lock the exact commands and the runtime artifact they execute against (e.g., the packaged installer, not the dev server) into `team-impl-log.md` alongside the project-policy gates. Observed-run gates exist precisely to catch defects the structural gate does not exercise — packaged-only runtime paths, deployment-artifact behaviors, top-level-await chains that resolve in dev but hang in production. They are not optional polish; they are the only surface that catches their defect class. If a tech design prescribes an observed-run gate and the orchestrator omits it from the locked gate set, the gate discovery is incomplete.
+4. If policy is ambiguous, ask the human once before implementation begins.
 
 Do not assume unit tests alone are sufficient. Use the project's complete gate (including integration/e2e when required by project policy).
 
@@ -160,8 +161,10 @@ Step 2 — Read artifacts sequentially, reflecting after each one:
   3. [UI spec, if present] — Read. Reflect: which screens and states does this story
      touch? What component contracts (referencing tech-design identifiers) and state
      presentations must the implementation honor? What is the project's chosen
-     verification surface (typically Playwright screenshots) and what screenshots
-     does this story need to produce?
+     verification surface (typically Playwright screenshots)? What capture mode
+     does the spec name for each state — full-page (default) or an explicit
+     viewport-only exception? What screenshots does this story need to produce,
+     and at what capture mode?
   4. [epic] — Read. Reflect: how does this story fit in the broader feature? What are
      the upstream/downstream dependencies?
   5. [test plan if available] — Read. Reflect: what testing patterns and coverage
@@ -178,23 +181,52 @@ Step 3 — Write a CLI prompt and launch:
   If a UI spec is present, instruct the CLI to honor the component contracts and
   state presentations from the spec, reference tech-design identifiers (don't
   redefine them), and produce the verification-surface artifacts the spec
-  specifies (Playwright screenshots for every named state, by default).
+  specifies. For Playwright (or any screenshot tool), the CLI must capture
+  full-page (`fullPage: true`) with deterministic options (animations disabled,
+  fonts loaded, network idle reached) for every state unless the spec
+  explicitly marks that state as viewport-only. A default-viewport capture on
+  a full-page state is a defect, not a successful capture.
   Use gpt-5.4. Launch async. Wait for completion.
+
+  Delivery-assertion marker (mandatory). Every CLI prompt must open with:
+  "First thing: echo `<UNIQUE_MARKER>` before anything else." The marker uses
+  the standardized prefix `LSV2-MARKER-` plus a `<timestamp>-<random>` suffix
+  (e.g., `LSV2-MARKER-20260419-a3f7c1`). After the CLI exits, verify the marker
+  appears at least once in the recorded session output using the selected CLI
+  skill's standard output-extraction mechanism — the surfaces exposed by
+  `codex-subagent`, `copilot-subagent`, or whichever CLI skill is loaded for
+  this run. Do not hard-code a shell command (`grep`, `findstr`, etc.) for
+  this check: shell commands are brittle across platforms (Windows hosts often
+  lack `grep`) and they bypass the structured extraction the CLI subagent
+  skills already standardize. If the marker is absent from the recorded
+  output, the prompt did not reach the CLI — stop, do not trust any reported
+  results, and escalate the delivery failure to team-lead before retrying.
+  This is the only gate that catches silent stdin/path-delivery failures and
+  the fabrications they enable.
 
 Step 6 — Self-review loop:
   Tell the CLI to do a thorough critical self-review. Fix non-controversial issues.
   If substantive changes, iterate. Continue until clean or nits only.
   Then independently verify remaining open issues yourself.
 
-Step 7 — Report to orchestrator (SEND THIS MESSAGE):
+Step 7 — Report to orchestrator (SEND THIS MESSAGE on every driver exit —
+  success, failure, partial, or unknown verdict):
+
+  The terminating action of the implementer is the report message, regardless
+  of the driver's verdict. Never stay silent on failure. If the driver
+  auto-generated a report file on disk, summarize and reference it; do not
+  assume team-lead will discover the failure independently. After sending the
+  report, remain idle in case team-lead has follow-up — do not exit the
+  teammate immediately.
+
   - What was built (files created/modified)
   - Test counts and verification results (run the story gate yourself)
   - CLI session ID(s)
   - What was found and fixed across self-review rounds
   - What remains open with reasoning
   - Any concerns or spec deviations
-  - If a UI spec was in scope: which named states have screenshots produced, which
-    do not yet, and why
+  - If a UI spec was in scope: which named states have screenshots produced
+    (with capture mode noted per state), which do not yet, and why
 ```
 
 **Reviewer template:**
@@ -221,10 +253,31 @@ Step 3 — Dual review (parallel):
          (loading, empty, error, success, validation, disabled, responsive)
        - The verification surface from the UI spec is produced (Playwright
          screenshots for every named state, by default)
+       - Capture mode is full-page (`fullPage: true` or tool-equivalent) for
+         every state unless the spec explicitly marks it as viewport-only.
+         Deterministic options are enabled. A viewport-only capture on a
+         full-page baseline is a Major finding.
        - Tech-design identifiers referenced from the UI spec resolve cleanly
          (early signal that the one-way ownership contract is holding — if the
          UI spec is redefining an interface instead of referencing it, flag it)
      Use gpt-5.4. Launch async.
+
+     Delivery-assertion marker (mandatory). The reviewer's CLI run must open
+     its prompt with: "First thing: echo `<UNIQUE_MARKER>` before anything
+     else." The marker uses the standardized prefix `LSV2-MARKER-` plus a
+     `<timestamp>-<random>` suffix (e.g., `LSV2-MARKER-20260419-a3f7c1`).
+     After the CLI exits, verify the marker appears at least once in the
+     recorded session output using the selected CLI skill's standard
+     output-extraction mechanism — the surfaces exposed by `codex-subagent`,
+     `copilot-subagent`, or whichever CLI skill is loaded for this run. Do
+     not hard-code a shell command (`grep`, `findstr`, etc.) for this check:
+     shell commands are brittle across platforms (Windows hosts often lack
+     `grep`) and they bypass the structured extraction the CLI subagent
+     skills already standardize. If the marker is absent from the recorded
+     output, the prompt did not reach the CLI — stop, do not trust any
+     reported review findings, and escalate the delivery failure to
+     team-lead before retrying. This is the only gate that catches silent
+     stdin/path-delivery failures and the fabrications they enable.
   B. While CLI reviews, do your own architectural review independently.
 
 Step 6 — Consolidate:
@@ -233,7 +286,16 @@ Step 6 — Consolidate:
   Compile consolidated fix list.
   Launch CLI to implement fixes. Have it self-review after fixing.
 
-Step 7 — Report to orchestrator (SEND THIS MESSAGE):
+Step 7 — Report to orchestrator (SEND THIS MESSAGE on every driver exit —
+  success, failure, partial, or unknown verdict):
+
+  The terminating action of the reviewer is the report message, regardless
+  of the driver's verdict. Never stay silent on failure. If the driver
+  auto-generated a report file on disk, summarize and reference it; do not
+  assume team-lead will discover the failure independently. After sending the
+  report, remain idle in case team-lead has follow-up — do not exit the
+  teammate immediately.
+
   - CLI review session ID(s)
   - Your own review findings
   - CLI findings
@@ -241,7 +303,8 @@ Step 7 — Report to orchestrator (SEND THIS MESSAGE):
   - What remains open with dispositions
   - Final story gate result
   - If a UI spec was in scope: per-screen state coverage status, screenshot
-    artifact list (paths or counts), one-way ownership contract status
+    artifact list (paths or counts, with capture mode noted per state),
+    one-way ownership contract status
   - "What else did you notice but did not report?"
 ```
 
@@ -249,7 +312,7 @@ Step 7 — Report to orchestrator (SEND THIS MESSAGE):
 
 Create a team at the start of the implementation. The team persists across all stories — don't create a new team per story. Teammates are created and shut down within each story's cycle, but the team and its task list span the full run.
 
-All teammates are spawned as general-purpose agents with bypassPermissions. Senior-engineer is reserved exclusively for the orchestrator's own quick fixes via subagent — never for teammates.
+All teammates — implementers, reviewers, one-shot fixers — are spawned on the active team via `Agent({team_name, name, subagent_type})` with bypassPermissions. Standalone `Agent` calls (without `team_name`) are never used during orchestration. They produce workers with no mailbox, no task-list visibility, and a stricter default permission posture, and they break every observability and routing guarantee this skill depends on.
 
 Set log state to `BETWEEN_STORIES`.
 
@@ -266,6 +329,11 @@ These three invariants are non-negotiable:
 These invariants exist because completion bias is structural. As more stories are accepted and committed, the orchestrator builds up investment in forward progress. This creates pressure to rubber-stamp reviews, downplay findings, skip verification steps, and quick-fix things personally. The later stories in a sequence are more vulnerable than the earlier ones. The invariants are external constraints, not suggestions to evaluate against your confidence level.
 
 **v2 addendum:** When a UI spec is present, the verification ceiling is honest. Agents and CLI reviewers verify *structural* UI compliance (component named in spec exists in code, named states are reachable, tech-design identifiers resolve, screenshots are produced). Visual quality (spacing polish, hierarchy, hover-state feel) remains a human gate. Do not present "all UI spec checks passed" as equivalent to "the UI looks good." It is not. Surface the screenshots to the human for visual review before final acceptance.
+
+**Addendum (v2 hardening pass):**
+
+- *Marker-presence requirement (extends invariant 3).* Verification evidence from a CLI dispatch requires the delivery-assertion marker to be present in the recorded session output, verified via the selected CLI skill's extraction mechanism. An unmarked session is empty-prompt fabrication, not verification, regardless of how successful the transcript looks.
+- *Observed-run gate requirement (extends invariant 1).* When the tech design prescribes an observed-run gate (per the Toolchain Config Snippet Validation section in `tech-design-v2.md`), the gate's commands are part of story or epic acceptance per the tech design's scope assignment. Structural-gate passes alone do not satisfy acceptance for stories or epics that prescribe observed-run gates. The orchestrator runs the prescribed observed-run commands during `3. Orchestrator Final Check` after locking them into the gate set during `Verification Gate Discovery`.
 
 ### Adaptive Controls
 
@@ -287,6 +355,8 @@ When a teammate reports that the CLI is unavailable or didn't work:
 3. Third report → test the CLI yourself with a simple command.
 4. If CLI works → send the teammate back with proof that the CLI is operational.
 5. If CLI is genuinely down → escalate to the human.
+
+If a teammate reports CLI failure but their session output shows a successful-looking run, check for the delivery-assertion marker via the CLI skill's extraction mechanism before retrying. A successful-looking session with no marker is empty-prompt fabrication, not a CLI failure — diagnose the delivery path (stdin, file argument, working directory) before assuming the CLI is the problem.
 
 If a teammate did verification itself instead of using the CLI — i.e., they report findings but have no CLI session ID — shut down that teammate immediately. Spawn a fresh teammate with the same instructions. Do not accept the work the previous teammate did. The verification is not complete.
 
@@ -310,11 +380,15 @@ Re-read the materialized implementer template from the log. Construct the handof
 
 If per-story implementation prompts exist, tell the teammate to use them as the primary CLI input.
 
+**Spawn-then-deliver.** Team-spawned teammates do not reliably receive the `prompt` argument from `Agent({team_name, ...})`. Immediately after the spawn call, follow with `SendMessage({to: <teammate-name>, message: <full handoff prompt>})`. The handoff is delivered via SendMessage, not via the spawn-time `prompt` field. If a freshly spawned teammate emits 3+ idle notifications in quick succession with no substantive message, assume the inbox is empty — re-deliver the handoff via SendMessage before considering any other failure mode.
+
 ### 2. Verification
 
 When the implementer reports back, the implementation has already been through one or more rounds of self-review. The easy issues are fixed. What remains is either clean or genuinely ambiguous. Now it gets a fresh set of eyes.
 
 **Spawn the reviewer.** Update the log phase to `reviewing`. A fresh general-purpose Opus teammate (not senior-engineer). Re-read the materialized reviewer template from the log. Same artifacts (including the UI spec when present), explicit CLI requirement.
+
+Apply spawn-then-deliver here too: immediately after the reviewer spawn call, follow with `SendMessage({to: <reviewer-name>, message: <full handoff prompt>})`. The same empty-mailbox failure mode applies to reviewer dispatches as to implementer dispatches.
 
 The reviewer runs a dual review: CLI spec-compliance check in parallel with the reviewer's own architectural review. Two perspectives — the external model's literal compliance check and the Opus reviewer's architectural judgment.
 
@@ -326,10 +400,17 @@ On first review round, ask: "What else did you notice but did not report?" Captu
 
 When the reviewer reports back, the implementation has been through multiple review layers: CLI build → iterated self-review → fresh Opus + CLI dual review → fixes → iterated self-review. Two separate agents and two separate CLI instances have looked at it.
 
-1. **Run the discovered story acceptance gate yourself** — execute the exact commands you locked in Verification Gate Discovery and confirm they pass. Don't trust reports alone.
-2. **Review the report's open issues** — if either teammate surfaced issues they didn't fix, assess them from the report. Route any remaining fixes to a senior-engineer subagent (quick) or fresh teammate (extensive).
+1. **Run the discovered story acceptance gate yourself** — execute the exact commands you locked in Verification Gate Discovery and confirm they pass. This includes any observed-run gate the tech design prescribed (per the Toolchain Config Snippet Validation section in `tech-design-v2.md`); structural-gate passes do not substitute for an observed run of the prescribed runtime path. Don't trust reports alone.
+2. **Review the report's open issues** — if either teammate surfaced issues they didn't fix, assess them from the report. Route any remaining fixes to a fresh team-resident teammate (short-lived for quick fixes, longer-lived for extensive work).
 3. **If a UI spec was in scope:** confirm the screenshot artifacts (or chosen verification surface) are present at the expected paths. Surface the screenshots to the human for visual review before final acceptance — agents check structural compliance only.
-4. **Do NOT read implementation files yourself.** Do NOT debug failures. Route them.
+4. **Scan for CLI-fabrication patterns.** When a CLI subagent hits an environmental limit silently (network disabled, tool missing, permission denied), it may fabricate a local workaround that looks structurally green. Maintain a project-specific list of "impossible outputs" — outputs that should never appear in committed source if the subagent operated honestly — and grep for them as a deterministic pre-acceptance check. Materialize the list in `team-impl-log.md` alongside the boundary inventory so it accumulates across stories and survives context stripping. Examples to seed the list:
+   - `link:` paths in package manifests pointing outside the workspace
+   - Absolute host paths in committed configs
+   - Unresolved environment-variable literals (`${...}` patterns) in committed files where they should have been substituted
+   - Hardcoded localhost URLs in code that should use config
+
+   This gate catches "the subagent worked around a problem instead of reporting it" — neither the structural acceptance gate nor dual review reaches that class of defect.
+5. **Do NOT read implementation files yourself.** Do NOT debug failures. Route them.
 
 **Accepting the story:**
 
@@ -502,9 +583,15 @@ These patterns emerged from real orchestration experience and encode failure mod
 
 ### Idle Notifications Are Unreliable Signals
 
-Teammates emit idle notifications between turns. These are noise during multi-step tasks — a teammate doing a 15-minute implementation will fire multiple idle notifications while actively working. Do not interpret idle notifications as "the agent is done" or "the agent is stuck."
+Idle notifications fire on conversation-turn boundaries, not on stops. A teammate actively running a 15-minute background task will emit several idle notifications while the work is still in flight. A teammate whose mailbox is empty will also emit idle notifications. The signal alone does not distinguish the two.
 
-The reliable signal is the teammate's explicit message reporting results. Wait for that. If extended time passes with no message (calibrate based on task complexity), send a brief nudge: "Did you complete the work? Report your results." Don't assume failure from silence alone.
+Use the timing pattern to disambiguate:
+
+- **Rapid burst immediately post-spawn (3+ in <30 seconds).** Empty mailbox — the spawn-time `prompt` did not arrive. Re-deliver the handoff via `SendMessage` before assuming any other failure (see the spawn-then-deliver instruction in `1. Spawn the Implementer`).
+- **Periodic idles during long-running work (one every few minutes, mid-task).** Conversation-turn boundaries — the teammate is still working. Ignore. Wait for the teammate's explicit completion message.
+- **Sustained silence past the expected duration for the task.** Send one brief nudge: "Did you complete the work? Report your results." Don't conclude failure from silence alone.
+
+The reliable signal is the teammate's explicit message reporting results. The idle notification pattern is supporting context, not a primary signal.
 
 ### Context Ceilings
 
@@ -545,6 +632,14 @@ When context distance grows between when items are discussed and when a handoff 
 
 In a previous run, a CLI subagent reviewed an old prototype directory instead of the current application directory. The handoff prompt must specify the exact working directory. Verify in the teammate's report that the CLI ran against the correct path.
 
+### Verify the Teammate Exists Before SendMessage
+
+When a teammate's driver exits, the team config's `members[]` shrinks. The teammate name remains a valid `SendMessage` target *syntactically*, but the message enqueues into a nonexistent inbox and is silently dropped. There is no delivery-failure signal.
+
+Before any `SendMessage` to a named teammate (especially mid-story for a fix round), check that the target appears in the current team config's `members[]`. If it does not, the teammate has exited — spawn a fresh teammate for the work rather than messaging the dead name.
+
+The orchestrator's instinct to reuse a recently exited teammate ("their context is already loaded") is a trap. The replacement teammate reads the necessary artifacts cold, which is the same pattern fresh-agents-per-story enforces.
+
 ### Large Fix Batches Need Human Eyes
 
 In a previous run, an orchestrator auto-dispatched all 16 epic-verification fixes without presenting them first. Three items changed disposition through discussion — including one that would have been a scope change. When you have a batch of fixes with mixed severity and disposition, present the categorized list and let the human weigh in before dispatching. This applies to epic verification synthesis and pre-verification cleanup — situations where you're routing a significant volume of fixes at once. It does not mean every routine decision needs human approval.
@@ -556,6 +651,10 @@ When a UI spec is present, agents and CLI reviewers verify *structural* UI compl
 This is a known limitation of the methodology, not a flaw to engineer around. Surface the screenshot artifacts to the human for visual review before final story or epic acceptance. Do not present "all UI spec checks passed" as equivalent to "the UI looks good." It is not.
 
 If the spec's one-way ownership contract is violated — the UI spec redefines an interface instead of referencing the tech design's identifier — flag it as a finding. Drift in the contract early in the experiment is a signal the contract needs sharpening.
+
+**Capture-mode discipline.** When the verification surface is screenshot capture, every state captures full-page with deterministic options unless the spec explicitly marks the state as viewport-only. Default-viewport capture on a full-page state silently truncates content; structural review still passes, the human visual review is the only backstop, and the backstop is unreliable when the reviewer doesn't know what they're missing. The capture-mode requirement is enforced at three layers: the spec names the default (`tech-design-v2.md` Verification Surface Requirement), the implementer template requires `fullPage: true`, the reviewer flags violations as Major.
+
+**The human gate's role, sharpened.** With the capture-mode discipline and narrow tool-default principle in place, the human visual-review gate is the *final arbiter of visual quality on a methodology-validated surface*. It is not the only backstop for methodology gaps. The methodology's job is to eliminate avoidable upstream errors before the surface reaches the human — silent truncation, undeclared tool defaults, missing deterministic options — so that what the human reviews is the *intended* surface, not whatever the tool happened to capture by default. The human still owns the judgment on polish, hierarchy, rhythm, and hover-state feel; the methodology owns the completeness of the surface that judgment is exercised against.
 
 ### Process Adaptation
 
